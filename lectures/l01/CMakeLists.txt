@@ -8,3 +8,4 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 add_executable(hello hello.cpp)
 add_executable(vector vector.cpp)
+add_executable(string string.cpp)
