@@ -63,7 +63,7 @@ Hello world
 
 * Type safety
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic -Werror
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror
 #include <iostream>
 
 int main()
@@ -80,7 +80,7 @@ int main()
 Value of i is 3
 #+end_example
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic -Werror
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror
 #include <iostream>
 
 int main()
@@ -101,7 +101,7 @@ int main()
 - Show an example of array size
 - Show an example of array size
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -135,7 +135,7 @@ I recognize you, dmg
 5
 #+end_example
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -166,7 +166,7 @@ int main()
 #+end_example
 
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -185,7 +185,7 @@ int main()
 #+RESULTS:
 
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -211,7 +211,7 @@ int main()
 #+end_example
 
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -234,7 +234,7 @@ The sum is 15
 #+end_example
 
 
-#+BEGIN_SRC C++ :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -262,7 +262,7 @@ The sum is 12345
 Generic operations
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <string>
@@ -286,7 +286,7 @@ int main()
 the sum of the vector is 102202
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -311,7 +311,7 @@ the sum of the vector is 21
 What if we want to use complex numbers instead of integers? In this case, let us complex values:
 Note how the initialization converts and in to a complex. But we can also intialize complex numbers
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -337,7 +337,7 @@ the sum of the vector is (21,-1)
 We can also accumulate strings:
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
