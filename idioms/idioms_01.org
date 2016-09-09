@@ -1,0 +1,128 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Idioms
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+The idiom of the day: Traversing a vector, string... (a container)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+int main()
+{
+   std::vector<int> numbers {4, -2, 2, 9 };
+
+   for (auto item : numbers) {  
+      std::cout << "Value: " << item << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: 4
+Value: -2
+Value: 2
+Value: 9
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+int main()
+{
+   std::string st {"abc"};
+
+   for (auto item : st) {  
+      std::cout << "Value: " << item << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: a
+Value: b
+Value: c
+#+end_example
+
+** sets
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+int main()
+{
+   std::set<double> mySet {1.1, 2, 3.1, 10.9, 1, 2};
+
+   for (auto item : mySet) {  
+      std::cout << "Value: " << item << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: 1
+Value: 1.1
+Value: 2
+Value: 3.1
+Value: 10.9
+#+end_example
+
+
+Vector of vectors
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+int main()
+{
+   std::vector<std::vector<int>> numbers {{1,2},{3,4,5},{2}};
+
+   for (auto v : numbers) {  
+       for (auto item : v) {  
+           std::cout << "Value: " << item << std::endl;
+       }
+       std::cout << "------" <<  std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: 1
+Value: 2
+------
+Value: 3
+Value: 4
+Value: 5
+------
+Value: 2
+------
+#+end_example
+

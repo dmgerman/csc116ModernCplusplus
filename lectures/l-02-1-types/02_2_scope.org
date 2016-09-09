@@ -239,6 +239,13 @@ int main()
 
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+Before: abc
+After: abc
+After2: bcd
+#+end_example
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
@@ -261,12 +268,12 @@ int main()
     print_vector(var);
 
     for(auto c : var) {
-       c++;
+       c += 10;
     }
     print_vector(var);
 
     for(auto &c : var) {
-       c++;
+       c += 10;
     }
     print_vector(var);
 
@@ -280,7 +287,7 @@ int main()
 #+begin_example
 1,2,3,4,
 1,2,3,4,
-2,3,4,5,
+11,12,13,14,
 #+end_example
 
 * Const
