@@ -10,6 +10,40 @@
 #+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
+
+** Scope again
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void my_function(int i)
+{
+   i++;
+   std::cout << "inside " << i << std::endl;
+}
+
+int main()
+{
+   int i {-5};
+   std::cout << "Before " << i << std::endl;
+   my_function(i);
+   std::cout << "After "<< i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before -5
+inside -4
+After -5
+#+end_example
+
+
+
+
 * References
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
