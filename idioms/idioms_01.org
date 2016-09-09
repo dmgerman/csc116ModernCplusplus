@@ -20,7 +20,36 @@ The idiom of the day: Traversing a vector, string... (a container)
 #include <string>
 int main()
 {
-   std::vector<int> numbers {4, -2, 2, 9 };
+   std::vector<int> numbers {1, -2, 2 };
+
+// traditional C, works for vectors
+
+   for (unsigned int i=0;i<numbers.size();i++) {
+      std::cout << "Value: " << numbers.at(i) << std::endl;
+      i++;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: 1
+Value: -2
+Value: 2
+#+end_example
+
+** C++ iterator
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+int main()
+{
+   std::vector<std::string> numbers {"1", "-2", "2" };
 
    for (auto item : numbers) {  
       std::cout << "Value: " << item << std::endl;
@@ -31,13 +60,15 @@ int main()
 
 #+END_SRC
 
+
 #+RESULTS:
 #+begin_example
-Value: 4
+Value: 1
 Value: -2
 Value: 2
-Value: 9
 #+end_example
+
+** Strings
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -90,8 +121,32 @@ Value: 3.1
 Value: 10.9
 #+end_example
 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+int main()
+{
+   std::set<double> mySet {1.1, 2, 3.1, 10.9, 1, 2};
 
-Vector of vectors
+   for (auto item : mySet) {  
+      std::cout << "Value: " << item << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value: 1
+Value: 1.1
+Value: 2
+Value: 3.1
+Value: 10.9
+#+end_example
+
+** Vector of vectors
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
