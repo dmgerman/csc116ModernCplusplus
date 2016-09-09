@@ -1,0 +1,375 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Variables and Scope
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output :exports both  :colnames yes
+
+* Declaring variables is just like in C
+
+But it can be done anywhere in the code
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   int i {};
+
+   std::cout << i << std::endl;
+
+   int j {5};
+
+   std::cout << j << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+5
+#+end_example
+
+As in C, variables have scope
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   int i {10};
+
+   std::cout << i << std::endl;
+
+   {
+      int i {5};
+      std::cout << i << std::endl;
+      i = 0;
+   }
+   std::cout << i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+10
+5
+10
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int i=-100;
+
+int main()
+{
+   std::cout << i << std::endl;
+   int i {-5};
+   std::cout << i << std::endl;
+
+   for(int i=0;i<3;i++){
+      std::cout << i << std::endl;
+   }
+   std::cout << i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-100
+-5
+0
+1
+2
+-5
+#+end_example
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int i=-100;
+
+void my_function(int j)
+{
+   std::cout << i << std::endl;
+}
+
+int main()
+{
+   std::cout << i << std::endl;
+   int i {-5};
+   my_function(i);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-100
+-100
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int i=-100;
+
+void my_function(int i)
+{
+   i++;
+   std::cout << i << std::endl;
+}
+
+int main()
+{
+   std::cout << i << std::endl;
+   int i {-5};
+   my_function(i);
+   std::cout << i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-100
+-4
+-5
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void my_function(int i)
+{
+   i++;
+   std::cout << "inside " << i << std::endl;
+}
+
+int main()
+{
+   int i {-5};
+   std::cout << "Before " << i << std::endl;
+   my_function(i);
+   std::cout << "After "<< i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before -5
+inside -4
+After -5
+#+end_example
+
+* References
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void my_function(int &i)
+{
+   i++;
+   std::cout << "inside " << i << std::endl;
+}
+
+int main()
+{
+   int i {-5};
+   std::cout << "Before " << i << std::endl;
+   my_function(i);
+   std::cout << "After "<< i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before -5
+inside -4
+After -4
+#+end_example
+
+* Also true for for (collections)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main()
+{
+    std::string   var {"abc"};
+
+    std::cout << "Before: " << var << std::endl;
+
+    for(auto c : var) {
+       c++;
+    }
+    std::cout << "After: " << var << std::endl;
+
+    for(auto &c : var) {
+       c++;
+    }
+    std::cout << "After2: " << var << std::endl;
+
+    return 0;
+}
+
+#+END_SRC
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+
+// some black magic, ignore for now
+template <typename T>
+void print_vector(std::vector<T> v) 
+{
+    for(auto item : v) {
+       std::cout <<  item << "," ;
+    }
+    std::cout << std::endl;
+}
+
+int main()
+{
+    std::vector<unsigned int>   var {1, 2, 3, 4};
+
+    print_vector(var);
+
+    for(auto c : var) {
+       c++;
+    }
+    print_vector(var);
+
+    for(auto &c : var) {
+       c++;
+    }
+    print_vector(var);
+
+    return 0;
+}
+
+#+END_SRC
+
+
+#+RESULTS:
+#+begin_example
+1,2,3,4,
+1,2,3,4,
+2,3,4,5,
+#+end_example
+
+* Const
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   const int i {10};
+
+   i = 20;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void print_value(int value)
+{
+   value +=10;
+   std::cout << "Value " << value << std::endl;
+}
+
+void print_value2(int &value)
+{
+   value +=10;
+   std::cout << "Value " << value << std::endl;
+}
+
+
+int main()
+{
+   int i {-4};
+
+   print_value(i);
+   print_value(i);
+   print_value2(i);
+   print_value(i);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value 6
+Value 6
+Value 6
+Value 16
+#+end_example
+
+
+* We can also declare variables that references to variables
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int main()
+{
+   unsigned int i {4};
+   unsigned int j {10};
+
+   unsigned int &r {i};
+
+   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   r++;
+   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   r = j;
+   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   r = 9;
+   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   i = 20;
+   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+i 4 j 10 r 4
+i 5 j 10 r 5
+i 10 j 10 r 10
+i 9 j 10 r 9
+i 20 j 10 r 20
+#+end_example
+
