@@ -34,7 +34,6 @@ i = f();      // Bad -- initialization separate from declaration.
 
 Good:
 
-#+RESULTS:
 #+BEGIN_SRC C++
 int j = g();  // Good -- declaration has initialization.
 #+END_SRC
