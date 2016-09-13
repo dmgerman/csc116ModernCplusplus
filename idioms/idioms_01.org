@@ -12,7 +12,7 @@
 
 
 
-The idiom of the day: Traversing a vector, string... (a container)
+* The idiom of the day: Traversing a vector, string... (a container)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>

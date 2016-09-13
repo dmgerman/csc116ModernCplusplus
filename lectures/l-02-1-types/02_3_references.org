@@ -42,8 +42,6 @@ After -5
 #+end_example
 
 
-
-
 * References
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -153,21 +151,6 @@ int main()
 11,12,13,14,
 #+end_example
 
-* Const
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-int main()
-{
-   const int i {10};
-
-   i = 20;
-   return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -208,7 +191,7 @@ Value 16
 #+end_example
 
 
-* We can also declare variables that references to variables
+* We can also declare variables that are references to variables
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -242,3 +225,102 @@ i 10 j 10 r 10
 i 9 j 10 r 9
 i 20 j 10 r 20
 #+end_example
+
+
+* Const
+
+It can be used to indicate that a variable should will never change
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   const int i {10};
+
+   i = 20;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+
+Google preferred way to name global variables: prefix with k
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+const int kDaysInAWeek = 7;
+int main()
+{
+   return 0;
+}
+#+END_SRC
+
+
+** In parameters to functions
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void print_value(const int value)
+{
+   value +=10; // not allowed
+   std::cout << "Value " << value << std::endl;
+}
+
+
+int main()
+{
+   print_value(10);
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+** Extends to references
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int main()
+{
+   int i { 5 };
+   const int &r = i;
+   i= 10;   // ok
+   r = 20;  // invalid
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+void print_value(const int &value)
+{
+   value +=10; // not allowed
+   std::cout << "Value " << value << std::endl;
+}
+
+int main()
+{
+   int i { 5 };
+   print_value(i);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+
+** So why then use references for const parameters?
+
+- Because it is cheaper (in general) to pass a reference.
+
