@@ -1,0 +1,50 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Idioms 02
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* The idiom of the day 2: where to declare variables:
+
+From Google C++ Coding Standards:
+
+https://google.github.io/styleguide/cppguide.html#Local_Variables
+
+
+#+BEGIN_QUOTE
+Place a function's variables in the narrowest scope possible, and initialize variables in the declaration.
+#+END_QUOTE
+
+
+Bad:
+
+#+BEGIN_SRC C++
+int i;
+i = f();      // Bad -- initialization separate from declaration.
+#+END_SRC
+
+
+Good:
+
+#+RESULTS:
+#+BEGIN_SRC C++
+int j = g();  // Good -- declaration has initialization.
+#+END_SRC
+
+** In loops, declare the variables within its scope
+
+#+BEGIN_SRC C++
+while (std::string line = mygetline())  {
+   int length = line.size();
+   // ...
+}
+#+END_SRC
+
