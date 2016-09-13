@@ -3,7 +3,7 @@
 #+TAGS:
 #+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
 #+DRAWERS: HIDDEN STATE
-#+TITLE: References
+#+TITLE: References and Mutability
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
@@ -11,7 +11,7 @@
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
 
-** Scope again
+* Scope again
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -229,15 +229,16 @@ i 20 j 10 r 20
 
 * Const
 
-It can be used to indicate that a variable should will never change
+It can be used to indicate that a variable should never change: it is *immutable*
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+
 int main()
 {
    const int i {10};
 
-   i = 20;
+   i = 20; // will fail
    return 0;
 }
 
@@ -246,10 +247,11 @@ int main()
 #+RESULTS:
 
 
-Google preferred way to name global variables: prefix with k
+Google preferred way to name const global variables: prefix with k
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 const int kDaysInAWeek = 7;
+
 int main()
 {
    return 0;
