@@ -1,0 +1,41 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Idioms 03
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* When to pass a const parameters by value or by reference
+
+Should you declare the parameter to a function as value
+
+#+BEGIN_SRC C++
+void function(const int parameter) {
+   ...
+}
+#+END_SRC
+
+or by reference?
+
+#+BEGIN_SRC C++
+void function(const int &parameter) {
+   ...
+}
+#+END_SRC
+
+The bodies of both functions are identical.
+
+** Answer:
+
+- if the value is a simple type (int, char, double) use value
+
+- if the value is complex (string, vector, etc) use a reference
+
+

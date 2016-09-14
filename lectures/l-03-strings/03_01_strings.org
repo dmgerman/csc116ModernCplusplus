@@ -1,0 +1,275 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Strings
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Strings
+
+In C++ we have two types of strings:
+
+- C type: char[]
+
+#+BEGIN_SRC C++
+char filename[] = "myFile.txt";
+char *filename = "myFile.txt";
+#+END_SRC
+
+
+std::string
+
+#+BEGIN_SRC C++
+#include <string>
+
+std::string filename {"myFile.txt"};
+
+#+END_SRC
+
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic -Werror :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string filename {"filename.txt"};
+    std::cout << "Content: " << filename << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+
+* As we discussed before we can traverse an array as a sequence of characters:
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string filename {"abc"};
+    for(int i=0;i<filename.size();i++) {
+        std::cout << "position " << i << " value " << filename.at(i) << std::endl;
+    }
+    for(const char c:filename) {
+        std::cout << "char " << c << std::endl;   
+    }
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+position 0 value a
+position 1 value b
+position 2 value c
+char a
+char b
+char c
+#+end_example
+
+* We can modify the characters in the string
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string filename {"abc"};
+    for(int i=0;i<filename.size();i++) {
+       filename.at(i) = 'X'; // notice single quote for characters
+    }
+    std::cout << "First: " << filename << std::endl;
+    for(char &c:filename) {
+       c = 'Z'; 
+    }
+    std::cout << "Second: " << filename << std::endl;
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+First: XXX
+Second: ZZZ
+#+end_example
+
+* We can add characters to a string
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string filename {"abc"};
+    // append a string to the end
+    filename += "ijk";
+    std::cout << "First: " << filename << std::endl;
+    // we can also append characters!
+    filename += 'z';
+    std::cout << "Second: " << filename << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+First: abcijk
+Second: abcijkz
+#+end_example
+
+* Be careful:
+
+A bare sequence between quotes "as in this" is a char array. *Not a string!!*
+
+- Compiler, most of the time, will convert it to std::string as needed
+- But sometimes it does not: this program will fail
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string greeting {};
+
+    greeting = "Your name is " + "bob";
+    std::cout << greeting << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+We need first to convert the char array to a string:
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string greeting {};
+
+    greeting = std::string("Your name is ") + "bob"; // called typecasting
+    std::cout << greeting << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Your name isbob
+#+end_example
+
+* Convert a string to numbers
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string str1 {"45"};
+    std::string str2 {"3.14159"};
+    std::string str3 {"31337 with words"};
+    std::string str4 {"words and 2"};
+
+    int myint1 = std::stoi(str1);
+    int myint2 = std::stoi(str2);
+    int myint3 = std::stoi(str3);
+   // int myint4 = std::stoi(str4); // this one is invalid, will create an exception
+ 
+    std::cout << "std::stoi(\"" << str1 << "\") is " << myint1 << '\n';
+    std::cout << "std::stoi(\"" << str2 << "\") is " << myint2 << '\n';
+    std::cout << "std::stoi(\"" << str3 << "\") is " << myint3 << '\n';
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+std::stoi("45") is 45
+std::stoi("3.14159") is 3
+std::stoi("31337 with words") is 31337
+#+end_example
+
+* Compare strings
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string you = "Bob";
+    std::string me = "Daniel";    
+    std::string he = "Daniel";
+
+    if (me == you) {
+        std::cout << "me and you are the same" << std::endl;
+    } else {
+        std::cout << "me and you are the diffent" << std::endl;
+    }
+
+    if (me == he) {
+        std::cout << "me and he are the same" << std::endl;
+    } else {
+        std::cout << "me and he are the diffent" << std::endl;
+    }
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+me and you are the diffent
+me and he are the same
+#+end_example
+
+* Reading strings
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string name {};
+    getline(std::cin, name);
+    std::cout << "Your name is " + name << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Your name is
+#+end_example
+
