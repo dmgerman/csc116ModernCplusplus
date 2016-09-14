@@ -20,7 +20,8 @@ https://google.github.io/styleguide/cppguide.html#Local_Variables
 
 
 #+BEGIN_QUOTE
-Place a function's variables in the narrowest scope possible, and initialize variables in the declaration.
+Place a function's variables in the narrowest scope possible, 
+and initialize variables in the declaration.
 #+END_QUOTE
 
 
