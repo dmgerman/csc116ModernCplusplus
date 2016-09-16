@@ -1,0 +1,72 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Idioms 04
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames ye
+
+* Comparing a string against a another string
+
+Assume this declarations
+
+#+BEGIN_SRC C++
+std::string empty    {};
+std::string empty2   {""};
+std::string name     { "Bob" };
+std::string lastname { "Jones" };
+#+END_SRC
+
+How to compare the string:
+
+#+BEGIN_SRC C++
+if (name == lastname) {
+   .. 
+}
+#+END_SRC
+
+or
+
+#+BEGIN_SRC C++
+if (name == "Emily") {
+   .. 
+}
+#+END_SRC
+
+
+** But this is invalid
+
+#+BEGIN_SRC C++
+if ("Emily" == name) {
+   .. 
+}
+#+END_SRC
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <string>
+
+int main()
+{
+   std::string name = "Emily";
+   if ("Emily" == name) {
+      std::cout << "Same" << std::endl;
+   } else {
+      std::cout << "Different" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Same
+#+end_example
+

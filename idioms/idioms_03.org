@@ -17,7 +17,7 @@
 Should you declare the parameter to a function as value
 
 #+BEGIN_SRC C++
-void function(const int parameter) {
+void function(con st int parameter) {
    ...
 }
 #+END_SRC
