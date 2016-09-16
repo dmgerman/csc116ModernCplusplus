@@ -1,0 +1,369 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Vectors
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* Vectors
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec {1, 2, 3, 4, 5};
+   
+   for(auto v: vec) {
+      std::cout << v << " " ;
+   } 
+   std::cout << std::endl;
+
+   std::cout << vec.max_size() << std::endl;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 2 3 4 5 
+4611686018427387903
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec {};
+   
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   vec.push_back(1);
+   vec.push_back(2);
+   vec.push_back(3);
+
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto v: vec) {
+      std::cout << v << " " ;
+   } 
+   std::cout << std::endl;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 0
+Size: 3
+1 2 3
+#+end_example
+
+** Initialize the size with a default value
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec (5);
+   
+   std::cout << "Size: " << vec.size() << std::endl;
+   for(auto v: vec) {
+      std::cout << v << " " ;
+   } 
+   std::cout << std::endl;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 5
+0 0 0 0 0
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec (3,-10);
+   
+   std::cout << "Size: " << vec.size() << std::endl;
+   for(auto v: vec) {
+      std::cout << v << " " ;
+   } 
+   std::cout << std::endl;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 3
+-10 -10 -10
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+void print_vector(const std::vector<int> &vec)
+{
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto v: vec) {
+      std::cout << v << " " ;
+   } 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> vec (2);
+   
+   print_vector(vec);
+
+   vec.push_back(5);
+
+   print_vector(vec);
+
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 2
+0 0 
+Size: 3
+0 0 5
+#+end_example
+
+
+** Vectors of vectors
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+
+{
+   std::vector<
+       std::vector<int>
+     > vec (2, std::vector<int>(3,0));
+
+   vec[1][2] = 9;
+   vec.at(0).at(1) = 7;
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto subvec: vec) {
+      for(auto el: subvec) {
+         std::cout << el << " " ;
+      } 
+      std::cout << std::endl;
+   } 
+   std::cout << "--------------" << std::endl;
+   for(int i=0;i<vec.size();i++) {
+      for(int j=0;j<vec.at(i).size();j++) {
+         std::cout << vec.at(i).at(j) << " " ;
+      }
+      std::cout << std::endl;
+   } 
+
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 2
+0 7 0 
+0 0 9 
+--------------
+0 7 0 
+0 0 9
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<
+       std::vector<std::string>
+     > vec (2, std::vector<std::string>(3,"default"));
+
+   vec.at(1).at(2) = "[at 1,2]";
+   vec.at(1).at(0) = "[at 1,0]";
+   vec.at(0).at(1) = "[at 0,1]";
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto subvec: vec) {
+      for(auto el: subvec) {
+         std::cout << el << " " ;
+      } 
+      std::cout << std::endl;
+   } 
+
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 2
+default [at 0,1] default 
+[at 1,0] default [at 1,2]
+#+end_example
+
+
+
+** Not all the subvectors  have to be of the same length!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<
+       std::vector<int>
+     > vec (2, std::vector<int>(3,0));
+
+   vec[1][2] = 9;
+
+   vec[0].clear();
+   vec[1].push_back(7);
+   vec.push_back({-3, 9});
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto subvec: vec) {
+      std::cout << "Row: " ;
+      for(auto el: subvec) {
+         std::cout << el << " " ;
+      } 
+      std::cout << std::endl;
+   } 
+
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 3
+Row: 
+Row: 0 0 9 7 
+Row: -3 9
+#+end_example
+
+
+
+* Declaring a two dimensional vector
+
+Say we want a vector of two dimensions:
+
+In the following case have a vector of two dimensions but
+with first dimensions 5 and second dimension 2
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+    std::vector <
+        std::vector<double>
+        > variableName 
+   (5, std::vector<double>(2));
+   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
+   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size first dimension : 5
+Size second dimension : 2
+#+end_example
+
+Let us break down the declaration:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+    std::vector <            // I want a vector 
+        std::vector<double>  // each element of the vector is a vector
+        > variableName       // name of the vector
+        (5, // how many elements in the frist dimension
+         std::vector<double>(2) // It knows each element is a vector (the subvectors. Here we say exactly
+                                // what size each subvector to create
+            );
+   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
+   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size first dimension : 5
+Size second dimension : 2
+#+end_example
+
+
+This code is 
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+    std::vector <            // I want a vector 
+        std::vector<double>  // each element of the vector is a vector
+        > variableName 
+   (5, std::vector<double>(2));
+   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
+   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
+}
+#+END_SRC
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+    std::vector <            
+        std::vector<double>  
+        > variableName       
+        (3, 
+         std::vector<double>(2)
+            );
+   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
+   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size first dimension : 3
+Size second dimension : 2
+#+end_example
+

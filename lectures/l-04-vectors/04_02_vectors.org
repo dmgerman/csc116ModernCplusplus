@@ -1,0 +1,39 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Vectors and Strings
+#+CATEGORY: 
+#+PROPERTY: header-args: lang           :varname value
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* Capacity
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// comparing size, length, capacity and max_size
+#include <iostream>
+#include <string>
+
+int main ()
+{
+  std::string str ("Test string");
+  std::cout << "size: " << str.size() << "\n";
+  std::cout << "length: " << str.length() << "\n";
+  std::cout << "capacity: " << str.capacity() << "\n";
+  std::cout << "max_size: " << str.max_size() << "\n";
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+size: 11
+length: 11
+capacity: 15
+max_size: 9223372036854775807
+#+end_example
+
