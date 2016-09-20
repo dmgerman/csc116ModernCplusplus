@@ -47,10 +47,9 @@ After -5
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
-void my_function(int &i)
+void my_function(int &r)
 {
-   i++;
-   std::cout << "inside " << i << std::endl;
+   std::cout << "inside " << r << std::endl;
 }
 
 int main()
@@ -134,7 +133,7 @@ int main()
     print_vector(var);
 
     for(auto &c : var) {
-       c += 10;
+       
     }
     print_vector(var);
 

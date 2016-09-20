@@ -10,8 +10,141 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+* Prelude: chars
+
+chars can be operated like ints
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int main()
+{
+   char c { 'A'};
+   char d { 66};
+   std::cout << c << std::endl;
+   std::cout << d << std::endl;
+   std::cout << int(c) << std::endl;
+   c = = 0x20;
+   std::cout << c << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+A
+B
+65
+)
+#+end_example
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int main()
+{
+   char e { '1' };
+   std::cout << e << std::endl;
+   std::cout << int(e) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+49
+A
+65
+#+end_example
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int main()
+{
+   char c { 'A'};
+   std::cout << c << std::endl;
+   std::cout << int(c) << std::endl;
+   c = c+5;
+   std::cout << c << std::endl;
+   c = '1' * 2;
+   std::cout << c << std::endl;
+   std::cout << int(' ') << std::endl;
+   std::cout << int(c) << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+A
+F
+b
+32
+98
+#+end_example
+
 
 * Strings
+
+** Reference
+
+ http://www.cplusplus.com/reference/string/string/
+
+** Tutorial
+
+ https://www.tutorialspoint.com/cplusplus/cpp_strings.htm
+
+** Caveats
+
+
 
 In C++ we have two types of strings:
 
@@ -29,6 +162,8 @@ std::string
 #include <string>
 
 std::string filename {"myFile.txt"};
+std::string emptyString {""};
+std::string emptyString2 {};
 
 #+END_SRC
 
@@ -41,11 +176,25 @@ std::string filename {"myFile.txt"};
 int main()
 {
     std::string filename {"filename.txt"};
+    std::string emptyString {""};
+    std::string another {};
+    another = filename;
     std::cout << "Content: " << filename << std::endl;
+    std::cout << "Empty: " << emptyString.size() << std::endl;
+    if (emptyString.empty()) {
+      std::cout << "It is really Empty " << std::endl;
+    }
     return 0;
 }
 
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+Content: filename.txt
+Empty: 0
+It is really Empty
+#+end_example
 
 
 * As we discussed before we can traverse an array as a sequence of characters:
@@ -59,10 +208,19 @@ int main()
 {
     std::string filename {"abc"};
     for(int i=0;i<filename.size();i++) {
-        std::cout << "position " << i << " value " << filename.at(i) << std::endl;
+        std::cout << "position " << i << " value " 
+                  << filename.at(i) << std::endl;
     }
-    for(const char c:filename) {
+    for(char c : filename) {
         std::cout << "char " << c << std::endl;   
+    }
+    for(const char &c : filename) {
+        std::cout << "char " << c << std::endl;   
+        c= 10;
+    }
+    for(int i=0;i<filename.size();i++) {
+        std::cout << "position " << i << " value " 
+                  << filename.at(i) << std::endl;
     }
 
     return 0;
@@ -71,14 +229,7 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-position 0 value a
-position 1 value b
-position 2 value c
-char a
-char b
-char c
-#+end_example
+
 
 * We can modify the characters in the string
 
@@ -272,4 +423,21 @@ int main()
 #+begin_example
 Your name is
 #+end_example
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string name {};
+    name = std::stoi("This 32 47");
+    std::cout << "Your name is " + name << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
 

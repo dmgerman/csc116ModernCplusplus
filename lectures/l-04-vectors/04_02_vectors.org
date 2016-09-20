@@ -10,30 +10,405 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
-* Capacity
+* Vectors can be compared and assigned
 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+
+   std::vector<int> intVec1 { 1, 2, 3, 4, 5};
+   std::vector<int> intVec2 { 1, 2, 3, 4, 5};
+   std::vector<int> intVec3 {};
+
+   if (intVec1 == intVec2) {
+       std::cout << "The vectors are the same" << std::endl;
+   }
+
+   if (intVec1 != intVec3) {
+       std::cout << "The vectors intVec1 and intVec3 are different" << std::endl;
+   }
+   intVec3 = intVec2;
+   intVec2.at(3) = 5;
+   if (intVec1 == intVec3) {
+       std::cout << "But now  vectors intVec1 and intVec3 are the same" << std::endl;
+   }
+   if (intVec1 != intVec2) {
+       std::cout << "But  vectors intVec1 and intVec2 are different now" << std::endl;
+   }
+   
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+The vectors are the same
+The vectors intVec1 and intVec3 are different
+But now  vectors intVec1 and intVec3 are the same
+But  vectors intVec1 and intVec2 are different now
+#+end_example
+
+* Vectors grow/shrink dynamically
+
+- They grow as one inserts elements
+- or then can be shrink with resize(n) or clear()
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 // comparing size, length, capacity and max_size
 #include <iostream>
-#include <string>
+#include <vector>
+#include "/home/dmg/c++/mycode.hpp"
+
+void print_size(std::vector<int> &vec)
+{
+  std::cout << "size: " << vec.size() << " ";
+  std::cout << "capacity: " << vec.capacity() << " ";
+  std::cout << "max_size: " << vec.max_size() << "\n";
+  
+}
 
 int main ()
 {
-  std::string str ("Test string");
-  std::cout << "size: " << str.size() << "\n";
-  std::cout << "length: " << str.length() << "\n";
-  std::cout << "capacity: " << str.capacity() << "\n";
-  std::cout << "max_size: " << str.max_size() << "\n";
+  std::vector<int> numbers {1, 2, 3, 4, 5,6,7,8,9,10};
+
+  print_vector("\nBefore: ",numbers);
+  print_size(numbers);
+
+  numbers.resize(3);
+
+  print_vector("\nAfter resize: ",numbers);
+  print_size(numbers);
+
+  numbers.clear();
+
+  print_vector("\nAfter clear: ",numbers);
+  print_size(numbers);
+
   return 0;
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-size: 11
-length: 11
-capacity: 15
-max_size: 9223372036854775807
+Before:  size: 10 values: [1 2 3 4 5 6 7 8 9 10 ]
+size: 10 capacity: 10 max_size: 4611686018427387903
+
+After resize:  size: 3 values: [1 2 3 ]
+size: 3 capacity: 10 max_size: 4611686018427387903
+
+After clear:  size: 0 values: []
+size: 0 capacity: 10 max_size: 4611686018427387903
+#+end_example
+
+
+* it is possible to reserve a given size
+
+- adding elements is expensive
+- hence it is good idea to reserve a size
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// comparing size, length, capacity and max_size
+#include <iostream>
+#include <vector>
+#include "/home/dmg/c++/mycode.hpp"
+
+void print_size(std::vector<int> &vec)
+{
+  std::cout << "size: " << vec.size() << " ";
+  std::cout << "capacity: " << vec.capacity() << " ";
+  std::cout << "max_size: " << vec.max_size() << "\n";
+  
+}
+
+int main ()
+{
+  std::vector<int> numbers(5,-1);
+
+  print_vector("\nBefore: ",numbers);
+  print_size(numbers);
+
+  numbers.reserve(100);
+
+  print_vector("\nAfter: ",numbers);
+  print_size(numbers);
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before:  size: 5 values: [-1 -1 -1 -1 -1 ]
+size: 5 capacity: 5 max_size: 4611686018427387903
+
+After:  size: 5 values: [-1 -1 -1 -1 -1 ]
+size: 5 capacity: 100 max_size: 4611686018427387903
+#+end_example
+
+* Iterators
+
+- A more general mechanism to access the elements of a container (std::vector, std::string, std::set, etc.).
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
+
+   for(auto &elem: numbers) {
+       std::cout << elem << " ";
+   }
+   std::cout << std::endl;
+   
+   for(auto it = numbers.begin(); it< numbers.end(); it++) {
+      std::cout << *it << " ";
+   }
+   std::cout << std::endl;
+   
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 2 3 4 5 
+1 2 3 4 5
+#+end_example
+
+* The iterators are pointers!
+
+- They are powerful, but they require us to do pointers
+- But we can avoid those pointers are much as possible
+- By turning them into references
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+#include "/home/dmg/c++/mycode.hpp"
+int main()
+{
+   std::vector<int> numbers { 10, 11, 12, 13, 14, 15};
+
+   print_vector("Before: ", numbers);
+
+   numbers.erase(numbers.begin()+2);
+
+   print_vector("After erase +2: ", numbers);
+
+   numbers.erase(numbers.begin()+1, numbers.end());
+
+   print_vector("After erase to end: ", numbers);
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before:  size: 6 values: [10 11 12 13 14 15 ]
+After erase +2:  size: 5 values: [10 11 13 14 15 ]
+After erase to end:  size: 1 values: [10 ]
+#+end_example
+
+* Use iterators to traverse parts of the vector
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
+
+   // iteratores are useful to traverse portions of the the vector 
+   for(auto it = numbers.begin()+1; it< numbers.end()-1; it++) {
+      // turn the iterator into a reference
+      auto &el  = *it;
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+   
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+2 3 4
+#+end_example
+
+* YOu can also go backwards
+
+rbegin, rend
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
+
+   // iteratores are useful to traverse portions of the the vector 
+   for(auto it = numbers.rbegin(); it< numbers.rend(); it++) {
+      // turn the iterator into a reference
+      auto &el  = *it;
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+   
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+5 4 3 2 1
+#+end_example
+
+* They can be used to erase at specific elements
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
+
+   // iteratores are useful to traverse portions of the the vector 
+   for(auto it = numbers.rbegin(); it< numbers.rend(); it++) {
+      // turn the iterator into a reference
+      auto &el  = *it;
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+   
+   return 0;
+}
+
+#+END_SRC
+
+
+* They also work for strings, because strings are collections
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <string>
+int main()
+{
+   std::string name {"Daniel"};
+
+   // iteratores are useful to traverse portions of the the vector 
+   for(auto it = name.begin()+1; it< name.end()-1; it++) {
+      // turn the iterator into a reference
+      auto &c  = *it;
+      std::cout << c << " ";
+   }
+   std::cout << std::endl;
+   
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+a n i e
+#+end_example
+
+* C style arrays
+
+- They are not objects!
+- They have no methods: at, size, resize, clear, etc.
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+int main()
+{
+   int myArray [3] { 11, 12, 13};
+
+   for(int i=0;i<3;i++) {
+      std::cout << myArray[i] << std::endl;
+   }
+
+   std::cout << "-----------------" << std::endl;
+
+   for(auto el: myArray) {
+      std::cout << el << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+11
+12
+13
+-----------------
+11
+12
+13
+#+end_example
+
+* Multi-dimensional array
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <typeinfo>
+int main()
+{
+   int matrix1 [2][3] {{ 11, 12, 13},
+                        { 7, 8, 29}};
+   int matrix2 [2][3] {{ -4, 14, -13},
+                        { 3, 2, 13}};
+
+   int result [2][3] {};
+
+   for(int i=0;i<2;i++) {
+      for(int j=0;j<3;j++) {
+         result[i][j] = matrix1[i][j] + matrix2[i][j];
+      } 
+      std::cout << std::endl;
+   }
+
+   for(int i=0;i<2;i++) {
+      for(int j=0;j<3;j++) {
+         std::cout << result[i][j] << " " ;
+      } 
+      std::cout << std::endl;
+   }
+
+   std::cout << "-----------------" << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+7 26 0 
+10 10 42 
+-----------------
 #+end_example
 
