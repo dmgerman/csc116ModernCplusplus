@@ -10,9 +10,32 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+* Warning
+
+In some of the examples below I use the following function to print the vector. 
+You need it to include it instead of in the examples below.
+
+#+BEGIN_SRC C++
+#include "/home/dmg/c++/mycode.hpp
+#+END_SRC
+
+#+BEGIN_SRC C++
+template <typename T> 
+void print_vector(std::string prefix, const std::vector<T> &vec)
+{
+    std::cout << prefix << " size: " << vec.size() << " values: [";
+
+    for(auto v: vec) {
+        std::cout << v << " " ;
+    } 
+    std::cout << "]"<< std::endl;
+}
+#+END_SRC
+
+
 * Vectors can be compared and assigned
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -153,7 +176,7 @@ size: 5 capacity: 100 max_size: 4611686018427387903
 
 - A more general mechanism to access the elements of a container (std::vector, std::string, std::set, etc.).
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -189,24 +212,21 @@ int main()
 - But we can avoid those pointers are much as possible
 - By turning them into references
 
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
-#include "/home/dmg/c++/mycode.hpp"
 int main()
 {
-   std::vector<int> numbers { 10, 11, 12, 13, 14, 15};
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
 
-   print_vector("Before: ", numbers);
-
-   numbers.erase(numbers.begin()+2);
-
-   print_vector("After erase +2: ", numbers);
-
-   numbers.erase(numbers.begin()+1, numbers.end());
-
-   print_vector("After erase to end: ", numbers);
+   // iteratores are useful to traverse portions of the the vector 
+   for(auto it = numbers.begin(); it< numbers.end(); it++) {
+      // turn the iterator into a reference
+      auto &el  = *it;
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+   
 
 
    return 0;
@@ -216,14 +236,13 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Before:  size: 6 values: [10 11 12 13 14 15 ]
-After erase +2:  size: 5 values: [10 11 13 14 15 ]
-After erase to end:  size: 1 values: [10 ]
+1 2 3 4 5
 #+end_example
+
 
 * Use iterators to traverse parts of the vector
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -250,11 +269,13 @@ int main()
 2 3 4
 #+end_example
 
-* YOu can also go backwards
+* You can also go backwards
 
-rbegin, rend
+Note that, even though the container is traversed backwards, the iterator ~it~ is
+increments (not decremented):
+y
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -269,8 +290,6 @@ int main()
    }
    std::cout << std::endl;
    
-
-
    return 0;
 }
 
@@ -281,32 +300,43 @@ int main()
 5 4 3 2 1
 #+end_example
 
-* They can be used to erase at specific elements
+* Iterators can be used to erase at specific elements
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
+#include "/home/dmg/c++/mycode.hpp"
 int main()
 {
-   std::vector<int> numbers { 1, 2, 3, 4, 5};
+   std::vector<int> numbers { 10, 11, 12, 13, 14, 15};
 
-   // iteratores are useful to traverse portions of the the vector 
-   for(auto it = numbers.rbegin(); it< numbers.rend(); it++) {
-      // turn the iterator into a reference
-      auto &el  = *it;
-      std::cout << el << " ";
-   }
-   std::cout << std::endl;
-   
+   print_vector("Before: ", numbers);
+
+   numbers.erase(numbers.begin()+2);
+
+   print_vector("After erase +2: ", numbers);
+
+   numbers.erase(numbers.begin()+1, numbers.end());
+
+   print_vector("After erase to end: ", numbers);
+
    return 0;
 }
 
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+Before:  size: 6 values: [10 11 12 13 14 15 ]
+After erase +2:  size: 5 values: [10 11 13 14 15 ]
+After erase to end:  size: 1 values: [10 ]
+#+end_example
+
 
 * They also work for strings, because strings are collections
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 int main()
@@ -338,7 +368,7 @@ a n i e
 - They are not objects!
 - They have no methods: at, size, resize, clear, etc.
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -372,7 +402,7 @@ int main()
 
 * Multi-dimensional array
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <typeinfo>
 int main()
