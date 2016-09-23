@@ -1,0 +1,273 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Expressions
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* Lots of operators in C++
+
+
+* Unary
+
+| Operator | Function                      | Example |
+|----------+-------------------------------+---------|
+| +        | redundant way to say positive |      +3 |
+| -        | unary minus                   |      -3 |
+
+* Binary
+
+| Type        | Operator | Function                    | Example                      | Note                           |
+|-------------+----------+-----------------------------+------------------------------+--------------------------------|
+| Arithmetic  | *        | Mutiplication               | 3 * 2                        |                                |
+|             | /        | division                    | 3 /2                         | Depends on type                |
+|             | %        | modulus                     | 3 % 2                        |                                |
+|             | +        | Addition                    | 3.8 + 2                      |                                |
+|             | -        | Subtraction                 | 3.2 - 5                      |                                |
+|-------------+----------+-----------------------------+------------------------------+--------------------------------|
+| Logical     | !        | Negation                    | !true                        |                                |
+|             | <        | less than                   | 3 < 10                       |                                |
+|             | >        | bigger than                 | 3 > 1                        |                                |
+|             | <=       | less or equal               | 1 <=2                        |                                |
+|             | >=       | bigger or equal             |                              |                                |
+|             | ==       | equal                       | 3 == 3                       |                                |
+|             | !=       | not equal                   | 4 != 3                       |                                |
+|             | &&       | logical AND                 | true AND false               |                                |
+|             |          | logical or                  | true or false                |                                |
+|-------------+----------+-----------------------------+------------------------------+--------------------------------|
+| bitwise     | ~        | bitwise NOT                 | ~ 32                         |                                |
+|             | <<       | left shift                  | 32 << 1                      |                                |
+|             | >>       | right shift                 | 32 >> 1                      |                                |
+|             | &        | bitwise AND                 | 32 & 28                      |                                |
+|             |          | bitwise OR                  |                              |                                |
+|-------------+----------+-----------------------------+------------------------------+--------------------------------|
+| Assignments | =        | assignment                  | x = 3                        |                                |
+|             | +=       | increment                   | x += 3                       |                                |
+|             | -=       | decrement                   | x -= 3                       |                                |
+|             | /=       | self divide                 | x /= 3                       |                                |
+|             | *=       | self multiply               | x *= 3                       |                                |
+|-------------+----------+-----------------------------+------------------------------+--------------------------------|
+| Other       | ++       | auto incremental            | a++, ++a                     | Never do it twice in an expr   |
+|             | --       | auto decrement              | a--, --a                     |                                |
+|             | .        | member access               | myVar.field, myVar.method()  |                                |
+|             | *        | pointer de-reference        | *pVar                        | pVar is a pointer to an object |
+|             | ->       | member accesss for pointers | *pVar->field, pVar->method() |                                |
+|             | sizeof   | size of variable in bytes   | sizeof(var)                  |                                |
+|             | ,        | takes two expressions       | expr , expr                  | result is right expression     |
+
+Operations on classes (strings, vector) are a different topic. We'll cover it later.
+
+
+* Overflows
+
+We need to keep an eye on potential overflows
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+int main()
+{
+   short int myShort {};
+
+   std::cout << myShort << std::endl;
+
+   myShort = 10;
+   myShort *= 10000;
+
+   std::cout << myShort << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+-31072
+#+end_example
+
+* Underflows
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+int main()
+{
+   short int myShort {-1000};
+
+   std::cout << myShort << std::endl;
+
+   myShort *= 100;
+   
+   std::cout << myShort << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-1000
+31072
+#+end_example
+
+* Type conversions
+
+They can be frequently tricky
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+int main()
+{
+   short int myShort {};
+
+   myShort = 1.5e10;
+   std::cout << myShort << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#include <iostream>
+int main()
+{
+   short int myShort {-1};
+   double d { 1.5e10};
+   myShort = d;
+   std::cout << myShort << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+#+end_example
+
+* THe following might be in the exam
+
+** Unsigned numbers cannot take negative numbers
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#include <iostream>
+int main()
+{
+   unsigned int i {0};
+
+   i--;
+
+   std::cout << i << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+4294967295
+#+end_example
+
+
+** keep an eye for integer divisions 
+
+The result of integer division is an integer
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#include <iostream>
+int main()
+{
+   double d {};
+
+   d = 3 /2 ;
+
+   std::cout << d << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+#+end_example
+
+* comparing floating point numbers should be done with care!!
+
+Very important!!!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#include <iostream>
+int main()
+{
+   float a {1.5};
+   float b {1.1};
+   float c {a + b};
+
+   if (c == 2.6) {           // Comment this line for correct result 
+      std::cout << "it is true " << a << " + " << b << " == 2.6" << std::endl;       
+   } else {
+      std::cout << "it is false! (" << a << " + " << b << ") != 2.6" << std::endl;       
+   }
+
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+it is false! (1.5 + 1.1) != 2.6
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#include <iostream>
+#include <cmath>
+#include <limits>
+
+int main()
+{
+   float a {1.5};
+   float b {1.1};
+   float c {a + b};
+   
+   float EPSILON {std::numeric_limits<float>::epsilon()};
+
+
+   if ( std::abs(c - 2.6 ) < EPSILON ) {           // Comment this line for correct result 
+      std::cout << "it is true " << a << " + " << b << " == 2.6" << std::endl;       
+   } else {
+      std::cout << "it is false! (" << a << " + " << b << ") != 2.6" << std::endl;       
+   }
+
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+it is true 1.5 + 1.1 == 2.6
+#+end_example
+
+
