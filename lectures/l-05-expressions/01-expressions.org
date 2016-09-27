@@ -17,10 +17,12 @@
 
 * Unary
 
-| Operator | Function                      | Example |
-|----------+-------------------------------+---------|
-| +        | redundant way to say positive |      +3 |
-| -        | unary minus                   |      -3 |
+| Operator | Function                      | Example |                                |
+|----------+-------------------------------+---------+--------------------------------|
+| +        | redundant way to say positive | +3      |                                |
+| -        | unary minus                   | -3      |                                |
+| *        | pointer reference             | *p      |                                |
+| *        | pointer de-reference          | *pVar   | pVar is a pointer to an object |
 
 * Binary
 
@@ -46,6 +48,7 @@
 |             | <<       | left shift                  | 32 << 1                      |                                |
 |             | >>       | right shift                 | 32 >> 1                      |                                |
 |             | &        | bitwise AND                 | 32 & 28                      |                                |
+|             | ^        | birwise XOR                 | 10 ^ 10                      |                                |
 |             |          | bitwise OR                  |                              |                                |
 |-------------+----------+-----------------------------+------------------------------+--------------------------------|
 | Assignments | =        | assignment                  | x = 3                        |                                |
@@ -57,7 +60,6 @@
 | Other       | ++       | auto incremental            | a++, ++a                     | Never do it twice in an expr   |
 |             | --       | auto decrement              | a--, --a                     |                                |
 |             | .        | member access               | myVar.field, myVar.method()  |                                |
-|             | *        | pointer de-reference        | *pVar                        | pVar is a pointer to an object |
 |             | ->       | member accesss for pointers | *pVar->field, pVar->method() |                                |
 |             | sizeof   | size of variable in bytes   | sizeof(var)                  |                                |
 |             | ,        | takes two expressions       | expr , expr                  | result is right expression     |
@@ -194,7 +196,7 @@ int main()
 {
    double d {};
 
-   d = 3 /2 ;
+   d = 3/2 ;
 
    std::cout << d << std::endl;
 
@@ -205,7 +207,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-1
+1.5
 #+end_example
 
 * comparing floating point numbers should be done with care!!
@@ -249,16 +251,14 @@ int main()
    float b {1.1};
    float c {a + b};
    
-   float EPSILON {std::numeric_limits<float>::epsilon()};
-
+///   float EPSILON {std::numeric_limits<float>::epsilon()};
+   float EPSILON { 0.0000001};
 
    if ( std::abs(c - 2.6 ) < EPSILON ) {           // Comment this line for correct result 
       std::cout << "it is true " << a << " + " << b << " == 2.6" << std::endl;       
    } else {
       std::cout << "it is false! (" << a << " + " << b << ") != 2.6" << std::endl;       
    }
-
-
 
    return 0;
 }

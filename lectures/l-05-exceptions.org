@@ -1,0 +1,251 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Exceptions in C++
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* This program will create a run time error
+
+Accessing element beyond end
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> myVec(5);
+   unsigned int i {};
+  
+   i = 10;  /// maybe read from user
+   
+   std::cout << myVec.at(i) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+====terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 10) >= this->size() (which is 5)
+
+* This program will recover from the same error using an exception
+
+- execution continues at the catch and skips anything else in the try
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+int main()
+{
+   std::vector<int> myVec(5);
+
+   try {
+       unsigned int i {};
+  
+       i = 10;  /// maybe read from user
+
+       std::cout << myVec.at(i) << std::endl;
+       
+   } catch (std::exception err){
+      std::cout << "in handler: " << err.what() << std::endl;
+   }
+      
+   std::cout <<"Continuing " << std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+in handler: std::exception
+Continuing
+#+end_example
+
+* There are several types of exceptions
+
+- defined in stdexcept
+- std::out_of_range more specific than exception
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+int main()
+{
+   std::vector<int> myVec(5);
+ 
+   try {
+       unsigned int i {};
+  
+       i = 10;  /// maybe read from user
+
+       std::cout << myVec.at(i) << std::endl;
+
+   } catch (std::out_of_range err){
+      std::cout << "in out of range exception: "<<err.what()  << std::endl;
+   } catch (std::exception err){
+      std::cout << "in handler: " << err.what() << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+in out of range exception: vector::_M_range_check: __n (which is 10) >= this->size() (which is 5)
+#+end_example
+
+* We can also throw the  exceptions ourselves
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+int main()
+{
+   std::vector<int> myVec(5);
+
+   try {
+       unsigned int i {10};
+       if (i > myVec.size()) {
+          throw std::runtime_error("I don't like numbers larger than  5");
+       }
+       std::cout << "After throw" << std::endl;
+   } catch (std::runtime_error err){
+      std::cout << "in run time error: " << err.what() << std::endl;
+   }
+   std::cout << "Continuing" << std::endl;   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+in run time error: I don't like numbers larger than  5
+Continuing
+#+end_example
+
+* From inside a function: Handlers follow the runtime order of execution
+
+- Execution continues in the closest catch (closest as in the execution of the code)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <stdexcept>
+
+void f()
+{
+    throw std::runtime_error("I don't want to do anything");
+}
+
+int main()
+{
+   try {
+       f();
+       std::cout << "After calling f()" << std::endl;
+   } catch (std::runtime_error err){
+      std::cout << "in run time error: " << err.what() << std::endl;
+   } catch (std::exception err){
+      std::cout << "in handler: " << err.what() << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+in run time error: I don't want to do anything
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <stdexcept>
+
+void g()
+{
+   throw std::runtime_error("I don't want to do anything");
+}
+
+void f()
+{
+    g();
+    std::cout << "After calling g()" << std::endl;
+
+}
+
+int main()
+{
+   try {
+       f();
+       std::cout << "After calling f()" << std::endl;
+   } catch (std::runtime_error err){
+      std::cout << "in run time error: " << err.what() << std::endl;
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+in run time error: I don't want to do anything
+#+end_example
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <stdexcept>
+
+void g()
+{
+   throw std::runtime_error("I don't like large numbers 5");
+}
+
+void f()
+{
+    try {
+       g();
+       std::cout << "After calling g()" << std::endl;
+   } catch (std::runtime_error err){
+      std::cout << "inside f() handler: " << err.what() << std::endl;
+   }
+}
+
+int main()
+{
+   try {
+       f();
+       std::cout << "After calling f()" << std::endl;
+
+   } catch (std::runtime_error err){
+      std::cout << "inside main() handler: " << err.what() << std::endl;
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+inside f() handler: I don't like large numbers 5
+After calling f()
+#+end_example
+
