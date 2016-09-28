@@ -1,0 +1,50 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Using erase
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* How delete 1 or more elements from a collection
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// string::erase
+#include <iostream>
+#include <string>
+
+int main ()
+{
+  std::string str ("This is an example sentence.");
+  std::cout << str << '\n';
+                                           // "This is an example sentence."
+  str.erase (10,8);                        //            ^^^^^^^^
+  std::cout << str << '\n';
+                                           // "This is an sentence."
+  str.erase (str.begin()+9);               //           ^
+  std::cout << str << '\n';
+                                           // "This is a sentence."
+  str.erase (str.begin()+5, str.end()-9);  //       ^^^^^
+  std::cout << str << '\n';
+                                           // "This sentence."
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+This is an example sentence.
+This is an sentence.
+This is a sentence.
+This sentence.
+#+end_example
+
+
+
+
+
+

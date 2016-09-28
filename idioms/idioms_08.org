@@ -1,0 +1,31 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: You don't have to have a catch
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+- ~throw~ can be used to stop execution
+- Useful to simply stop your program with a specific message
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   throw std::runtime_error("abort, abort, abort!");
+   exit(0);
+}
+
+#+END_SRC
+
+#+RESULTS:
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  abort, abort, abort!
+

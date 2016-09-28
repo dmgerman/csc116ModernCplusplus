@@ -1,0 +1,83 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: , operator
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+
+int main()
+{
+   
+   std::vector<int> vec{};
+   unsigned int i {};
+
+   vec.resize(5);
+
+   for(i=0;
+       i<vec.size();
+       i++) {
+      // whatever goes in here
+      vec.at(i) = i;
+   }
+
+   for(auto el : vec) {
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0 1 2 3 4
+#+end_example
+
+* We can use it to do more than one thing in a for loop
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+
+int main()
+{
+   
+   std::vector<int> vec{};
+   unsigned int i {};
+
+   for(i=0, vec.resize(5);
+       i<vec.size();
+       vec.at(i) = i, i++) {
+       // whatever goes in here
+       ; 
+   }
+
+   for(auto el : vec) {
+      std::cout << el << " ";
+   }
+   std::cout << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0 1 2 3 4
+#+end_example
+
