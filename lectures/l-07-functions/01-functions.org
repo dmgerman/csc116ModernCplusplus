@@ -1,0 +1,468 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Functions
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* Functions
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+// parts of a function:
+
+// return type: int
+
+// name:        main
+//  parameters: double p1, char p2
+int function(double p1, char p2)
+{
+    //body    
+}
+
+...
+
+// invocation
+// arguments:  2.3, 'c'
+function(2.3, 'c')
+#+END_SRC
+
+* Void 
+
+- As a parameter: it takes no parameters
+- As a return value: value returns no value
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+int f(void) 
+{
+   return 0;
+}
+
+void g(void)  
+{
+   return;
+}
+
+void h() // implicit void parameter
+{
+    return;
+}
+#+END_SRC
+
+
+* function variables/parameters
+
+A local variable or parameter has:
+
+- A scope: the part of the program where it is visible
+- The lifetime: the time during the program execution that the variable exists
+
+A variable can be an object or a basic type.
+
+- In general, objects need to be initialized
+- In general, objects need to be destroyed
+
+* Automatic vs Static variables
+
+** Automatic variables 
+
+Variales are by default automatic:
+
+- They exist only during the duration of execution the scope where they are defined
+- They are created when the scope starts
+- Destroyed when the scope end
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+void f() 
+{
+   int i {};
+   i++;
+   std::cout << "Value of i " << i << std::endl;
+}
+
+int main()
+{
+   f();
+   f();
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of i 1
+Value of i 1
+#+end_example
+
+** Static variables
+
+- Static variables are created at the first execution of their scope
+- They are not destroyed
+- They keep their values for subsequent executions of their scope 
+
+
+  
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+void f() 
+{
+   static int i {};
+   i++;
+   std::cout << "Value of i " << i << std::endl;
+   { 
+      static int j {};
+      j++;
+      std::cout << "Value of j " << j << std::endl;
+   } 
+}
+
+int main()
+{
+   f();
+   f();
+   f();
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of i 1
+Value of j 1
+Value of i 2
+Value of j 2
+Value of i 3
+Value of j 3
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+int main()
+{
+   int i {0};
+   while (i++ < 5) {
+      int j {};
+      j++;
+      std::cout << "Value of j " << j << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of j 1
+Value of j 1
+Value of j 1
+Value of j 1
+Value of j 1
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+int main()
+{
+   int i {0};
+   while (i++ < 5) {
+      static int j {};
+      j++;
+      std::cout << "Value of j " << j << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of j 1
+Value of j 2
+Value of j 3
+Value of j 4
+Value of j 5
+#+end_example
+
+* Function Declaration
+
+informs the compiler that the function exists, but it is defined somewhere else
+
+** Without the declaration
+
+the compiler complains
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+int main()
+{
+   f();
+
+   return 0;
+}
+
+#+END_SRC  
+
+test.cpp: In function ‘int main()’:
+test.cpp:8:6: error: ‘f’ was not declared in this scope
+
+** With the declaration
+
+Compiler is ok, linker might complain if it does not find the function
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+
+int main()
+{
+   f();
+
+   return 0;
+}
+
+#+END_SRC  
+
+/tmp/test.o: In function `main':
+C-src-11244MpG.cpp:(.text+0x5): undefined reference to `f()'
+
+* Separate compilation
+
+- Declaration go in .hpp files
+- Definitions go in .cpp files
+- Compiler knows the function exist somewhere
+- Linker resolves the definitions to create the binary
+
+* Passing arguments to functions
+
+An argument can be passed by 
+
+- value
+- by reference
+
+** By value
+
+A copy of the argument is made (becomes the parameter)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+void f(std::vector<int> parmVector)
+{
+   std::cout << "*Size of Parm vector before " << parmVector.size() << std::endl;
+   parmVector.resize(0);
+   std::cout << "*Size of Parm vector after " << parmVector.size() << std::endl;
+   return ;
+}
+
+int main()
+{
+   std::vector<int> oneVector(10,-1);
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   f(oneVector);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of vector before 10
+*Size of Parm vector before 10
+*Size of Parm vector after 0
+Size of vector after 10
+#+end_example
+
+** By reference
+
+- The parameter is a reference to the argument
+- The reference exists only during the execution of the function
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+void f(std::vector<int> &parmVector)
+{
+   std::cout << "*Size of Parm vector before " << parmVector.size() << std::endl;
+   parmVector.resize(0);
+   std::cout << "*Size of Parm vector after " << parmVector.size() << std::endl;
+   return ;
+}
+
+int main()
+{
+   std::vector<int> oneVector(10,-1);
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   f(oneVector);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of vector before 10
+*Size of Parm vector before 10
+*Size of Parm vector after 0
+Size of vector after 0
+#+end_example
+
+* Functions can return complex types
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+std::vector<int> f(int size)
+{
+   std::vector<int> local(size,-1);
+   return local;
+}
+
+int main()
+{
+   std::vector<int> oneVector;
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   oneVector = f(10);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of vector before 0
+Size of vector after 10
+#+end_example
+
+But never return a reference to a local variable: the local variable is destroyed
+at the execution
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+std::vector<int> &f(int size)
+{
+   std::vector<int> local(size,-1);
+   return local;
+}
+
+int main()
+{
+   std::vector<int> vec;
+   std::vector<int> &oneVector = vec;
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   oneVector = f(10);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+test.cpp: In function ‘std::vector<int>& f(int)’:
+tes.cpp:9:21: error: reference to local variable ‘local’ returned [-Werror=return-local-addr]
+    std::vector<int> local(size,-1);
+
+
+* Recursion
+
+Functions call call functions
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+unsigned int factorial(unsigned int n) 
+{
+   if (n > 1) 
+      return n * factorial(n-1);
+   else
+      return 1;
+}
+
+int main()
+{
+   std::cout << factorial(5) << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+120
+#+end_example
+
+** Break a string into substrings
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <string>
+#include <vector>
+
+std::vector<std::string> Parse_Line(std::string line)
+{
+    std::string current {};
+    std::vector<std::string> result {};
+    for (auto c: line) {
+       if (c == ',') {
+           result.push_back(current);
+           current = {};
+       } else {
+           current += c;
+       }
+   }
+   result.push_back(current);
+   return result;
+}
+
+
+
+int main()
+{
+   std::vector<std::string> stVector = Parse_Line("alpha,beta,gamma,delta,epsilon");
+   std::cout << "Size of vector " << stVector.size() << std::endl;
+   for (auto st: stVector) {
+      std::cout << "[" << st << "]";
+   }
+   std::cout << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of vector 5
+[alpha][beta][gamma][delta][epsilon]
+#+end_example
+

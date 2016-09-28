@@ -71,7 +71,7 @@ Operations on classes (strings, vector) are a different topic. We'll cover it la
 
 We need to keep an eye on potential overflows
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -97,7 +97,7 @@ int main()
 
 * Underflows
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -124,7 +124,7 @@ int main()
 
 They can be frequently tricky
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -140,7 +140,7 @@ int main()
 
 #+RESULTS:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -164,7 +164,7 @@ int main()
 ** Unsigned numbers cannot take negative numbers
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -190,7 +190,7 @@ int main()
 The result of integer division is an integer
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -214,7 +214,7 @@ int main()
 
 Very important!!!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -240,7 +240,7 @@ int main()
 it is false! (1.5 + 1.1) != 2.6
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 #include <cmath>
 #include <limits>

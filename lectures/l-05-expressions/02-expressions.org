@@ -1,0 +1,84 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Expressions part 2
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* Explicit Type conversions
+
+Sometimes we want to explicitly convert values
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   double d {0};
+
+   d = 3/2;
+
+   std::cout << "The value of d is " << d << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+The value of d is 1
+#+end_example
+
+** C style type conversion
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   double d {};
+
+   d = double(3)/2;
+
+   std::cout << "The value of d is " << d << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+The value of d is 1.5
+#+end_example
+
+** Modern C++ style type conversion
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   double d {};
+   double f {};
+
+   d = static_cast<double>(3)/2;
+
+   std::cout << "The value of d is " << d << std::endl;
+
+   f = static_cast<double>(3/2);
+
+   std::cout << "The value of f is " << f << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+The value of d is 1.5
+The value of f is 1
+#+end_example
+
