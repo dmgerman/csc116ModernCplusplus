@@ -1,0 +1,259 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Functions, part 2
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* References as parameters
+
+Constants cannot be passed as references unless the reference is declared const
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int f(int &value) 
+{  
+    return value + 1;
+}
+
+int g(const int &value) 
+{  
+    return value + 1;
+}
+
+int main()
+{
+// std::cout <<  f(5) << std::endl; // error
+   std::cout <<  g(5) << std::endl; // error
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+6
+#+end_example
+
+
+* Functions can return complex types
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+std::vector<int> f(int size)
+{
+   std::vector<int> local(size,-1);
+   return local;
+}
+
+int main()
+{
+   std::vector<int> oneVector;
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   oneVector = f(10);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of vector before 0
+Size of vector after 10
+#+end_example
+
+But never return a reference to a local variable: the local variable is destroyed
+at the execution
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+#include <vector>
+
+std::vector<int> &f(int size)
+{
+   std::vector<int> local(size,-1);
+   return local;
+}
+
+int main()
+{
+   std::vector<int> vec;
+   std::vector<int> &oneVector = vec;
+
+   std::cout << "Size of vector before " << oneVector.size() << std::endl;
+   oneVector = f(10);
+   std::cout << "Size of vector after " << oneVector.size() << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+test.cpp: In function ‘std::vector<int>& f(int)’:
+tes.cpp:9:21: error: reference to local variable ‘local’ returned [-Werror=return-local-addr]
+    std::vector<int> local(size,-1);
+
+
+* Recursion
+
+Functions can themselves
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#include <iostream>
+unsigned int factorial(unsigned int n) 
+{
+   if (n > 1) 
+      return n * factorial(n-1);
+   else
+      return 1;
+}
+
+int main()
+{
+   std::cout << factorial(5) << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+120
+#+end_example
+
+** Count the number of elements of an array that are even
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <cctype>
+
+unsigned int Count_Vowels(std::string st)
+{
+    if (st == "") {
+       return 0;
+    } else {
+       char c = toupper(st.at(0));
+       std::string rest = st.substr(1);
+       if (c == 'A' || c == 'E' || 
+           c == 'I' || c == 'O' ||
+           c == 'U') { 
+           return 1 + Count_Vowels(rest);
+       } else {
+           return Count_Vowels(rest);
+       }
+    }
+}
+
+int main()
+{
+   std::cout  << "Programming: " << Count_Vowels("Programming ") << std::endl;
+   std::cout  << "C++: " << Count_Vowels("C++ ") << std::endl;
+   std::cout  << "AEIOU: " << Count_Vowels("AEIOU") << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Programming: 3
+C++: 0
+AEIOU: 5
+#+end_example
+
+* Default values in parameters
+
+- Parameters can have default values
+- In that case, it is optional to include them as parameters
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+int divide (int a, int b=2)
+{
+  return (a + b);
+}
+
+int main ()
+{
+  std::cout << divide (1) << std::endl;
+  std::cout << divide (1,4) << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+3
+5
+#+end_example
+
+* Function Overloading
+
+- Two different functions can have the same *name*
+- As long as they have different parameters
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+using namespace std;
+
+int operate (int a, int b)
+{
+  return (a*b);
+}
+
+int main ()
+{
+  std::cout << operate (5,2) << std::endl;
+  std::cout << operate (5.0,2.0) << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+10
+10
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+using namespace std;
+
+int operate (int a, int b)
+{
+  return (a*b);
+}
+
+double operate (double a, double b)
+{
+  return (a/b);
+}
+
+int main ()
+{
+  std::cout << operate (5,2) << std::endl;
+  std::cout << operate (5.0,2.0) << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+
+
+

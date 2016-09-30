@@ -1,0 +1,64 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: programming by assertions
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* Assertions
+
+An assertion is a condition that must be true at the point of execution:
+
+Three types:
+
+** Preconditions
+
+Specify conditions at the start of a function.
+
+** Postconditions
+
+Specify conditions at the end of a function.
+
+** Invariants
+
+Specify conditions over a defined region of a program.
+
+* Assertions in C++
+
+assert evaluates an expression. If the expression fails, the program outputs the location of the failed assertion.
+
+Assertion failed: expression, file filename, line line number
+
+- source file of the failure
+- line number of the failure
+- name of the function of the failure
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <assert.h> 
+
+void f()
+{
+   assert(10 < 1);
+}
+
+int main()
+{
+   assert(true);
+   f();
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+test.cpp:10: test.cpp:10: int main(): Assertion `10 < 1' failed.
+
+
