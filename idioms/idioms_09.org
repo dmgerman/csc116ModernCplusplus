@@ -11,5 +11,8 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
-- Break functions you must write into smaller, simpler parts.
-- we call this helper functions
+- Break functions you must write into smaller, simpler functions
+
+- We call these helper functions
+
+
