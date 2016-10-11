@@ -1,0 +1,415 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Associative Containers
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+Ordered associative containers
+
+* map
+
+- Similar to a function (in math sense): maps one value into another.
+- A collection of pair values: key and value. The key maps to the value.
+
+** Two ways to access elements:
+
+- at()
+- []
+
+- Both return references
+- Both do the same when element exists
+
+- If element does not exist:
+  - at() triggers an exception
+  - [] inserts the key with default value
+
+
+** Example
+
+Counting each character in a string
+
+- key is the character
+- value is the count
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::string st {"this is the sea"};
+   std::map<char, int> charCount;
+
+   for(char c: st) {
+      charCount[c]++; // inserts if it does not exist!
+   }
+
+   std::cout << "Size of the map " << charCount.size() << std::endl;
+
+   for(auto pair: charCount) {
+      std::cout << "Key [" << pair.first << "] Value [" << pair.second << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of the map 7
+Key [ ] Value [3]
+Key [a] Value [1]
+Key [e] Value [2]
+Key [h] Value [2]
+Key [i] Value [2]
+Key [s] Value [3]
+Key [t] Value [2]
+#+end_example
+
+** We can initialize it
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<std::string, int> nameCount { { "bob", 5},
+                                   { "ahmed", 7},
+                                   { "kathy", 3},
+                                 };
+
+   std::cout << "Size of the map " << nameCount.size() << std::endl;
+
+   for(auto pair: nameCount) {
+      std::cout << "Key [" << pair.first << "] Value [" << pair.second << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size of the map 3
+Key [ahmed] Value [7]
+Key [bob] Value [5]
+Key [kathy] Value [3]
+#+end_example
+
+** Searching for values:
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<std::string, int> nameCount { { "bob", 5},
+                                   { "ahmed", 7},
+                                   { "kathy", 3},
+                                 };
+
+  try {
+      std::cout << "Bob: " << nameCount.at("bob") << std::endl;
+      std::cout << "Jane: " << nameCount["jane"] << std::endl; // returns an empty result
+      std::cout << "Mary: " << nameCount.at("mary") << std::endl;  // fails
+      std::cout << "Ahmed: " << nameCount.at("ahmed") << std::endl;  // never reached
+  } catch (const std::exception& e) {
+      std::cout << "Exception " << e.what() << std::endl; 
+  }
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Bob: 5
+Jane: 0
+Exception map::at
+#+end_example
+
+* Each element of the map is a std::pair
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<std::string, std::string> capitals { { "Canada", "Ottawa"},
+                                   { "Ghana", "Accra"},
+                                   { "Japan", "Tokyo"}
+                                 };
+
+   for(std::pair<std::string, std::string> p: capitals) {
+      std::cout << "Key [" << p.first << "] Value [" << p.second << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Key [Canada] Value [Ottawa]
+Key [Ghana] Value [Accra]
+Key [Japan] Value [Tokyo]
+#+end_example
+
+** Inserting elements
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<int, std::string> name;
+
+   name[1] = "one";    // using []
+   name.insert(std::pair<int,std::string>(2,"two")); // type casting
+   name.insert(std::make_pair(3,"three"));           // making a pair
+   name.insert({4,"four"});                          // constructor
+
+   for(auto pair: name) {
+      std::cout << "Key [" << pair.first << "] Value [" << pair.second << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Key [1] Value [one]
+Key [2] Value [two]
+Key [3] Value [three]
+Key [4] Value [four]
+#+end_example
+
+** Looking for elements
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<std::string, std::string> capitals { { "Canada", "Ottawa"},
+                                   { "Ghana", "Accra"},
+                                   { "Japan", "Tokyo"}
+                                 };
+
+   if (capitals.count("Alberta") == 0) {
+       std::cout << "Alberta was not found" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+alberta was not found
+#+end_example
+
+** Accessing an element using [] inserts an element
+
+- It is initialized to the default value
+   
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<std::string, int> name {{"zero",0},
+                                    {"one", 1},
+                                    {"two", 2}};
+
+   std::cout << "zero " << name["zero"] << "  " << name.count("zero") << " " << std::endl;
+   std::cout << "three " << name["three"] << "  " << name.count("three") << " " << std::endl;
+   for(auto pair: name) {
+      std::cout << "Key [" << pair.first << "] Value [" << pair.second << "]" << std::endl;
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+zero 0  1 
+three 0  0 
+Key [one] Value [1]
+Key [three] Value [0]
+Key [two] Value [2]
+Key [zero] Value [0]
+#+end_example
+
+** Erase element
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+
+int main()
+{
+   std::map<int, std::string> name {{0, "zero"},
+                                    {1, "one"},
+                                    {2, "two"}};
+
+   name.erase(1);
+
+   for(auto pair: name) {
+      std::cout << "Key [" << pair.first << "] Value [" << pair.second << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Key [0] Value [zero]
+Key [2] Value [two]
+#+end_example
+
+* set
+
+Keep track of existence of elements
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+#include <string>
+int main()
+{
+   std::set <std::string> names {"bob", "alex"};
+
+   for(std::string el: names) {
+      std::cout << el << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+alex
+bob
+#+end_example
+
+* Insert/delete
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+#include <string>
+int main()
+{
+   std::set <std::string> names {"bob", "alex"};
+   names.insert("terry");
+   names.insert("terry");
+   names.erase("alex");
+
+   for(std::string el: names) {
+      std::cout << el << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+bob
+terry
+#+end_example
+
+
+** Check for elements
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+#include <string>
+int main()
+{
+   std::set <std::string> names {"bob", "alex"};
+
+   if (names.count("bob") > 0 ) 
+      std::cout << "yes, bob is there" << std::endl;
+   if (names.count("alice") > 0 ) 
+      std::cout << "yes alice is there" << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+yes, bob is there
+#+end_example
+
+** Insert will return a pair
+
+- Use the second element to check if the element was already there
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <set>
+#include <string>
+int main()
+{
+   std::set <std::string> names {"bob", "alex"};
+
+   if (names.insert("bob").second ) 
+      std::cout << "yes, we inserted bob" << std::endl;
+   else
+      std::cout << "bob was already there" << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+bob was already there
+#+end_example
+
+
+

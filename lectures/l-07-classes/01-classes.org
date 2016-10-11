@@ -1,0 +1,331 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: classes
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Classes
+
+Classes provide: 
+
+- data abstraction and
+- encapsulation
+
+** Data Abstraction
+
+- Users of a class do not need to know how it is implemented
+- Users know *what* it does, not *how* it does it
+
+** Encapsulation: data hiding
+
+- data and functions to access it are together
+- functions isolate the data from the outside
+
+
+** Classes provide both data abstraction and encapsulation
+
+#+BEGIN_SRC C++
+class Circle 
+{
+    private:
+        double radius;
+        double x;
+        double y;
+    public:
+        void setRadius(double r)
+        {
+            radius = r;
+        }
+        void move(double xdelta, double ydelta)
+        {
+            x += xdelta;
+            y += ydelta;
+        }
+        double getArea()
+        {
+            return M_PI * radius * radius;
+        }
+};
+#+END_SRC
+
+
+* Babies
+
+In the babies assignment, we used a vector of baby_type as our main data structure
+
+#+BEGIN_SRC C++
+struct baby_type {
+    std::string name;
+    std::vector<int> yearsCount;
+    int total;
+} ;
+#+END_SRC
+
+This data structure provides NO encapsulation. 
+
+Using a class:
+
+#+BEGIN_SRC C++
+class baby_class {
+private:
+    std::string name;
+    std::vector<int> yearsCount;
+public:
+    int total() { 
+       ...
+    }
+    int getName() {
+        return name;
+    }
+    int getYearCount(int year) {
+        return yearsCount.at(year-kFirstYear);
+    }
+    void setYearCount(year, int c) {
+         yearsCount.at(year-kFirstYear) = c;
+    }
+}
+#+END_SRC
+
+** The previous class isolates the programmer from the class implementation
+
+we can replace it with map and make it much more generic
+
+#+BEGIN_SRC C++
+class baby_class {
+private:
+    std::string name;
+    std::map<int, int> yearsCount;
+public:
+    ...
+    int total() { 
+       ...
+    }
+    int getName() {
+        return name;
+    }
+    int getYearCount(int year) {
+        if (yearsCount.count(year) == 0) 
+           return 0;
+        else 
+           return yearsCount.at(year) = c;
+    }
+    void setYearCount(int year, int c) {
+         yearsCount[year] = c;
+    }
+}
+#+END_SRC
+
+** Attributes
+
+- both data and functions
+- by default attributes are private
+- some can be made public
+ 
+#+BEGIN_SRC C++
+class name {
+private:
+    ...
+public:
+   ...
+protected: // we'll talk about this later
+  ...
+}
+#+END_SRC
+
+** Functions can be defined outside the class
+
+** #+BEGIN_SRC C++
+class baby_class {
+private:
+    std::string name;
+    std::map<int, int> yearsCount;
+public:
+    ...
+    int total();
+    int getName();
+    int getYearCount(int year);
+    void setYearCount(int year, int c);
+}
+int baby_class::getName() {
+    return name;
+}
+int baby_class::getYearCount(int year) {
+    if (yearsCount.count(year) == 0) 
+       return 0;
+    else 
+       return yearsCount.at(year) = c;
+}
+
+#+END_SRC
+
+
+
+
+* Constructors
+
+- Any object must be initialized before it can be used
+
+#+BEGIN_SRC C++
+class baby_class {
+   ...
+public:
+   baby_class() {
+       std::cout << "creating an object" << std::endl;
+   }
+   ...
+}
+#+END_SRC
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class baby_class {
+   static int count;
+public:
+   baby_class() {
+       std::cout << "creating an object " << count++ << std::endl;
+   }
+};
+
+// a static value must be initialized outside the class
+int baby_class::count = 0;
+
+int main()
+{
+   baby_class b1;
+   baby_class b2;
+   { 
+       baby_class b3;
+   } 
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+creating an object 0
+creating an object 1
+creating an object 2
+#+end_example
+
+* Destructors
+
+- a function to cleanup 
+
+#+BEGIN_SRC C++
+class baby_class {
+   ...
+public:
+   ~baby_class() {
+       std::cout << "destroying an object" << std::endl;
+   }
+   ...
+}
+#+END_SRC
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class baby_class {
+public:
+   static int count;
+   baby_class() { std::cout << "creating an object " << count++ << std::endl; }
+   ~baby_class() { std::cout << "destroying an object " << --count << std::endl; }
+};
+
+// a static value must be initialized outside the class
+int baby_class::count = 0;
+baby_class global;
+
+int main()
+{
+   baby_class b1;
+   baby_class b2;
+   { 
+       std::cout << "Count " <<  baby_class::count << std::endl;
+        baby_class b3;
+       std::cout << "Count " <<  baby_class::count << std::endl;
+   } 
+   std::cout << "Count " <<  baby_class::count << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+creating an object 0
+creating an object 1
+creating an object 2
+Count 3
+creating an object 3
+Count 4
+destroying an object 3
+Count 3
+destroying an object 2
+destroying an object 1
+destroying an object 0
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class baby_class {
+   std::string name;
+public:
+   static int count;
+   baby_class(std::string st) { 
+   
+   }
+   baby_class(std::string st) { 
+       name = st;
+       std::cout << "creating  " << name  << " " 
+                 << count++ << std::endl; }
+   ~baby_class() { 
+       std::cout << "destroying  " << name << " " 
+                 << --count << std::endl; }
+};
+
+// a static value must be initialized outside the class
+int baby_class::count = 0;
+
+baby_class global {"the global"};
+
+int main()
+{
+   baby_class b1 {"b1"};
+   baby_class b2 {"b2"};
+   { 
+       std::cout << "Count " <<  baby_class::count << std::endl;
+        baby_class b3{"b3"};
+       std::cout << "Count " <<  baby_class::count << std::endl;
+   } 
+   std::cout << "Count " <<  baby_class::count << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+creating  the global 0
+creating  b1 1
+creating  b2 2
+Count 3
+creating  b3 3
+Count 4
+destroying  b3 3
+Count 3
+destroying  b2 2
+destroying  b1 1
+destroying  the global 0
+#+end_example
+
