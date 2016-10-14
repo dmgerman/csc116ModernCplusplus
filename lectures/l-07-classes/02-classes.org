@@ -10,6 +10,13 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+* Class vs Struct
+
+- struct and classes are equivalent
+- except for:
+  - in structs all attributes are public by default
+  - in classes all attributes are private by default
+
 
 * Constructors
 
@@ -283,13 +290,6 @@ book3 ab123->30.75
 #+end_example
 
 
-
-* Class vs Struct
-
-- struct and classes are equivalent
-- except for:
-  - in structs all attributes are public by default
-  - in classes all attributes are private by default
 
 * Inline functions
 
