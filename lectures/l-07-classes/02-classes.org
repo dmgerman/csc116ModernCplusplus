@@ -1,0 +1,467 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Classes part 2
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Constructors
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class baby_class {
+   std::string name;
+public:
+   static int count;
+   baby_class(std::string st) { 
+       name = st;
+       std::cout << "creating  " << name  << " " 
+                 << count++ << std::endl; }
+   ~baby_class() { 
+       std::cout << "destroying  " << name << " " 
+                 << --count << std::endl; }
+};
+
+// a static value must be initialized outside the class
+int baby_class::count = 0;
+
+baby_class global {"the global"};
+
+int main()
+{
+   baby_class b1 {"b1"};
+   baby_class b2 {"b2"};
+   { 
+       std::cout << "Count " <<  baby_class::count << std::endl;
+        baby_class b3{"b3"};
+       std::cout << "Count " <<  baby_class::count << std::endl;
+   } 
+   std::cout << "Count " <<  baby_class::count << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+creating  the global 0
+creating  b1 1
+creating  b2 2
+Count 3
+creating  b3 3
+Count 4
+destroying  b3 3
+Count 3
+destroying  b2 2
+destroying  b1 1
+destroying  the global 0
+#+end_example
+
+* Constructors
+
+- Have no return type
+- There might be many constructors for a class 
+  - each with different parameters
+
+* Default constructor
+
+- Every class has a default constructor
+- it has no parameters
+- Used when the declaration does not have an initialization
+- If no default constructor is declared, the compiler generates one:
+  - the *synthesized default constructor*
+
+** synthesized default constructor
+
+- It initializes every attribute of the class to its default value
+
+* Other constructors
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() = default; // explicitly use default constructor
+   Sales_Data(const std::string &s): bookNo(s) {};
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {};
+   std::string isbn()  { return bookNo; };
+   double getRevenue() { return revenue; };
+   void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
+
+};
+int main()
+{
+   Sales_Data book0;
+   book0.print("book0 ");
+   Sales_Data book1("ab123");
+   book1.print("book1 ");
+   Sales_Data book2("ab123",3,10.25);
+   book2.print("book2 ");
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+book0 ->0
+book1 ab123->0
+book2 ab123->30.75
+#+end_example
+
+
+** default constructor
+
+If one provides a constructor we must also provide at the very least a default constructor
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+class Sales_Data {
+...
+   Sales_Data() = default; // explicitly use default constructor
+...
+}
+#+END_SRC
+
+** Constructor Initializer List
+
+#+BEGIN_SRC C++
+   Sales_Data(const std::string &s): bookNo(s) {};
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {};
+#+END_SRC
+
+
+* Objects and lifetime
+
+** Copying objects are copied be copied when:
+
+- passed as parameters (by value)
+- returned from a function
+- when they are assigned to another object
+- when they are used to initialize an object
+
+* copy constructor
+
+- Every time a copy of an object is made, its copy constructor is executed
+- The default copy constructor copies each attribute
+  - from the source object
+  - to the destination object
+
+Assuming:
+
+#+BEGIN_SRC C++
+class Sales_Data {
+...
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+...
+};
+...
+Sales_Data A;
+Sales Data B;
+...
+#+END_SRC
+
+the assignment
+
+#+BEGIN_SRC C++
+A = B;
+#+END_SRC
+
+it is equivalent to:
+
+#+BEGIN_SRC C++
+A.bookNo = B.bookNo;
+A.units_sold = B.units_sold;
+A.revenue = B.revenue;
+#+END_SRC
+
+*** Example:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+using namespace std;
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() {cout << "cons1\n";}; // explicitly use default constructor
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {cout << "cons3\n";};
+   std::string isbn()  { return bookNo;};
+   double getRevenue() { return revenue;};
+   void print(string m) { cout << m << isbn() << "->" << getRevenue() << endl;};
+
+};
+int main()
+{
+   Sales_Data book0;
+   book0.print("book0 ");
+   Sales_Data book2("ab123",3,10.25);
+   book2.print("book2 ");
+   Sales_Data book3(book2);
+   book3.print("book3 ");
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+cons1
+book0 ->0
+cons3
+book2 ab123->30.75
+book3 ab123->30.75
+#+end_example
+
+*** We can explicitly define it:
+
+Must be declared with one parameter: a reference to another object
+
+#+BEGIN_SRC C++
+ <classname>(<classname> & );
+#+END_SRC
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+using namespace std;
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() {cout << "cons1\n";}; // explicitly use default constructor
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {cout << "cons3\n";};
+   Sales_Data(Sales_Data &o) {cout << "copy cons\n"; *this = o;};
+   std::string isbn()  { return bookNo;};
+   double getRevenue() { return revenue;};
+   void print(string m) { cout << m << isbn() << "->" << getRevenue() << endl;};
+
+};
+int main()
+{
+   Sales_Data book0;
+   book0.print("book0 ");
+   Sales_Data book2("ab123",3,10.25);
+   book2.print("book2 ");
+   Sales_Data book3(book2);
+   book3.print("book3 ");
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+cons1
+book0 ->0
+cons3
+book2 ab123->30.75
+copy cons
+book3 ab123->30.75
+#+end_example
+
+
+
+* Class vs Struct
+
+- struct and classes are equivalent
+- except for:
+  - in structs all attributes are public by default
+  - in classes all attributes are private by default
+
+* Inline functions
+
+Inline functions are a compiler optimization
+
+- instead of making a function call, the call is replaced with the corresponding code
+
+#+BEGIN_SRC C++
+inline add(int a, int b) 
+{
+    return a + b;
+}
+...
+z = add(x, y)
+...
+#+END_SRC
+
+the call to add is equivalent as if we wrote:
+
+#+BEGIN_SRC C++
+z = x + y
+#+END_SRC
+
+** small methods in a class benefit from being inlined
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   inline std::string isbn()  { return bookNo;};
+   inline double getRevenue() { return revenue;};
+};
+#+END_SRC
+
+
+** When to inline
+
+- Function is small
+- functions defined inside a class are implicitly inline
+- Compiler might ignore the recommendation
+
+* Const functions
+
+- a const function is not allowed to modify the attributes of an object
+ - unless the attribute is marked as mutable
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+   mutable int daysLeft {0};
+public:
+   inline std::string isbn()  { return bookNo;} const;
+   inline double getRevenue() { return revenue;} const ;
+   void changeDaylsLeft() { daysLeft++;} const ;   
+};
+#+END_SRC
+
+* this
+
+- Every object has a pointer that points to itself
+- one use of this is to concatenate calls 
+  - function returns a reference to itself
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class simple_class {
+private: 
+   int value;
+public:
+   simple_class() = default;     
+   simple_class(simple_class &o) { *this = o;}; // copy constructor
+   simple_class(int i): value(i) {};
+   void add(int p) { 
+     value += p;
+   }
+   int getValue() { return value;}
+};
+
+int main(void)
+{
+
+   simple_class b(0);
+   b.add(5);
+   std::cout << "b " << b.getValue() << std::endl;
+
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+b 5
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class simple_class {
+private: 
+   int value;
+public:
+   simple_class() = default;
+   simple_class(int i): value(i) {};
+   simple_class &add(int p) { 
+     value += p;
+     return *this;
+   }
+   int getValue() { return value;}
+};
+
+int main(void)
+{
+   simple_class b(0);
+   b.add(5);
+   std::cout << "b " << b.getValue() << std::endl;
+
+
+   simple_class c(3);
+   int temp = c.add(5).add(1).add(5).getValue();
+   std::cout << "c " << temp << std::endl;
+
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+b 5
+c 14
+#+end_example
+
+
+* Classes are types
+
+- Type checking provided by compiler
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+class First {
+   int a;
+   int b;
+};
+class Second {
+   int a;
+   int b;
+};
+
+typedef First Third;
+
+int main()
+{
+   First obj1;
+   Second obj2;
+   Third obj3;
+   obj3 = obj1; // typedef does not trigger strong type checking
+   obj1 = obj2; // generates compiler error
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+

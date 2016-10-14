@@ -49,7 +49,7 @@ int main()
    std::map<char, int> charCount;
 
    for(char c: st) {
-      charCount[c]++; // inserts if it does not exist!
+      charCount.at(c)++; // inserts if it does not exist!
    }
 
    std::cout << "Size of the map " << charCount.size() << std::endl;
@@ -158,6 +158,8 @@ int main()
                                    { "Ghana", "Accra"},
                                    { "Japan", "Tokyo"}
                                  };
+   
+   std::cout << capitals.insert({"Canada","Ottawa---"}) << std::endl;
 
    for(std::pair<std::string, std::string> p: capitals) {
       std::cout << "Key [" << p.first << "] Value [" << p.second << "]" << std::endl;
@@ -169,11 +171,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Key [Canada] Value [Ottawa]
-Key [Ghana] Value [Accra]
-Key [Japan] Value [Tokyo]
-#+end_example
 
 ** Inserting elements
 
@@ -364,6 +361,7 @@ terry
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <set>
+#include <map>
 #include <string>
 int main()
 {

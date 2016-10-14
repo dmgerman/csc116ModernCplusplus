@@ -30,17 +30,15 @@ int g(const int &value)
 
 int main()
 {
-// std::cout <<  f(5) << std::endl; // error
-   std::cout <<  g(5) << std::endl; // error
+   int i { 5};
+   std::cout <<  f(i) << std::endl; // error
+   std::cout <<  g(5) << std::endl; 
    return 0;
 }
 
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-6
-#+end_example
 
 
 * Functions can return complex types
@@ -133,7 +131,7 @@ int main()
 120
 #+end_example
 
-** Count the number of elements of an array that are even
+** Count the vowels in a string
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -182,7 +180,10 @@ AEIOU: 5
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
-int divide (int a, int b=2)
+int divide (int c);
+
+
+int divide (int c, int a=3, int b=4)
 {
   return (a + b);
 }

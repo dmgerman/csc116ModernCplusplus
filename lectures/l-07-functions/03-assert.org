@@ -14,9 +14,8 @@
 
 * Assertions
 
-An assertion is a condition that must be true at the point of execution:
-
-Three types:
+- An assertion is a condition that must be true at the point of execution:
+- An assertion should be true if there are no mistakes in the program
 
 ** Preconditions
 
@@ -40,9 +39,11 @@ Assertion failed: expression, file filename, line line number
 - line number of the failure
 - name of the function of the failure
 
+It can be used to stop execution of a program
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
-#include <assert.h> 
+#include <cassert> 
 
 void f()
 {
@@ -55,10 +56,153 @@ int main()
    f();
    return 0;
 }
-
 #+END_SRC
 
 #+RESULTS:
-test.cpp:10: test.cpp:10: int main(): Assertion `10 < 1' failed.
+==test.cpp:10: test.cpp:10: int main(): Assertion `10 < 1' failed.
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <cassert> 
+#include <vector> 
+
+int divide(int n, int d)
+{
+    assert(d != 0);
+    return n / d;
+}
+
+int main()
+{
+   divide(3,2);
+   divide(3,0);
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+/tmp/test.cpp:10: int divide(int, int): Assertion `d != 0' 
+failed.
+
+* Preconditions
+
+- Predicates that are true before the function executes
+
+** Example avoiding division by zero
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+int divide(int n, int d)
+{
+    assert(d != 0);
+    return n / d;
+}
+#+END_SRC
+
+* Post-conditions
+
+- Predicates that are true after the function executes
+
+** Example: square of an int is always positive
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+int square(int i)
+{
+    int result;
+    /// code of function
+    assert(result >= 0);
+}
+#+END_SRC
+
+* Invariants
+
+Combined with the loop condition, the loop
+invariant allows us to reason about the behavior
+of the loop:
+
+#+BEGIN_SRC C++
+while(test) {
+   //both test loop invariant must be true
+   <body of the function
+   // loop invariant must be true
+ }
+// test is false
+// loop invariant is true
+#+END_SRC
+
+Example:
+
+#+BEGIN_SRC C++
+int i = 0;
+while(i < n) {
+   i++;
+}
+#+END_SRC
+
+#+BEGIN_SRC C++
+int i = 0;
+assert(i <= n);
+assert(n >= 0);
+while(i < n) {
+   assert(i < n);
+   assert(i>=0 && i<=n);
+   i++;
+   assert(i>=0 && i<=n);
+}
+assert(!(i < n) && i>=0 && i<=n);
+#+END_SRC
+
+Example:
+
+#+BEGIN_SRC C++
+int sum (std::vector<int> elements)
+{
+   int sum {};
+   int i {};
+   int n {elements.size};
+   // sum has sum of elements from 0 to i-1 the empty set
+   while (i < n) {
+   // sum == sum of elements 0..i-1
+       sum += elements [i];
+       i++;
+    // sum == sum of elements 0..i-1
+    }
+    // i==n  AND
+    // sum has sum elements 0..i-1 à sum == sum of elements 0..n-1
+    //  sum == sum of int[] elements
+    return sum;
+}
+#+END_SRC
+
+* Stack
+
+Functions:
+
+- Push
+- Pop
+- Top
+
+** Push
+
+Preconditions: size >= 0
+Postcondition: final size == (original size + 1)
+
+** Pop
+
+Preconditions: size > 1
+Postcondition: final size == (original size - 1)
+
+** Top
+
+Preconditions: size > 1
+Postcondition: final size == original size
+
+
+* Assertions are not error handling
+
+- A program error is a bug, and should never occur.
+  - Assertions can help detect program errors
+- A run-time error can be a valid event
+  - Exceptions help dealing with run-time errors
 
 

@@ -84,6 +84,9 @@ public:
     int getName() {
         return name;
     }
+    int setName(std::string n) {
+        name = n;
+    }
     int getYearCount(int year) {
         return yearsCount.at(year-kFirstYear);
     }
@@ -246,6 +249,8 @@ baby_class global;
 
 int main()
 {
+
+   std::cout << "Starting" << std::endl;
    baby_class b1;
    baby_class b2;
    { 
@@ -254,6 +259,7 @@ int main()
        std::cout << "Count " <<  baby_class::count << std::endl;
    } 
    std::cout << "Count " <<  baby_class::count << std::endl;
+   std::cout << "Ending" << std::endl;
    return 0;
 }
 
@@ -262,6 +268,7 @@ int main()
 #+RESULTS:
 #+begin_example
 creating an object 0
+Starting
 creating an object 1
 creating an object 2
 Count 3
@@ -269,63 +276,10 @@ creating an object 3
 Count 4
 destroying an object 3
 Count 3
+Ending
 destroying an object 2
 destroying an object 1
 destroying an object 0
 #+end_example
 
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-#include <string>
-class baby_class {
-   std::string name;
-public:
-   static int count;
-   baby_class(std::string st) { 
-   
-   }
-   baby_class(std::string st) { 
-       name = st;
-       std::cout << "creating  " << name  << " " 
-                 << count++ << std::endl; }
-   ~baby_class() { 
-       std::cout << "destroying  " << name << " " 
-                 << --count << std::endl; }
-};
-
-// a static value must be initialized outside the class
-int baby_class::count = 0;
-
-baby_class global {"the global"};
-
-int main()
-{
-   baby_class b1 {"b1"};
-   baby_class b2 {"b2"};
-   { 
-       std::cout << "Count " <<  baby_class::count << std::endl;
-        baby_class b3{"b3"};
-       std::cout << "Count " <<  baby_class::count << std::endl;
-   } 
-   std::cout << "Count " <<  baby_class::count << std::endl;
-   return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-creating  the global 0
-creating  b1 1
-creating  b2 2
-Count 3
-creating  b3 3
-Count 4
-destroying  b3 3
-Count 3
-destroying  b2 2
-destroying  b1 1
-destroying  the global 0
-#+end_example
 

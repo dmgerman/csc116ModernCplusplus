@@ -3,7 +3,7 @@
 #+TAGS:
 #+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
 #+DRAWERS: HIDDEN STATE
-#+TITLE: Helper Functions
+#+TITLE: Helper Functions (and Scope)
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
@@ -14,5 +14,8 @@
 - Break functions you must write into smaller, simpler functions
 
 - We call these helper functions
+
+- Functions cannot be local to a scope (unless using special syntax, more on that later)
+
 
 
