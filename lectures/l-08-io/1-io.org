@@ -1,0 +1,107 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: i/o
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* Base Classes for io
+
+| class   | standard purpose | objects    | methods     |
+|---------+------------------+------------+-------------|
+| istream | input            | cin        | >>, getline |
+| ostream | output           | cout, cerr | <<          |
+
+
+* Subclasses 
+
+- Subclasses derive many of their characteristics from their ancestor classes
+
+| subclasses    | base class | purpose             |
+|---------------+------------+---------------------|
+| ifstream      | istream    | input from a file   |
+| istringstream | istream    | input from a string |
+| ofstream      | ostream    | output to a file    |
+| ostringstream | ostream    | output to a string  |
+
+
+* No copy or assignment for IO objects
+
+We cannot copy objects of type IO:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+ofstream out1, out2;
+out 1 = out2; // error 
+#+END_SRC
+
+* Condition states of IO
+
+Methods to detect error conditions:
+
+| method   | description                             |
+|----------+-----------------------------------------|
+| .eof()   | true if end-of-file has been reached    |
+| .bad()   | true if stream is corrupted             |
+| .fail()  | true if stream is in error or corrupted |
+| .good()  | true if stream is in a valid state      |
+| .clear() | reset all conditions to a valid state   |
+
+* Open
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <string>
+int main(int argc, char* argv[])
+{
+   std::ifstream in("/home/dmg/.Rprofile");  
+   if (in) { // we can also use if(in.is_open())
+      std::string line;
+      while (std::getline(in, line)) {
+         std::cout << line << std::endl;
+      }
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
+options(width=160)
+#+end_example
+
+* Close
+
+- The stream destructor closes the file
+- It can be explicitly closed with .close
+
+* File Modes
+
+| in     | open for input                                   | Only for ifstream or fstream |
+| app    | Append to file when open an output file          | Only for ofstream or fstream  |
+| ate    | Go go the end of file when open a file for input |                              |
+| trunc  | truncate file                                    |                              |
+| binary | do I/O operations in binary mode                 |                              |
+
+- output files are set to trunc by default
+- if needed, open with app to write at end of file
+- many more rules...
+
+** how to use
+
+   
+#+BEGIN_SRC C++ 
+ofstream out("file");
+ofstream out("file", ofstream:out); //implicit
+ofstream out("file", ofstream:out | ofstream::trunc); //implicit
+out.open("file", ofstream:out);
+#+END_SRC

@@ -30,10 +30,10 @@ public:
    static int count;
    baby_class(std::string st) { 
        name = st;
-       std::cout << "creating  " << name  << " " 
+       std::cout << " creating  " << name  << " " 
                  << count++ << std::endl; }
    ~baby_class() { 
-       std::cout << "destroying  " << name << " " 
+       std::cout << " destroying  " << name << " " 
                  << --count << std::endl; }
 };
 
@@ -44,32 +44,33 @@ baby_class global {"the global"};
 
 int main()
 {
+   std::cout << "Main starts " <<  baby_class::count << std::endl;   
    baby_class b1 {"b1"};
    baby_class b2 {"b2"};
    { 
-       std::cout << "Count " <<  baby_class::count << std::endl;
+       std::cout << "Block starts " <<  baby_class::count << std::endl;
         baby_class b3{"b3"};
        std::cout << "Count " <<  baby_class::count << std::endl;
    } 
-   std::cout << "Count " <<  baby_class::count << std::endl;
+   std::cout << "Right after block " <<  baby_class::count << std::endl;   
+
    return 0;
 }
-
 #+END_SRC
-
 #+RESULTS:
 #+begin_example
 creating  the global 0
-creating  b1 1
-creating  b2 2
-Count 3
-creating  b3 3
+Main starts 1
+ creating  b1 1
+ creating  b2 2
+Block starts 3
+ creating  b3 3
 Count 4
-destroying  b3 3
-Count 3
-destroying  b2 2
-destroying  b1 1
-destroying  the global 0
+ destroying  b3 3
+Right after block 3
+ destroying  b2 2
+ destroying  b1 1
+ destroying  the global 0
 #+end_example
 
 * Constructors
@@ -77,6 +78,7 @@ destroying  the global 0
 - Have no return type
 - There might be many constructors for a class 
   - each with different parameters
+  - resolved using overloading rules
 
 * Default constructor
 
@@ -102,9 +104,18 @@ private:
    double revenue  {0.0};
 public:
    Sales_Data() = default; // explicitly use default constructor
-   Sales_Data(const std::string &s): bookNo(s) {};
+
+   Sales_Data(const std::string &s): 
+       bookNo(s)
+       {};
+
+/* equivalent 
+   Sales_Data(const std::string &s)
+       {bookNo = s; };
+*/
    Sales_Data(const std::string &s, int n, double p): 
                  bookNo(s), units_sold(n), revenue(p*n) {};
+
    std::string isbn()  { return bookNo; };
    double getRevenue() { return revenue; };
    void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
@@ -112,7 +123,7 @@ public:
 };
 int main()
 {
-   Sales_Data book0;
+   Sales_Data book0; // calls default constructor
    book0.print("book0 ");
    Sales_Data book1("ab123");
    book1.print("book1 ");
@@ -211,7 +222,8 @@ private:
 public:
    Sales_Data() {cout << "cons1\n";}; // explicitly use default constructor
    Sales_Data(const std::string &s, int n, double p): 
-                 bookNo(s), units_sold(n), revenue(p*n) {cout << "cons3\n";};
+                 bookNo(s), units_sold(n), revenue(p*n)
+         {cout << "cons3\n";};
    std::string isbn()  { return bookNo;};
    double getRevenue() { return revenue;};
    void print(string m) { cout << m << isbn() << "->" << getRevenue() << endl;};
@@ -261,7 +273,9 @@ public:
    Sales_Data() {cout << "cons1\n";}; // explicitly use default constructor
    Sales_Data(const std::string &s, int n, double p): 
                  bookNo(s), units_sold(n), revenue(p*n) {cout << "cons3\n";};
-   Sales_Data(Sales_Data &o) {cout << "copy cons\n"; *this = o;};
+   // copy constructor
+   Sales_Data(Sales_Data &o) 
+      {cout << "copy cons\n"; *this = o;};
    std::string isbn()  { return bookNo;};
    double getRevenue() { return revenue;};
    void print(string m) { cout << m << isbn() << "->" << getRevenue() << endl;};
@@ -290,7 +304,6 @@ book3 ab123->30.75
 #+end_example
 
 
-
 * Inline functions
 
 Inline functions are a compiler optimization
@@ -298,7 +311,7 @@ Inline functions are a compiler optimization
 - instead of making a function call, the call is replaced with the corresponding code
 
 #+BEGIN_SRC C++
-inline add(int a, int b) 
+inline int add(int a, int b) 
 {
     return a + b;
 }
@@ -332,7 +345,9 @@ public:
 ** When to inline
 
 - Function is small
+
 - functions defined inside a class are implicitly inline
+
 - Compiler might ignore the recommendation
 
 * Const functions
@@ -347,13 +362,44 @@ private:
    std::string bookNo {};
    int units_sold {0};
    double revenue  {0.0};
+// mutable attributes can be modified inside
+// a const function
    mutable int daysLeft {0};
 public:
-   inline std::string isbn()  { return bookNo;} const;
-   inline double getRevenue() { return revenue;} const ;
-   void changeDaylsLeft() { daysLeft++;} const ;   
+   inline std::string isbn()  const { return bookNo;} ;
+   inline double getRevenue() const { return revenue;}  ;
+   void changeDaylsLeft() const { daysLeft++;}  ;   
 };
 #+END_SRC
+
+* Const objects and const classes
+
+A const object can only call const methods
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class C {
+    int count=0;
+public:
+    void inc() { count ++; };
+    int get_count() const { return count;} ;
+};
+int main()
+{
+   const C obj;
+   //obj.inc(); // fails
+   std::cout << obj.get_count() << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+#+end_example
+
 
 * this
 
@@ -371,9 +417,9 @@ public:
    simple_class(simple_class &o) { *this = o;}; // copy constructor
    simple_class(int i): value(i) {};
    void add(int p) { 
-     value += p;
+     (*this).value += p;
    }
-   int getValue() { return value;}
+   int getValue() { return this->value;}
 };
 
 int main(void)
@@ -393,6 +439,9 @@ int main(void)
 b 5
 #+end_example
 
+** Example of returning *this
+
+Calls to methods can be concatenated
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -434,7 +483,8 @@ c 14
 
 * Classes are types
 
-- Type checking provided by compiler
+- Type-checking provided by compiler 
+- Stronger for classes than for typedefs
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -464,4 +514,234 @@ int main()
 #+END_SRC
 
 #+RESULTS:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  :results output :exports both
+#include <iostream>
+main()
+{
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+* Class scope
+
+- Every class defines its own scope 
+- Methods defined outside a class must be prefixed with the name of the name of the class and ::
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class simple_class {
+private: 
+   int value;
+public:
+   simple_class() = default;
+   simple_class(int i): value(i) {};
+   simple_class &add(int p);
+   int getValue() { return value;}
+};
+simple_class& simple_class::add(int p) { 
+   value += p;
+   return *this;
+}
+#+END_SRC
+
+#+RESULTS:
+
+** Names of methods/atributes declarations are compiled before their definitions
+
+- This means we can refer to methods not yet declared/defined
+- Example: getValue can be used before it is declared
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class simple_class {
+private: 
+   int value {};
+public:
+   simple_class() = default;
+   simple_class(int i): value(i) {};
+   int example() { return getValue();};
+   simple_class &add(int p);
+   int getValue() { return value;}
+};
+simple_class& simple_class::add(int p) { 
+   value += p; return *this;
+}
+int main() {
+   simple_class C;
+   std::cout << C.example() << std::endl;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+#+end_example
+
+* Delegating Constructors
+
+- A constructor can be used when defining another constructor
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() : Sales_Data("",0,0.0) {}; 
+   Sales_Data(const std::string &s): Sales_Data(s,0,0.0) {}; 
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {};
+
+   std::string isbn()  { return bookNo; };
+   double getRevenue() { return revenue; };
+   void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
+
+};
+int main()
+{
+   Sales_Data book0; // calls default constructor
+   book0.print("book0 ");
+   Sales_Data book1("ab123");
+   book1.print("book1 ");
+   Sales_Data book2("ab123",3,10.25);
+   book2.print("book2 ");
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+book0 ->0
+book1 ab123->0
+book2 ab123->30.75
+#+end_example
+
+* Implicit Constructors and type conversion
+
+- a parameter will be converted into an object 
+  - if the expected parameter is of a given class type
+  - and there is a constructor that converts the actual parameter to the type of the parameter
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() : Sales_Data("",0,0.0) {}; 
+   Sales_Data(const std::string &s): Sales_Data(s,0,0.0) {}; 
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {};
+   std::string isbn()  { return bookNo; };
+   double getRevenue() { return revenue; };
+   void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
+};
+void f(Sales_Data sd) {
+   sd.print("From inside f: ");
+}
+int main()
+{
+   Sales_Data book0("book0"); // calls default constructor
+   f(book0);
+   f({"This is converted into an object"});
+   f(std::string("This is converted into an object 2"));
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+From inside f: book0->0
+From inside f: This is converted into an object->0
+From inside f: This is converted into an object 2->0
+#+end_example
+
+** This feature can be supressed with explicit
+
+-if a constructor is declared explicit, no automatic conversion is allowed
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class Sales_Data {
+private: 
+   std::string bookNo {};
+   int units_sold {0};
+   double revenue  {0.0};
+public:
+   Sales_Data() : Sales_Data("",0,0.0) {}; 
+   explicit Sales_Data(const std::string &s): Sales_Data(s,0,0.0) {}; 
+   Sales_Data(const std::string &s, int n, double p): 
+                 bookNo(s), units_sold(n), revenue(p*n) {};
+   std::string isbn()  { return bookNo; };
+   double getRevenue() { return revenue; };
+   void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
+};
+void f(Sales_Data sd) {
+   sd.print("From inside f: ");
+}
+int main()
+{
+   Sales_Data book0("book0"); // calls default constructor
+   f(book0);
+   // the following will generate an error
+   //f(std::string("This is converted into an object 2"));
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+From inside f: book0->0
+#+end_example
+
+* Static class members
+
+- By default, member attributes are associated with an object
+- Every object has a copy of each of these attributes
+- We can also associate an attribute with the class
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <string>
+class Account {
+private:    
+    void calculate() { amount += amount * interestRate;}
+    static double rate() { return interestRate; }
+    static void setRate(double);
+public:
+    std::string owner;
+    double amount;
+    static double interestRate;
+    static double initRate;
+};
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   double r;
+   r = Amount::rate();
+   Amount::setRate(r+1.0);
+   return 0;
+}
+
+#+END_SRC
+
 

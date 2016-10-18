@@ -49,7 +49,7 @@ int main()
    std::map<char, int> charCount;
 
    for(char c: st) {
-      charCount.at(c)++; // inserts if it does not exist!
+      charCount[c]++; // inserts if it does not exist!
    }
 
    std::cout << "Size of the map " << charCount.size() << std::endl;
