@@ -418,8 +418,10 @@ public:
    simple_class(int i): value(i) {};
    void add(int p) { 
      (*this).value += p;
+   //  value += p;
    }
    int getValue() { return this->value;}
+   //int getValue() { return value;}
 };
 
 int main(void)
@@ -450,6 +452,7 @@ private:
    int value;
 public:
    simple_class() = default;
+//  simple_class() {};
    simple_class(int i): value(i) {};
    simple_class &add(int p) { 
      value += p;
@@ -515,14 +518,6 @@ int main()
 
 #+RESULTS:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  :results output :exports both
-#include <iostream>
-main()
-{
-   return 0;
-}
-
-#+END_SRC
 
 #+RESULTS:
 
@@ -715,33 +710,86 @@ From inside f: book0->0
 - Every object has a copy of each of these attributes
 - We can also associate an attribute with the class
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <string>
-class Account {
-private:    
-    void calculate() { amount += amount * interestRate;}
-    static double rate() { return interestRate; }
-    static void setRate(double);
-public:
-    std::string owner;
-    double amount;
-    static double interestRate;
-    static double initRate;
-};
-#+END_SRC
+** Use an static attribute to count the number of instances
 
-#+RESULTS:
+- only one "count" for the class.
+- declared private
+- it can be accessesed by any object of the class baby_class
+- it must be declared *outside* the class where it is initialized
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+class baby_class {
+   static int count;
+public:
+   baby_class() {
+       std::cout << "creating an object. Objects after " << ++count << std::endl;
+   }
+   ~baby_class() {
+       std::cout << "destroying object. Objects after this destructor: " << --count << std::endl;
+   }
+   static int instancesCount() { return count; }
+};
+
+// a static value must be initialized outside the class
+int baby_class::count = 0;
+
 int main()
 {
-   double r;
-   r = Amount::rate();
-   Amount::setRate(r+1.0);
+   baby_class b1;
+   baby_class b2;
+   { 
+       baby_class b3;
+       // to call the method without the object reference we must use class_name::
+       // and the method being static
+       std::cout << "Number of instances " << baby_class::instancesCount() << std::endl;
+   } 
    return 0;
 }
 
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+creating an object. Objects after 1
+creating an object. Objects after 2
+creating an object. Objects after 3
+Number of instances 3
+destroying object. Objects after this destructor: 2
+destroying object. Objects after this destructor: 1
+destroying object. Objects after this destructor: 0
+#+end_example
+
+** A more complex example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+class Account {
+public:    
+    void calculate() { amount += amount * interestRate;}
+    static double rate() { return interestRate; }
+    static void setRate(double r) { interestRate = r;}
+    std::string owner;
+private:
+    double amount;
+    static double interestRate;
+    static double initRate;
+};
+double Account::interestRate = 0;
+double Account::initRate = 1.0;
+
+int main()
+{
+   double r {4.0};
+   r = Account::rate();
+   Account::setRate(r+1.0);
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
 
 

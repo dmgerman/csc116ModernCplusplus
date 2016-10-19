@@ -11,6 +11,21 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 1200)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1200
+#+end_example
+
+* Input/output classes
+
+[[./iostream.gif]]
+
+
+
 
 * Base Classes for io
 
@@ -84,6 +99,325 @@ options(width=160)
 - The stream destructor closes the file
 - It can be explicitly closed with .close
 
+
+* formatted output: Manipulators
+
+- We have been using << for a while
+- we can modify its behaviour
+- Use <iomanip>
+
+** std::setw
+
+- set width of output, aligned to the right
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iomanip>  
+int main()
+{
+   std::cout<<"Example: [" << std::setw(10)<< 77 << "]" << std::endl;
+   std::cout<<"Example: [" << std::setw(10)<< "abc" << "]" << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Example: [        77]
+Example: [       abc]
+#+end_example
+
+** left/right justified
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// modify adjustfield using manipulators
+#include <iostream>     // std::cout, std::internal, std::left, std::right
+#include <iomanip>  
+
+int main () {
+   int n = -77;
+   std::cout << std::setw(6); 
+   std::cout << std::left << n << "|" << std::endl;
+   std::cout << std::setw(6); 
+   std::cout << std::right << n << "|" << std::endl;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-77   |
+   -77|
+#+end_example
+
+** setfill
+
+Fill with a character rather than space
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// setfill example
+#include <iostream>     // std::cout, std::endl
+#include <iomanip>      // std::setfill, std::setw
+
+int main () {
+  std::cout << std::setfill ('x') ;
+  std::cout<<"Example: [" << std::setw(10)<< 77 << "]" << std::endl;
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Example: [xxxxxxxx77]
+#+end_example
+
+
+** std::setbase
+
+- Output numbers in different bases:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iomanip>  
+int main()
+{
+   int i {257};
+   std::cout<<"decimal    : [" << i  << "]" << std::endl;
+   std::cout<<"hexadecimal: [" << std::setbase(16) << i << "]" << std::endl;
+   std::cout<<"octal:       [" << std::setbase(8) << i << "]" << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+decimal    : [257]
+hexadecimal: [101]
+octal:       [401]
+#+end_example
+
+
+** showbase, noshowbase
+
+ In C++ we print hex numbers with prefix 0x and octal with 0
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>     // std::cout, std::showbase, std::noshowbase
+
+int main () {
+  int n = 20;
+  std::cout << "Hex:   " << std::hex << n << std::endl;
+  std::cout << "Octal: " << std::oct << n << std::endl;
+  std::cout << std::showbase;
+  std::cout << "Hex:   " << std::hex << n << std::endl;
+  std::cout << "Octal: " << std::oct << n << std::endl;
+  
+  std::cout << std::noshowbase;
+  std::cout << n << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hex:   14
+Octal: 24
+Hex:   0x14
+Octal: 024
+24
+#+end_example
+
+** boolalpha/nobooalpha
+
+Print boolean values with true/false
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>     // std::cout, std::showbase, std::noshowbase
+
+int main () {
+  std::cout << true << " " << false << std::endl;
+  std::cout << std::boolalpha;
+  std::cout << true << " " << false << std::endl;
+  std::cout << std::noboolalpha;
+  std::cout << true << " " << false << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 0
+true false
+1 0
+#+end_example
+
+** setprecision
+
+number of digits of precission 
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// setprecision example
+#include <iostream>     // std::cout, std::fixed
+#include <iomanip>      // std::setprecision
+#include <cmath>
+
+int main () {
+  double a =M_PI;
+  double b = 2006;
+  double c = 1.0e-10;
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << std::setprecision(3);
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+3.14159 2006 1e-10
+3.14 2.01e+03 1e-10
+#+end_example
+
+** fixed/scientific
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// setprecision example
+#include <iostream>     // std::cout, std::fixed
+#include <iomanip>      // std::setprecision
+#include <cmath>
+
+int main () {
+  double a =M_PI;
+  double b = 2006;
+  double c = 1.0e-10;
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << std::fixed;
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << std::scientific;
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << std::defaultfloat;
+  std::cout << a <<  " "  << b << " " << c << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+3.14159 2006 1e-10
+3.141593 2006.000000 0.000000
+3.141593e+00 2.006000e+03 1.000000e-10
+3.14159 2006 1e-10
+#+end_example
+
+
+** force period
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+// modify showpoint flag
+#include <iostream>     // std::cout, std::showpoint, std::noshowpoint
+
+int main () {
+  double a = 30;
+  double b = 100.0;
+  double pi = 3.1416;
+
+  std::cout.precision (5);
+  std::cout <<   std::showpoint << a << '\t' << b << '\t' << pi << std::endl;
+  std::cout << std::noshowpoint << a << '\t' << b << '\t' << pi << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+30.000	100.00	3.1416
+30	100	3.1416
+#+end_example
+
+
+
+** money
+
+this example is more for demonstration purposes
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iomanip>
+ 
+int main()
+{
+    double mon = 123.45; // or std::string mon = "123.45";
+    std::cout.imbue(std::locale("en_CA.utf8"));
+    std::cout << std::showbase
+              << "en_CA: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+
+    std::cout.imbue(std::locale("en_US.utf8"));
+    std::cout << std::showbase
+              << "en_US: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+
+    std::cout.imbue(std::locale("en_GB.utf8"));
+    std::cout << std::showbase
+              << "en_GB: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+
+    std::cout.imbue(std::locale("ru_RU.utf8"));
+    std::cout << "ru_RU: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+
+    std::cout.imbue(std::locale("ja_JP.utf8"));
+    std::cout << "ja_JP: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+
+    std::cout.imbue(std::locale("hi_IN.utf8"));
+    std::cout << "hi_IN: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+en_CA: $1.23 or CAD 1.23
+en_US: $1.23 or USD  1.23
+en_GB: £1.23 or GBP 1.23
+ru_RU: 1.23 ₽ or 1.23 RUB 
+ja_JP: ￥123 or JPY  123
+hi_IN: ₹ 1.23 or INR  1.23
+#+end_example
+
+** time
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+ 
+int main()
+{
+    std::time_t t = std::time(nullptr);
+    std::tm tm = *std::localtime(&t);
+    std::cout.imbue(std::locale("en_CA.utf8"));
+    std::cout << "en_CA: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
+    std::cout.imbue(std::locale("fr_CA.utf8"));
+    std::cout << "fr_CA: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
+    std::cout.imbue(std::locale("ja_JP.utf8"));
+    std::cout << "ja_JP: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
+    std::cout.imbue(std::locale("zh_CN.utf8"));
+    std::cout << "zh_CN: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
+    std::cout.imbue(std::locale("hi_IN.utf8"));
+    std::cout << "hi_IN: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+en_CA: Wednesday October Wed 19 Oct 2016 01:02:27 AM PDT PDT
+fr_CA: mercredi octobre mer 19 oct 2016 01:02:27 PDT PDT
+ja_JP: 水曜日 10月 2016年10月19日 01時02分27秒 PDT
+zh_CN: 星期三 十月 2016年10月19日 星期三 01时02分27秒 PDT
+hi_IN: बुधवार  अक्टूबर बुधवार  19 अक्टूबर 2016 01:02:27 पूर्वाह्न PDT PDT
+#+end_example
+
+
 * File Modes
 
 | in     | open for input                                   | Only for ifstream or fstream |
@@ -97,7 +431,6 @@ options(width=160)
 - many more rules...
 
 ** how to use
-
    
 #+BEGIN_SRC C++ 
 ofstream out("file");
@@ -105,3 +438,5 @@ ofstream out("file", ofstream:out); //implicit
 ofstream out("file", ofstream:out | ofstream::trunc); //implicit
 out.open("file", ofstream:out);
 #+END_SRC
+
+
