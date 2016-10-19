@@ -97,7 +97,7 @@ options(width=160)
 * Close
 
 - The stream destructor closes the file
-- It can be explicitly closed with .close
+- It can be explicitly closed with .close()
 
 
 * formatted output: Manipulators
