@@ -12,12 +12,12 @@
 
 
 #+BEGIN_SRC emacs-lisp
-(setq org-image-actual-width 1200)
+(setq org-image-actual-width 1500)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-1200
+1500
 #+end_example
 
 * Input/output classes
@@ -139,6 +139,8 @@ int main () {
    int n = -77;
    std::cout << std::setw(6); 
    std::cout << std::left << n << "|" << std::endl;
+   std::cout <<  n << "|" << std::endl;
+
    std::cout << std::setw(6); 
    std::cout << std::right << n << "|" << std::endl;
    return 0;
@@ -148,6 +150,7 @@ int main () {
 #+RESULTS:
 #+begin_example
 -77   |
+-77|
    -77|
 #+end_example
 
@@ -439,4 +442,373 @@ ofstream out("file", ofstream:out | ofstream::trunc); //implicit
 out.open("file", ofstream:out);
 #+END_SRC
 
+
+* Reading binary data
+
+this file was created with windows end-of-line-characters
+
+#+BEGIN_SRC sh :results output
+hexdump groceries.txt
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0000000 7562 7474 7265 7020 746f 7461 656f 0d73
+0000010 720a 6369 0d65 000a                    
+0000017
+#+end_example
+
+#+BEGIN_SRC sh :results output
+cat  groceries.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1 " = %03i dec"' -e '/1 " = 0%03o oct"' -e '/1 " = %_u\n"'
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0#    0x62 = 098 dec = 0142 oct = b
+1#    0x75 = 117 dec = 0165 oct = u
+2#    0x74 = 116 dec = 0164 oct = t
+3#    0x74 = 116 dec = 0164 oct = t
+4#    0x65 = 101 dec = 0145 oct = e
+5#    0x72 = 114 dec = 0162 oct = r
+6#    0x20 = 032 dec = 0040 oct =  
+7#    0x70 = 112 dec = 0160 oct = p
+8#    0x6F = 111 dec = 0157 oct = o
+9#    0x74 = 116 dec = 0164 oct = t
+10#    0x61 = 097 dec = 0141 oct = a
+11#    0x74 = 116 dec = 0164 oct = t
+12#    0x6F = 111 dec = 0157 oct = o
+13#    0x65 = 101 dec = 0145 oct = e
+14#    0x73 = 115 dec = 0163 oct = s
+15#    0x0D = 013 dec = 0015 oct = cr
+16#    0x0A = 010 dec = 0012 oct = lf
+17#    0x72 = 114 dec = 0162 oct = r
+18#    0x69 = 105 dec = 0151 oct = i
+19#    0x63 = 099 dec = 0143 oct = c
+20#    0x65 = 101 dec = 0145 oct = e
+21#    0x0D = 013 dec = 0015 oct = cr
+22#    0x0A = 010 dec = 0012 oct = lf
+#+end_example
+
+** Read the file one character at a time (using >>)
+
+- skips whitespace!!!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+int main()
+{
+   char c {};
+   int i {};
+   std::ifstream myfile ("groceries.txt");
+   //std::ifstream myfile ("groceriesUnix.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+   std::streamoff pos;
+
+   //myfile.unsetf(std::ios::skipws);
+   while (pos = myfile.tellg(), //store location
+          myfile >> c) {        // read character
+      auto posAfter =  myfile.tellg();
+      std::cout << std::setw(3) << std::left << i++ << std::right 
+                << " File position before " << std::setw(3) << pos
+                << " after " << std::setw(3) << posAfter 
+                << " skipped " << std::setw(3) << posAfter - pos
+                << " [" << std::setw(3) 
+                << int(c) << "] [" << c<< "]" <<std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0   File position before   0 after   1 skipped   1 [ 98] [b]
+1   File position before   1 after   3 skipped   2 [117] [u]
+2   File position before   3 after   4 skipped   1 [116] [t]
+3   File position before   4 after   5 skipped   1 [116] [t]
+4   File position before   5 after   6 skipped   1 [101] [e]
+5   File position before   6 after   7 skipped   1 [114] [r]
+6   File position before   7 after   9 skipped   2 [112] [p]
+7   File position before   9 after  10 skipped   1 [111] [o]
+8   File position before  10 after  11 skipped   1 [116] [t]
+9   File position before  11 after  12 skipped   1 [ 97] [a]
+10  File position before  12 after  13 skipped   1 [116] [t]
+11  File position before  13 after  14 skipped   1 [111] [o]
+12  File position before  14 after  15 skipped   1 [101] [e]
+13  File position before  15 after  16 skipped   1 [115] [s]
+14  File position before  16 after  19 skipped   3 [114] [r]
+15  File position before  19 after  20 skipped   1 [105] [i]
+16  File position before  20 after  21 skipped   1 [ 99] [c]
+17  File position before  21 after  22 skipped   1 [101] [e]
+#+end_example
+
+We use the manipulator std::noskipws to disable skipping whitespace
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+int main()
+{
+   char c {};
+   int i {};
+   std::ifstream myfile ("groceries.txt");
+   //std::ifstream myfile ("groceries3.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+   std::streamoff pos; // to save position within file
+
+   myfile >> std::noskipws; // do not skip whitespace
+   
+   while (pos = myfile.tellg(), //store location
+          myfile >> c) {        // read character
+      auto posAfter =  myfile.tellg();
+      std::cout << std::setw(3) << std::left << i++ << std::right 
+                << " File position before " << std::setw(3) << pos
+                << " after " << std::setw(3) << posAfter 
+                << " skipped " << std::setw(3) << posAfter - pos
+                << " [" << std::setw(3) 
+                << int(c) << "] [" << c<< "]" <<std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0   File position before   0 after   1 skipped   1 [ 98] [b]
+1   File position before   1 after   2 skipped   1 [  9] [	]
+2   File position before   2 after   3 skipped   1 [117] [u]
+3   File position before   3 after   4 skipped   1 [116] [t]
+4   File position before   4 after   5 skipped   1 [116] [t]
+5   File position before   5 after   6 skipped   1 [101] [e]
+6   File position before   6 after   7 skipped   1 [114] [r]
+7   File position before   7 after   8 skipped   1 [ 32] [ ]
+8   File position before   8 after   9 skipped   1 [112] [p]
+9   File position before   9 after  10 skipped   1 [111] [o]
+10  File position before  10 after  11 skipped   1 [116] [t]
+11  File position before  11 after  12 skipped   1 [ 97] [a]
+12  File position before  12 after  13 skipped   1 [116] [t]
+13  File position before  13 after  14 skipped   1 [111] [o]
+14  File position before  14 after  15 skipped   1 [101] [e]
+15  File position before  15 after  16 skipped   1 [115] [s]
+16  File position before  16 after  17 skipped   1 [ 13] []
+17  File position before  17 after  18 skipped   1 [ 10] [
+]
+18  File position before  18 after  19 skipped   1 [114] [r]
+19  File position before  19 after  20 skipped   1 [105] [i]
+20  File position before  20 after  21 skipped   1 [ 99] [c]
+21  File position before  21 after  22 skipped   1 [101] [e]
+22  File position before  22 after  23 skipped   1 [ 13] []
+23  File position before  23 after  24 skipped   1 [ 10] [
+]
+#+end_example
+
+** But we can also read using read() which reads bytes directly from files
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cassert>
+int main()
+{
+   // make sure the char is one byte before we proceed
+   assert(sizeof(char) == 1);
+
+   char c {};
+   int i {0};
+   std::ifstream myfile ("groceries.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+
+   while (!myfile.eof()) {
+      auto pos {myfile.tellg()};
+      // read one character 
+      // we must pass a reference to a byte
+      myfile.read(&c,1); // instead of myfile >> c
+      std::cout << std::setw(3) << std::left << i++ << std::right 
+                << " File position " << std::setw(3) << pos
+                << " [" << std::setw(3) 
+                << int(c) << "] [" << c<< "]" <<std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0   File position   0 [ 98] [b]
+1   File position   1 [  9] [	]
+2   File position   2 [117] [u]
+3   File position   3 [116] [t]
+4   File position   4 [116] [t]
+5   File position   5 [101] [e]
+6   File position   6 [114] [r]
+7   File position   7 [ 32] [ ]
+8   File position   8 [112] [p]
+9   File position   9 [111] [o]
+10  File position  10 [116] [t]
+11  File position  11 [ 97] [a]
+12  File position  12 [116] [t]
+13  File position  13 [111] [o]
+14  File position  14 [101] [e]
+15  File position  15 [115] [s]
+16  File position  16 [ 13] []
+17  File position  17 [ 10] [
+]
+18  File position  18 [114] [r]
+19  File position  19 [105] [i]
+20  File position  20 [ 99] [c]
+21  File position  21 [101] [e]
+22  File position  22 [ 13] []
+23  File position  23 [ 10] [
+]
+24  File position  24 [ 10] [
+]
+#+end_example
+
+
+** We can also read it all at once
+
+- use seekg to seek to the end of file
+- use tellg to know the offset of the end of file
+- this is the size of the file in bytes
+- use a vector to read the file from the current position until end of file
+- but be careful, streams "skip" some characters
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <vector>
+#include <cassert>
+#include <iterator>
+int main()
+{
+   // make sure the char is one byte before we proceed
+   assert(sizeof(unsigned char) == 1);
+   
+   std::ifstream myfile ("groceries.txt");
+
+   if(!myfile) throw std::runtime_error("unable to open input file");
+
+   /// first we need to compute the file size
+   // go to end of file
+   myfile.seekg (0, myfile.end);
+   // save position. This is the length of the file in bytes
+   // std::streamoff is a long int
+   std::streamoff fileSize {myfile.tellg()};
+
+   // move to the beginning again to we can read it from there
+   myfile.seekg (0, myfile.beg);
+
+   std::string buf {};
+
+   buf.resize(fileSize);
+   // this makes the reading much faster, otherwise it would
+   // need to resize the vector at every character
+
+   // we must pass a reference to a byte, 
+   // it is our _responsibility_ to make sure the
+   // buffer has enough space to read it
+
+   myfile.read(&buf[0], buf.size());
+
+   std::cout << buf << std::endl;
+
+   for(unsigned i=0;i<buf.size();i++) {
+      unsigned char c = buf.at(i);
+      std::cout << std::setw(3) << std::left << i << std::right 
+                << " File position " << std::setw(3) << i
+                << " [" << std::setw(3) 
+                << int(c) << "] [" << c<< "]" <<std::endl;
+      
+   }
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+b	utter potatoes
+rice
+
+0   File position   0 [ 98] [b]
+1   File position   1 [  9] [	]
+2   File position   2 [117] [u]
+3   File position   3 [116] [t]
+4   File position   4 [116] [t]
+5   File position   5 [101] [e]
+6   File position   6 [114] [r]
+7   File position   7 [ 32] [ ]
+8   File position   8 [112] [p]
+9   File position   9 [111] [o]
+10  File position  10 [116] [t]
+11  File position  11 [ 97] [a]
+12  File position  12 [116] [t]
+13  File position  13 [111] [o]
+14  File position  14 [101] [e]
+15  File position  15 [115] [s]
+16  File position  16 [ 13] []
+17  File position  17 [ 10] [
+]
+18  File position  18 [114] [r]
+19  File position  19 [105] [i]
+20  File position  20 [ 99] [c]
+21  File position  21 [101] [e]
+22  File position  22 [ 13] []
+23  File position  23 [ 10] [
+]
+#+end_example
+
+
+** Binary mode is only useful for output and in windows
+
+If you run windows, try the following code. Your output will be different than mine
+then look at the number of bytes used by each file. One is 4 bytes, the other 5 bytes
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+int main()
+{
+   // make sure the char is one byte before we proceed
+   // without binary
+   std::ofstream myfileB ("outputBinary.txt", std::ios::binary);
+   //std::ofstream myfile ("output.txt");
+   myfileB << "abc\n" ;
+
+   std::ofstream myfile ("output.txt");
+   myfile << "abc\n" ;
+
+   std::cout << "Done " << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Done
+#+end_example
+
+#+BEGIN_SRC sh :results output
+cat  output.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1 " = %03i dec"' -e '/1 " = 0%03o oct"' -e '/1 " = %_u\n"'
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0#    0x61 = 097 dec = 0141 oct = a
+1#    0x62 = 098 dec = 0142 oct = b
+2#    0x63 = 099 dec = 0143 oct = c
+3#    0x0A = 010 dec = 0012 oct = lf
+#+end_example
 

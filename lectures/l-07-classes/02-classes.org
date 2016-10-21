@@ -723,10 +723,12 @@ class baby_class {
    static int count;
 public:
    baby_class() {
-       std::cout << "creating an object. Objects after " << ++count << std::endl;
+       std::cout << "creating an object. Objects after " 
+                 << ++count << std::endl;
    }
    ~baby_class() {
-       std::cout << "destroying object. Objects after this destructor: " << --count << std::endl;
+       std::cout << "destroying object. Objects after this destructor: " 
+                 << --count << std::endl;
    }
    static int instancesCount() { return count; }
 };
