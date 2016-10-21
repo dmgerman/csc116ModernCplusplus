@@ -1,0 +1,412 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: overloading operators
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* Overloading operators
+
+- it is possible to overload most of the operators in C++
+- operators are functions that are called with special syntactic sugar
+  
+** operators are functions
+
+- an operator has a parameter list
+  - these are the operands (unary, binary, ternary)
+- a return value
+  - the result of the operation
+
+**  operators inside classes
+
+- Operators can be defined as members of a class
+  - in that case the first operand is the current object
+
+** Unary operator
+
+Defining a - unary operator
+
+- Returns a new point with the inverted coordinates
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+class Point
+{
+   int x {0};
+   int y {0};
+public:
+   Point(): Point(0,0) {};
+   Point(const Point &n): Point(n.getX(),n.getY()) {};
+   Point(int a,int b): x(a), y(b) {};
+   int getX() const {return x;};
+   int getY() const {return y;};
+   Point operator-() { return Point(-x,-y);};
+};
+
+int main()
+{
+   Point p1(3, 2);
+   Point negp = -p1; // inverts the point
+   std::cout << negp.getX() << " " << negp.getY() << std::endl;
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-3 -2
+#+end_example
+
+** Binary
+
+Example: == operator
+
+compares current object with another one
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+class Point
+{
+   int x {0};
+   int y {0};
+public:
+   Point(): Point(0,0) {};
+   Point(const Point &n): Point(n.getX(),n.getY()) {};
+   Point(int a,int b): x(a), y(b) {};
+   int getX() const {return x;};
+   int getY() const {return y;};
+   bool operator==(const Point other) { return x==other.x && y==other.y;};
+   Point operator-() { return Point(-x,-y);};
+};
+
+int main()
+{
+   Point p1(3, 2);
+   Point p2(5, 0);
+   Point p3(3, 2);
+   bool eq1 = (p1 == p2); // eq1 = p1.compare(p2);
+   bool eq2 = (p1 == p3);
+   std::cout << std::boolalpha << eq1 << std::endl;
+   std::cout << eq2 << std::endl;
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+false
+true
+#+end_example
+
+They don't have to return the typical values
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+class Point
+{
+   int x {0};
+   int y {0};
+public:
+   Point(): Point(0,0) {};
+   Point(const Point &n): Point(n.getX(),n.getY()) {};
+   Point(int a,int b): x(a), y(b) {};
+   int getX() const {return x;};
+   int getY() const {return y;};
+   std::string operator==(const Point other) { 
+     if (x==other.x && y==other.y) 
+       return  "yeah";
+     else
+       return "nop";
+   };
+};
+
+int main()
+{
+   Point p1(3, 2);
+   Point p2(5, 0);
+   Point p3(3, 2);
+   auto eq1 = (p1 == p2);
+   auto eq2 = (p1 == p3);
+   std::cout << eq1 << std::endl;
+   std::cout << eq2 << std::endl;
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+nop
+yeah
+#+end_example
+
+they can also be used to modify the current object
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <set>
+
+class Basket
+{
+   std::set<std::string> bask {};
+public:
+   void operator+(std::string st) { 
+     bask.insert(st);
+   };
+   void operator*() { 
+     for(auto el: bask) {
+        std::cout << "Contains [" << el << "]" << std::endl;
+     }
+   }
+};
+
+int main()
+{
+   Basket b {};
+   b+"potatoes";
+   b+"mushrooms";
+   b+"oil";
+   *b;
+   return 0;
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Contains [mushrooms]
+Contains [oil]
+Contains [potatoes]
+#+end_example
+
+* We can also do fancy things when we return references to this
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <set>
+
+class Basket
+{
+   std::set<std::string> bask {};
+public:
+   Basket &operator+(std::string st) { 
+     bask.insert(st);
+     return *this;
+   };
+   Basket &operator-(std::string st) { 
+     bask.erase(st);
+     return *this;
+   };
+   void operator*() { 
+     for(auto el: bask) {
+        std::cout << "Contains [" << el << "]" << std::endl;
+     }
+   }
+};
+
+int main()
+{
+   Basket b {};
+   b+"potatoes" + "mushrooms" + "oil";
+   // (b+"potatoes") + "mushrooms" + "oil";
+   // (b + "mushrooms") + "oil";
+   // b +  + "oil";
+
+   b-"potatoes";
+   *b;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Contains [mushrooms]
+Contains [oil]
+#+end_example
+
+
+* But we can also add our class to the types that the ostream handles
+
+- remember, ostream is the basic class for output streams
+- the method << must take two arguments, and return the first
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <set>
+
+class Basket
+{
+   std::set<std::string> bask {};
+public:
+   Basket &operator+(std::string st) { 
+     bask.insert(st);
+     return *this;
+   };
+   Basket &operator-(std::string st) { 
+     bask.erase(st);
+     return *this;
+   };
+   std::set<std::string> &getSet() {
+      return bask;
+   } 
+};
+
+// defines an operator that is not part of a class
+std::ostream &operator<< (std::ostream &output, Basket b)
+{
+    for(auto el: b.getSet()) {
+       output << "Contains [" << el << "]" << std::endl;
+    }
+    return output;
+}
+
+int main()
+{
+   Basket b {};
+   b+"potatoes" + "mushrooms" + "oil";
+   b-"potatoes";
+   std::cout << "here is my basket " <<  b;
+   std::cerr << b;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+here is my basket Contains [mushrooms]
+Contains [oil]
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+#include <set>
+
+class Basket
+{
+   std::map<std::string,int> bask {};
+public:
+   Basket &operator-(std::string st) { 
+     bask[st]++;
+     return *this;
+   };
+   Basket &operator+(std::string st) { 
+     bask.erase(st);
+     return *this;
+   };
+   std::map<std::string,int> &getSet() {
+      return bask;
+   } 
+};
+
+// defines an operator that is not part of a class
+std::ostream &operator<< (std::ostream &output, Basket b)
+{
+    for(auto el: b.getSet()) {
+       output << "Contains [" << el.first << "] amount [" << el.second << "]" << std::endl;
+    }
+    return output;
+}
+
+int main()
+{
+   Basket b {};
+   b+"potatoes" + "mushrooms" + "oil";
+   for(int i{};i<10;i++) b+"mushrooms";
+   b-"potatoes";
+   std::cout << b;
+   std::cerr << b;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Contains [potatoes] amount [1]
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+
+class Basket
+{
+   std::map<std::string,int> bask {};
+public:
+   Basket &operator+(std::string st) { 
+     bask[st]++;
+     return *this;
+   };
+   Basket &operator-(std::string st) { 
+     bask.erase(st);
+     return *this;
+   };
+   std::map<std::string,int> &getSet() {
+      return bask;
+   } 
+};
+
+// defines an operator that is not part of a class
+std::ostream &operator<< (std::ostream &output, Basket b)
+{
+    for(auto el: b.getSet()) {
+       output << "Contains [" << el.first << "] amount [" << el.second << "]" << std::endl;
+    }
+    return output;
+}
+
+std::istream &operator>> (std::istream &input, Basket &b)
+{
+   std::string temp;
+   if (getline(input, temp)) {
+      b + temp;
+   }
+   return input;
+}
+
+
+int main()
+{
+   Basket b {};
+   std::ifstream myfile ("groceries2.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+
+   while (!myfile.eof()) {
+      myfile >> b;
+   }
+
+   std::cout << b;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Contains [butter] amount [1]
+Contains [carrots] amount [1]
+Contains [potatoes] amount [2]
+#+end_example
+
