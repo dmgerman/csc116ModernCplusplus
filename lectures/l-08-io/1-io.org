@@ -772,6 +772,9 @@ rice
 
 ** Binary mode is only useful for output and in windows
 
+- Under Windows, default output mode replaces \n with \r
+- If we don't want this conversion, we use binary mode
+
 If you run windows, try the following code. Your output will be different than mine
 then look at the number of bytes used by each file. One is 4 bytes, the other 5 bytes
 
@@ -780,10 +783,7 @@ then look at the number of bytes used by each file. One is 4 bytes, the other 5 
 #include <fstream>
 int main()
 {
-   // make sure the char is one byte before we proceed
-   // without binary
    std::ofstream myfileB ("outputBinary.txt", std::ios::binary);
-   //std::ofstream myfile ("output.txt");
    myfileB << "abc\n" ;
 
    std::ofstream myfile ("output.txt");
