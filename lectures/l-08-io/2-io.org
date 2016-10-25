@@ -1,0 +1,259 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: IO part 2
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* String streams: stringstream
+
+- Sometimes we need to print/read data to strings.
+- Think sprintf/sscanf in C
+
+
+* ostringstreams
+
+- "Output" to a string
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+int main()
+{
+   std::ostringstream ss;
+
+   ss << "This is an example [" << std::setfill('0') << std::setw(10) << 10 << "]" << std::endl;
+
+   std::cout << ss.str() << std::endl;
+
+   // reset the stream if needed
+   ss.str(""); 
+   ss.clear();
+
+   int i = 5;
+   ss << "recover" << std::setfill('0') << std::setw(4) << i << ".txt" << std::endl;
+
+   std::cout << ss.str() << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+This is an example [0000000010]
+
+recover0005.txt
+#+end_example
+
+* istringstream
+
+Reading from a string as if it was standard input
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+int main()
+{
+   std::string st {"This is the end of the world as\n"
+           "we know it\n"
+           "and here it is\n"
+           "one more line"};
+
+   std::cout << st << std::endl;
+
+
+   std::cout << "-------------------------" << std::endl;
+
+   std::istringstream input( st );
+   // reading it
+   while (getline(input, st)) {
+      std::cout << st << std::endl;
+   }
+   
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+This is the end of the world as
+we know it
+and here it is
+one more line
+-------------------------
+This is the end of the world as
+we know it
+and here it is
+one more line
+#+end_example
+
+* Inheritance
+
+
+[[./iostream.gif]]
+
+- Note how cin, ifstream and istringstream are of the same class (istream)
+- Hence we can do this
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+
+void Read_File(std::istream &input)
+{
+  std::string st;
+  while (getline(input, st)) {
+     std::cout << st << std::endl;
+  }
+}
+
+int main()
+{
+
+   std::ifstream in("groceries.txt");
+   if (in.is_open()) {
+      Read_File(in);
+   }
+
+   std::cout << "-------------------------" << std::endl;
+
+   std::string st {"This is the end of the world as\n"
+           "we know it\n"
+           "and here it is\n"
+           "one more line"};
+
+   std::istringstream input (st);
+   // reading it
+   Read_File(input);
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+b	utter potatoes
+rice
+-------------------------
+This is the end of the world as
+we know it
+and here it is
+one more line
+#+end_example
+
+
+* We can reset a stream and read it again
+
+- Using seekg on a stringsstream is *not recommended*
+- it an lead to unexpected errors
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+
+int main()
+{
+
+   std::string st {"0123456789This is the end of the world as\n"
+           "we know it\n"
+           "and here it is\n"
+           "one more line"};
+
+   std::stringstream input (st);
+   
+   // add to the end of the stream
+   std::string st2;
+   while (getline(input, st2)) {
+     std::cout << st2 << std::endl;
+   }
+
+   std::cout << "-------------------------" << std::endl;
+   // rewing the stream
+   input.clear();  // clear endoffile flags
+   input.seekg(10, input.beg);   // jump to char 10 from beginning
+
+   while (getline(input, st2)) {
+     std::cout << st2 << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0123456789This is the end of the world as
+we know it
+and here it is
+one more line
+-------------------------
+This is the end of the world as
+we know it
+and here it is
+one more line
+#+end_example
+
+
+
+
+* We can also combine input and output in a single stream
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+
+int main()
+{
+
+   
+   std::stringstream input {};
+
+   // first write to it
+
+   input << 
+       "This is the end of the world as\n"
+       "we know it\n"
+       "and here it is\n"
+       "one more line";
+   
+   // then read it
+   std::string st2;
+   while (getline(input, st2)) {
+     std::cout << st2 << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+This is the end of the world as
+we know it
+and here it is
+one more line
+#+end_example
+

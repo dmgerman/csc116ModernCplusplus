@@ -1,0 +1,2 @@
+This is an input file.
+It contains various lines.

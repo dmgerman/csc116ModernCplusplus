@@ -1,0 +1,115 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Sequential Containers
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+| array        | Fixed-sized array      | Fast random access                       | Cannot change size                |
+| vector       | Flexible-array.        | Fast random access                       | Fast insert at the back           |
+| string       | Flexible-array (chars) | Fast random access                       | Fast insert at the back           |
+| deque        | double ended queue     | Fast random access                       | Fast insert at front or back      |
+| list         | doubly-linked list     | Only sequential access (both directions) | Fast inserts/deletes at any point |
+| forward_list | singly-linked list     | Only sequential access (one direction)   | Fast inserts/deletes at any point |
+
+All except array provide fast flexible memory management
+
+- Can remove/add elements
+- Each has advantages and disadvantages
+
+* array/vector/string
+
+- elements are in contiguous memory
+- *fast* to access any position
+  - constant time 
+- *slow* to insert in the middle vector/string
+  - if not memory reserved:
+    - allocate memory, copy
+    - proportional to size of array
+  - if memory reserved:
+    - increase size, shift portion of array
+    - on average: proportional to size()/2 
+  - if inserting at end, and memory reserved
+    - constant time
+
+* dequeu
+ - similar to vector/string
+ - but it supports constant insertion at the beginning and end
+
+* list/forward list
+
+- implemented as linked lists
+- elements are scattered in memory: 
+- no support for random access
+  - we need to traverse them to find n-th element
+  - on average, 
+    - if in list: need to traverse size()/2 elements
+    - if not in list: need to traverse all elements
+
+- *fast* to add or remove elements 
+  - if we know the position of the predecessor/successor
+    - allocate memory
+    - update points of previous/next
+  - constant time
+
+* array
+
+- it is intended to replace the C array
+- fast 
+- boundary checks on demand: at() vs []
+
+#+BEGIN_SRC C++
+//use
+std::array<int> myArray(10);
+
+//instead of
+int myArray[10];
+#+END_SRC
+
+* When to use array
+
+- Accessing individual elements by their index
+- Fast to iterate over the elements (linear time)
+- Not need to add/remove elements
+
+* When to use vector
+
+- Accessing individual elements by their index
+- Fast to iterate over the elements (linear time)
+- Add/remove elements to/from its end (constant *amortized* time)
+
+* When to use dequeu
+
+- Same as vector
+- Add/remove elements to/from its beginning or end  
+  (constant *amortized* time)
+
+* When to use List
+
+- Efficient insertion/deletion anywhere (constant time)
+- We can efficiently move a section to another list (splice)
+  - constant time
+  
+* When not to use array
+
+- You need to change the size of the array
+
+* When not to use vector
+
+- Need to insert many times in the middle
+- Need to insert many times in the front
+  - that is why it does not have push_front()
+
+* When not to use a list
+
+- No direct access to specific positions 
+- Sorting list is slower than sorting lists  
+
+
