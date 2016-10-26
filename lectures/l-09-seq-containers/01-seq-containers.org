@@ -10,7 +10,7 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
-
+* Types of sequential containers
 
 | array        | Fixed-sized array      | Fast random access                       | Cannot change size                |
 | vector       | Flexible-array.        | Fast random access                       | Fast insert at the back           |
@@ -24,7 +24,7 @@ All except array provide fast flexible memory management
 - Can remove/add elements
 - Each has advantages and disadvantages
 
-* array/vector/string
+** array/vector/string
 
 - elements are in contiguous memory
 - *fast* to access any position
@@ -39,11 +39,11 @@ All except array provide fast flexible memory management
   - if inserting at end, and memory reserved
     - constant time
 
-* dequeu
+** dequeu
  - similar to vector/string
  - but it supports constant insertion at the beginning and end
 
-* list/forward list
+** list/forward list
 
 - implemented as linked lists
 - elements are scattered in memory: 
@@ -59,7 +59,7 @@ All except array provide fast flexible memory management
     - update points of previous/next
   - constant time
 
-* array
+** array
 
 - it is intended to replace the C array
 - fast 
@@ -73,43 +73,486 @@ std::array<int> myArray(10);
 int myArray[10];
 #+END_SRC
 
-* When to use array
+** When to use array
 
 - Accessing individual elements by their index
 - Fast to iterate over the elements (linear time)
 - Not need to add/remove elements
 
-* When to use vector
+** When not to use array
+
+- You need to change the size of the array
+
+** When to use vector
 
 - Accessing individual elements by their index
 - Fast to iterate over the elements (linear time)
 - Add/remove elements to/from its end (constant *amortized* time)
 
-* When to use dequeu
-
-- Same as vector
-- Add/remove elements to/from its beginning or end  
-  (constant *amortized* time)
-
-* When to use List
-
-- Efficient insertion/deletion anywhere (constant time)
-- We can efficiently move a section to another list (splice)
-  - constant time
-  
-* When not to use array
-
-- You need to change the size of the array
-
-* When not to use vector
+** When not to use vector
 
 - Need to insert many times in the middle
 - Need to insert many times in the front
   - that is why it does not have push_front()
 
-* When not to use a list
+** When to use dequeu
 
-- No direct access to specific positions 
-- Sorting list is slower than sorting lists  
+- Same as vector
+- Add/remove elements to/from its beginning or end  
+  (constant *amortized* time)
+- slightly more expensive than vector
 
+** When to use list/forward_list
+
+- Efficient insertion/deletion anywhere (constant time)
+- We can efficiently move a section to another list (splice)
+  - constant time
+  
+** When not to use a list/forward_list
+
+ - No direct access to specific positions 
+ - forward_list uses slightly less memory than list
+
+
+* Iterators
+
+- The help us traverse sequential containers
+- Fast access to their elements
+- Provide a clean, simple interface to elements of containers, regardless of their actual implementation
+- They are pointers
+- Most common used: begin(), end()
+  - begin() points to first element
+  - end() points one past the last element (not to a real value)
+- We can increment these pointers to access other elements
+
+* Iterator range:
+
+- Pair of iterators: begin(), end()
+- Each iterator points to:
+  - An element
+  - One past the last element
+- in mathematical terms it is a range: [begin,end)
+- called left inclusive interval
+
+* Left-inclusive-ranges
+
+- if begin() equal end(), range is empty
+- if we increment begin(), we will eventually reach end()
+
+- the following is always guaranteed to work 
+
+#+BEGIN_SRC C++
+// begin and end are a left-inclusive interval
+
+for (auto it= begin; it!=c.end;it++) {
+   *it ; // current element
+   it++;
+}
+#+END_SRC
+
+** Examples
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec1{1,2,3,4,5}; // initialize to specific values
+   
+   std::cout << "First : " << *vec1.begin() << std::endl;
+   std::cout << "Second : " << *(vec1.begin()+1) << std::endl;
+   std::cout << "Third : " << *(vec1.begin()+2) << std::endl;
+   std::cout << "Last : " << *(vec1.end()-1) << std::endl;
+   std::cout << "Last +1 : " << *(vec1.end()) << std::endl;
+   // program might crash at this point
+   std::cout << "Last +1000 : " << *(vec1.end()+999) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+First : 1
+Second : 2
+Third : 3
+Last : 5
+Last +1 : 0
+Last +1000 : 0
+#+end_example
+
+We can use the iterator to print to traverse the array
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec1{1,2,3,4,5}; // initialize to specific values
+   // this works because all elements are guaranteed to be contiguous
+   for (auto it = vec1.begin(); it != vec1.end(); it++) {
+       std::cout << "Position : " << it - vec1.begin()
+                 << " Values : " << *it << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Position : 0 Values : 1
+Position : 1 Values : 2
+Position : 2 Values : 3
+Position : 3 Values : 4
+Position : 4 Values : 5
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <deque>
+
+int main()
+{
+   std::deque<int> q{1,2,3,4,5}; // initialize to specific values
+   // this works because all elements are guaranteed to be contiguous
+   q.push_front(0);
+   q.push_front(-1);
+   for (auto it = q.begin(); it!= q.end(); it++) {
+       std::cout << "Position : " << it - q.begin()
+                 << " Values : " << *it << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Position : 0 Values : -1
+Position : 1 Values : 0
+Position : 2 Values : 1
+Position : 3 Values : 2
+Position : 4 Values : 3
+Position : 5 Values : 4
+Position : 6 Values : 5
+#+end_example
+
+
+List:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <list>
+
+int main()
+{
+   std::list<int> li{1,2,3,4,5}; // initialize to specific values
+   
+
+   for (auto it = li.begin(); it != li.end(); it++) {
+       // it - li(begin() does not compile
+       //  list iterators do not define the - operator
+       std::cout << "Values : " << *it << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Values : 1
+Values : 2
+Values : 3
+Values : 4
+Values : 5
+#+end_example
+
+** Type
+
+containertype<type_element>::iterator 
+
+Easier to use auto
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <list>
+
+int main()
+{
+   std::list<int> li{1,2,3,4,5}; // initialize to specific values
+   
+   std::list<int>::iterator it;
+
+   for (it = li.begin(); it != li.end(); it++) {
+       auto it2 = it;
+
+       // it - li(begin() does not compile
+       //  list iterators do not define the - operator
+       std::cout << "Values : " << *it2 << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Values : 1
+Values : 2
+Values : 3
+Values : 4
+Values : 5
+#+end_example
+
+** reverse iterators
+
+they go *backwards*
+
+- regin()
+- rend()
+
+- notice the use of + to move backwards
+- use of - to move forward!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+int main()
+{
+   std::vector<int> vec1{1,2,3,4,5}; // initialize to specific values
+   
+   std::cout << "Last : " << *vec1.rbegin() << std::endl;
+   std::cout << "Second to last : " << *(vec1.rbegin()+1) << std::endl;
+   std::cout << "Third to last: " << *(vec1.rbegin()+2) << std::endl;
+   std::cout << "First : " << *(vec1.rend()-1) << std::endl;
+   // vec1.rend() points to before vector!
+   std::cout << "rend : " << *vec1.rend() << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Last : 5
+Second to last : 4
+Third to last: 3
+First : 1
+rend : 0
+#+end_example
+
+* We can modify elements directly using iterators
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+void print(std::vector<int> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<int> vec{1,2,3,4,5}; // initialize to specific values
+   
+   print(vec);
+   *(vec.begin()) = -1;
+   *(vec.begin()+2) = -4;
+   *(vec.end()-1) = 0;
+
+   print(vec);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 4: 5: 
+Container: -1: 2: -4: 4: 0:
+#+end_example
+
+** But we also have const iterators that do not allow modification, only access
+
+type 
+
+containertype<type_element>::const_iterator 
+
+
+- cbegin()
+- cend()
+- crbegin()
+- crend()
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+void print(std::vector<int> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<int> vec{1,2,3,4,5}; // initialize to specific values
+   
+   
+   std::cout << *vec.cbegin() << std::endl;
+   std::cout << *(vec.cend()-1) << std::endl;
+   
+   std::cout << *vec.rbegin() << std::endl;
+   std::cout << *(vec.rend()-1) << std::endl;
+// 
+// this will not work. We cannot modify via a const iterator
+//   *(vec.cbegin()) = -1;
+   
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+
+* Construction
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <list>
+
+void print(std::vector<int> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<int> vec; // creates an container vector
+   std::vector<int> vec2{1,2,3}; // initialize to specific values
+   std::vector<int> vec3(vec2); // creates a copy of another container (same type)
+   
+   print(vec);
+   print(vec2);
+   print(vec3);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 
+Container: 1: 2: 3: 
+Container: 1: 2: 3:
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <list>
+#include <list>
+
+void print(std::list<int> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::list<int> l; // creates an container list
+   std::list<int> l2{1,2,3}; // initialize to specific values
+   std::list<int> l3(l2); // creates a copy of another container (same type)
+   
+   print(l);
+   print(l2);
+   print(l3);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 
+Container: 1: 2: 3: 
+Container: 1: 2: 3:
+#+end_example
+
+*** We can construct using iterators
+
+constructor(begin, end);
+-  end points to the element  NOT copied
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <list>
+
+void print(std::vector<char> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<char> vec {'a','b','c','d','e'};
+   //copies from 2nd element, just before 4th element
+   std::vector<char> vec2(vec.begin()+2, vec.begin()+4); 
+   
+   print(vec);
+   print(vec2);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: a: b: c: d: e: 
+Container: c: d:
+#+end_example
+
+*** We can use iterators to copy from one type of container to another!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <list>
+#include <deque>
+
+template <class T>
+void print(T &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<char> vec {'a','b','c','d','e'};
+   //copies from 2nd element, just before 4th element
+   std::list<char> li(vec.begin()+2, vec.begin()+2); 
+   // copy all list to dqueue
+   std::deque<char> q(li.begin(), li.end()); 
+   
+   std::cout << "Vector:" << std::endl;
+   print(vec);
+   std::cout << "List:" << std::endl;
+   print(li);
+   std::cout << "DQueue:" << std::endl;
+   print(q);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Vector:
+Container: a: b: c: d: e: 
+List:
+Container: 
+DQueue:
+Container:
+#+end_example
 
