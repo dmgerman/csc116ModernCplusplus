@@ -102,11 +102,15 @@ one more line
 
 * Inheritance
 
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 1500)
+#+END_SRC
+
 
 [[./iostream.gif]]
 
 - Note how cin, ifstream and istringstream are of the same class (istream)
-- Hence we can do this
+- Hence we can write a function that takes as a parameter a istream
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -162,7 +166,8 @@ one more line
 * We can reset a stream and read it again
 
 - Using seekg on a stringsstream is *not recommended*
-- it an lead to unexpected errors
+- it can create to unexpected behaviour
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
