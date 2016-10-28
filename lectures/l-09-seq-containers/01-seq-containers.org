@@ -427,6 +427,47 @@ int main()
 
 * Construction
 
+** Array is different
+
+Its constructor syntax is different than the rest of the containers
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <array>
+
+
+void print(std::array<int,4> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+void print10(std::array<int,10> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+void printchar(std::array<char,3> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::array<int,4> a1 {1,2,3,4};
+   std::array<char,3> a2 {'a','b','c'};
+// this would be invalid: we must initalize at most the number we request
+//   std::array<char,3> a2 {'a','b','c','d'};
+// rest set to zero
+   std::array<int,10> a3 {1,2}; 
+
+   print(a1);
+   printchar(a2);
+   print10(a3);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 4: 
+Container: a: b: c: 
+Container: 1: 2: 0: 0: 0: 0: 0: 0: 0: 0:
+#+end_example
+
+** the rest can be initialized as we have seen before
+
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
@@ -484,10 +525,10 @@ Container: 1: 2: 3:
 Container: 1: 2: 3:
 #+end_example
 
-*** We can construct using iterators
+** We can construct using iterators copying elements from another collection
 
-constructor(begin, end);
--  end points to the element  NOT copied
+- constructor(begin, end);
+- end points to the element  NOT copied
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -524,7 +565,7 @@ Container: c: d:
 #include <list>
 #include <deque>
 
-template <class T>
+toemplate <class T>
 void print(T &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
 
 int main()
@@ -543,7 +584,6 @@ int main()
    print(q);
    return 0;
 }
-
 #+END_SRC
 
 #+RESULTS:
@@ -554,5 +594,98 @@ List:
 Container: 
 DQueue:
 Container:
+#+end_example
+
+* Common operations
+
+the following operations all create the object to be inserted (it is a copy of the parameter)
+
+| name                 | description                                                     | return type |
+|----------------------+-----------------------------------------------------------------+-------------|
+| push_back(el)        | inserts el at the end of the collection.                        | void        |
+| push_front(el)       | inserts el at the beginning of the collection                   | void        |
+| insert(it, el)       | inserts el before the given iterator it position                | iterator    |
+| insert(it1, itb, ite | inserts  before it1 copies of the values in the range [itb,ite) | iterator    |
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+#include <deque>
+
+template <class T>
+void print(std::string name, T &v) { std::cout << name + ": "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::vector<char> vec {'a','b','c','d','e'};
+   //copies from 2nd element, just before 4th element
+   std::list<char> li {'x','y','z'};
+   
+   vec.push_back('9');
+   //vec.push_front('9'); vector does not implment push_front
+   li.push_front('w');
+   li.push_back('0');
+   
+   print("vector", vec);
+   print("list", li);
+
+   auto it = li.begin();
+
+   vec.insert(vec.begin()+ 1, '-');
+// this is not allowed for lists
+// li.insert(li.begin() + 1, '-');
+   li.insert(++it,'-');
+
+   print("vector2", li);
+   print("list2", li);
+
+   li.insert(li.end(), vec.begin()+2, vec.end());
+
+   print("list3", li);
+
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+vector: a: b: c: d: e: 9: 
+list: w: x: y: z: 0: 
+vector2: w: -: x: y: z: 0: 
+list2: w: -: x: y: z: 0: 
+list3: w: -: x: y: z: 0: b: c: d: e: 9:
+#+end_example
+
+Taking advantage that insert returns an in iterator
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+#include <list>
+#include <deque>
+
+template <class T>
+void print(std::string name, T &v) { std::cout << name + ": "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+
+int main()
+{
+   std::deque<int> d {};
+   
+   auto it = d.begin();
+   for(int i=0;i<5;i++) {
+       it = d.insert(it, i);
+   } 
+   print("dequeue", d);
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+dequeue: 4: 3: 2: 1: 0:
 #+end_example
 

@@ -1,0 +1,347 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Object Oriented Programming
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Inheritance
+
+- one of the major advantages of Object Oriented Programming (OOP) is the ability to define classes in terms of other classes.
+- A class can *inherit* properties from one or more other classes
+- The parent class is called the *base* class
+- The child class is called the *derived* class
+
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   private:
+      std::string name;
+   public:
+      std::string getName() { return name; };
+      void setName(std::string _name) { name = _name;};
+};
+
+// Derived class
+class B: public A {
+   public:
+      void Greeting() { std::cout << "Hello. I am " << getName() << std::endl; }
+};
+
+int main(void) {
+   
+   B b;
+   b.setName("Bob");
+
+   b.Greeting();
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hello. I am Bob
+#+end_example
+
+* A derived class is defined as:
+
+#+BEGIN_SRC C++
+class <derived_class>: <access_control> <base_class> {
+   // new methods and constructors to derived class
+};
+#+END_SRC
+
+* Access control
+
+Access control  of a derived class determines whether it has access to its
+parent methods/attributes
+
+| Access          | public | protected | private |
+|-----------------+--------+-----------+---------|
+| Same class      | yes    | yes       | yes     |
+| Derived classes | yes    | yes       | no      |
+| Outside classes | yes    | no        | no      |
+
+
+* Example: 
+
+A derived class *does not* have access to the private method/attributes of the base class
+
+- name is inaccessible in B
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   private:
+      std::string name;
+   public:
+      std::string getName() { return name; };
+      void setName(std::string _name) { name = _name;};
+};
+
+// Derived class
+class B: public A {
+   public:
+      void Greeting() {
+          std::cout << "Hello. I am "
+//                  << name  // this would not compile. method is inaccessible
+                    << getName()
+                    << std::endl; }
+};
+
+int main(void) {
+   
+   B b;
+   b.setName("Bob");
+
+   b.Greeting();
+
+   return 0;
+}
+
+#+END_SRC
+
+But if we define name as protected:
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   protected:
+      std::string name;
+   public:
+      std::string getName() { return name; };
+      void setName(std::string _name) { name = _name;};
+};
+
+// Derived class
+class B: public A {
+   public:
+      void Greeting() {
+          std::cout << "Hello. I am "
+                    << name  // this would not compile. method is inaccessible
+                    << std::endl; }
+};
+
+int main(void) {
+   
+   B b;
+   b.setName("Bob");
+   // b.name;  // we still cannot access name outside the derived classes
+   b.Greeting();
+
+   return 0;
+}
+
+#+END_SRC
+
+* Another example:
+
+- Overriding some methods of the base class
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   protected:
+      std::string name;
+   public:
+      std::string getName() { return name; };
+      void setName(std::string _name) { name = _name;};
+      void Greeting() {
+          std::cout << "Hello. I am "
+                    << getName()
+                    << std::endl; }
+};
+
+// Derived class
+class B: public A {
+   public:
+      std::string getName() { return "little" + name; };
+};
+
+int main(void) {
+   
+   B b;
+   b.setName("Bob");
+   // b.name;  // we still cannot access name outside the derived classes
+   std::cout << "Hi! I am " <<  b.getName() << std::endl;
+   b.Greeting();
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hi! I am littleBob
+Hello. I am Bob
+#+end_example
+
+- In this case, getName() is overridden. 
+- However Greeting() didn't change.
+- It used the getName() of the base class A
+
+** Virtual
+
+- If we want to replace the getName() of the base class we must use *virtual*
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   protected:
+      std::string name;
+   public:
+      virtual std::string getName() { return name; };
+      void setName(std::string _name) { name = _name;};
+      void Greeting() {
+          std::cout << "Hello. I am "
+                    << getName()
+                    << std::endl; }
+};
+
+// Derived class
+class B: public A {
+   public:
+      std::string getName() { return "little" + name; };
+};
+
+int main(void) {
+   
+   B b;
+   b.setName("Bob");
+   // b.name;  // we still cannot access name outside the derived classes
+   std::cout << "Hi! I am " <<  b.getName() << std::endl;
+   b.Greeting();
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hi! I am littleBob
+Hello. I am littleBob
+#+end_example
+
+* Constructors
+
+A derived base can reuse the constructors of the parent class:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+   protected:
+      std::string name;
+   public:
+      A(std::string _name): name(_name) {};
+      virtual std::string getName() { return name; };
+      void Greeting() {
+          std::cout << "Hello. I am "
+                    << getName()
+                    << std::endl; }
+};
+
+// Derived class
+class B: public A {
+      std::string prefix {"little"};
+   public:
+      B(std::string _name, std::string _prefix="jr"): A(_name) {
+          prefix = _prefix;
+      }; // call constructor of 
+      std::string getName() { return prefix + " " + name; };
+};
+
+int main(void) {
+   
+   B b("Mary");
+   
+   b.Greeting();
+
+   B c("Johnny","little");
+   c.Greeting();
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hello. I am jr Mary
+Hello. I am little Johnny
+#+end_example
+
+* We can also call the methods of the base class directly
+
+- use <baseclass>::<method> 
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+ 
+// Base class
+class A  {
+      std::string name;
+   public:
+      A(std::string _name): name(_name) {};
+      virtual std::string getName() { return name; };
+      void Greeting() {
+          std::cout << "Hello. I am "
+                    << getName()
+                    << std::endl; }
+};
+
+// Derived class
+class B: public A {
+      std::string prefix {"little"};
+   public:
+      B(std::string _name, std::string _prefix="jr"): A(_name) {
+          prefix = _prefix;
+      }; // call constructor of 
+      std::string getName() { return prefix + " " + A::getName(); };
+};
+
+int main(void) {
+   
+   B c("Johnny","little");
+   c.Greeting();
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hello. I am little Johnny
+#+end_example
+
