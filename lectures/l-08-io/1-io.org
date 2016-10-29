@@ -680,7 +680,7 @@ int main()
 - use tellg to know the offset of the end of file
 - this is the size of the file in bytes
 - use a vector to read the file from the current position until end of file
-- but be careful, streams "skip" some characters
+- but you are responsible to make sure the vector has been resized to the number of bytes you are going to read
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>

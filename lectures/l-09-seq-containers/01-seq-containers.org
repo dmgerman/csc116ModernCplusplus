@@ -502,7 +502,12 @@ Container: 1: 2: 3:
 #include <list>
 #include <list>
 
-void print(std::list<int> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+void print(std::list<int> &v) { 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+     std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
 
 int main()
 {
@@ -565,23 +570,34 @@ Container: c: d:
 #include <list>
 #include <deque>
 
-toemplate <class T>
-void print(T &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+template <class T>
+void print(T &v) 
+{ 
+    std::cout << "Container: ";
+    for(auto el: v)
+        std::cout << el << ": " ;
+    std::cout << std::endl;
+}
 
 int main()
 {
    std::vector<char> vec {'a','b','c','d','e'};
    //copies from 2nd element, just before 4th element
-   std::list<char> li(vec.begin()+2, vec.begin()+2); 
+   std::list<char> li(vec.begin()+2, vec.begin()+3); 
    // copy all list to dqueue
-   std::deque<char> q(li.begin(), li.end()); 
-   
+   std::deque<char> q(vec.begin(), vec.end()); 
+   // but you are responsible for making sure you pass the right end iterator
+   std::vector<char> vec2(vec.begin(), vec.begin()+20); 
+
+
    std::cout << "Vector:" << std::endl;
    print(vec);
    std::cout << "List:" << std::endl;
    print(li);
    std::cout << "DQueue:" << std::endl;
    print(q);
+   std::cout << "Vector2:" << std::endl;
+   print(vec2);
    return 0;
 }
 #+END_SRC
@@ -591,10 +607,13 @@ int main()
 Vector:
 Container: a: b: c: d: e: 
 List:
-Container: 
+Container: c: 
 DQueue:
-Container:
+Container: a: b: c: d: e: 
+Vector2:
+Container: a: b: c: d: e:  :  :  :  :  :  :  :  :  :  :  :  :  :  :  :
 #+end_example
+
 
 * Common operations
 

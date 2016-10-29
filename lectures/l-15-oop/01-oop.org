@@ -118,6 +118,11 @@ int main(void) {
 
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+Hello. I am Bob
+#+end_example
+
 But if we define name as protected:
 
 
