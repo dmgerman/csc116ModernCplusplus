@@ -10,6 +10,64 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+* Conversions
+
+| std::to_string(val)   | Converts numeric value to a string                                        |
+| std::stoi(st, pt, b)  | returns the numeric presentation of the beginning of string in given base |
+| std::stol(st, pt, b)  |                                                                           |
+| std::stoll(st, pt, b) |                                                                           |
+| std::stof(st, pt, b)  | returns the numeric presentation of the beginning of string               |
+| std::stod(st, pt, b)  |                                                                           |
+| std::stold(st, pt, b) |                                                                           |
+
+- The last 6 functions set the pointer to the position after the number
+- b is a given base
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   std::string st {};
+
+   st = std::to_string(10789) +  "ABC";
+
+   std::cout << "String: " << st << std::endl;
+
+   int i;
+   int j;
+   int k;
+   int l;
+   size_t posI;
+   size_t posJ;
+   size_t posK;
+   size_t posL;
+
+   i = std::stoi(st, &posI, 10);
+   j = std::stoi(st, &posJ, 8);
+   k = std::stoi(st, &posK, 16);
+   l = std::stoi(st, &posL, 2);
+
+   std::cout << "i: " << i << " Pos: "<< posI << std::endl;
+   std::cout << "j: " << j << " Pos: "<< posJ<< std::endl;
+   std::cout << "k: " << k << " Pos: "<< posK<< std::endl;
+   std::cout << "l: " << l << " Pos: "<< posL<< std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+String: 10789ABC
+i: 10789 Pos: 5
+j: 71 Pos: 3
+k: 276339388 Pos: 8
+l: 2 Pos: 2
+#+end_example
+
+
 * Additional string constructors
 
 The constructor will have different behaviour depending on the data type we use:
@@ -64,4 +122,4 @@ In addition to the iterators versions (see insert/erase in containers)
 | st.insert(pos, st2) | Insert st at position pos                    |
 | st.erase(pos, len)  | erase at position pos at most len characters |
 
-* find
+
