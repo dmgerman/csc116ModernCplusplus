@@ -123,3 +123,76 @@ In addition to the iterators versions (see insert/erase in containers)
 | st.erase(pos, len)  | erase at position pos at most len characters |
 
 
+
+* find
+
+find() returns a position in the string if the parameter is found
+string::npos otherwise
+
+| st.find(st2)| returns the position where st2 is found, if it exists|
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>  
+
+int main ()
+{
+  std::string str ("This is the sea");
+  std::string str2 ("is");
+
+  // different member versions of find in the same order as above:
+  std::size_t found = str.find(str2);
+  if (found!=std::string::npos)
+    std::cout << "Found at: " << found << '\n';
+
+  found=str.find("is",found+1);
+  if (found!=std::string::npos)
+    std::cout << "second 'is found at: " << found << '\n';
+
+  return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Found at: 2
+second 'is found at: 5
+#+end_example
+
+
+
+* rfind
+
+rfind() searches backwards
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>  
+
+int main ()
+{
+  std::string str ("This is the sea");
+  std::string str2 ("is");
+
+  // different member versions of find in the same order as above:
+  std::size_t found = str.rfind(str2);
+  if (found!=std::string::npos)
+    std::cout << "Found at: " << found << '\n';
+
+  found=str.rfind("is",found-1);
+  if (found!=std::string::npos)
+    std::cout << "second 'is found at: " << found << '\n';
+
+  return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Found at: 5
+second 'is found at: 2
+#+end_example
+
