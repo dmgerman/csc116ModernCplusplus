@@ -1,0 +1,145 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Associative containers
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* When to use map/set vs unordered map/set
+
+** maps/set
+
+- maps are maintained in order
+- the cost of insertion is log(n)
+  - the map should be kept in order
+- the cost of searching for a particular value is log(n)
+
+- benefit: data in in order
+
+** unordered map/unordered set
+
+- implemented as hash tables
+- amortized constant cost for insertions/deletions/searches
+
+- data is not kept in order
+
+
+From: http://kohei.us/2010/03/31/stl-container-performance-on-data-insertion/
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <vector>
+#include <unordered_set>
+#include <set>
+#include <list>
+ 
+#include <stdio.h>
+#include <string>
+#include <sys/time.h>
+ 
+using namespace std;
+ 
+namespace {
+ 
+class StackPrinter
+{
+public:
+    explicit StackPrinter(const char* msg) :
+        msMsg(msg)
+    {
+        fprintf(stdout, "%s: --begin\n", msMsg.c_str());
+        mfStartTime = getTime();
+    }
+ 
+    ~StackPrinter()
+    {
+        double fEndTime = getTime();
+        fprintf(stdout, "%s: --end (duration: %g sec)\n", msMsg.c_str(), (fEndTime-mfStartTime));
+    }
+ 
+    void printTime(int line) const
+    {
+        double fEndTime = getTime();
+        fprintf(stdout, "%s: --(%d) (duration: %g sec)\n", msMsg.c_str(), line, (fEndTime-mfStartTime));
+    }
+ 
+private:
+    double getTime() const
+    {
+        timeval tv;
+        gettimeofday(&tv, NULL);
+        return tv.tv_sec + tv.tv_usec / 1000000.0;
+    }
+ 
+    ::std::string msMsg;
+    double mfStartTime;
+};
+ 
+}
+ 
+int main()
+{
+    size_t store_size = 10000000;
+    {
+        StackPrinter __stack_printer__("vector non-reserved");
+        string* ptr = 0x00000000;
+        vector<void*> store;
+        for (size_t i = 0; i < store_size; ++i)
+            store.push_back(ptr++);
+    }
+ 
+    {
+        StackPrinter __stack_printer__("vector reserved");
+        string* ptr = 0x00000000;
+        vector<void*> store;
+        store.reserve(store_size);
+        for (size_t i = 0; i < store_size; ++i)
+            store.push_back(ptr++);
+    }
+ 
+    {
+        StackPrinter __stack_printer__("list");
+        string* ptr = 0x00000000;
+        list<void*> store;
+        for (size_t i = 0; i < store_size; ++i)
+            store.push_back(ptr++);
+    }
+ 
+    {
+        StackPrinter __stack_printer__("set");
+        string* ptr = 0x00000000;
+        set<void*> store;   
+        for (size_t i = 0; i < store_size; ++i)
+            store.insert(ptr++);
+    }
+ 
+    {
+        StackPrinter __stack_printer__("unordered set");
+        string* ptr = 0x00000000;
+        unordered_set<void*> store;
+        for (size_t i = 0; i < store_size; ++i)
+            store.insert(ptr++);
+    }
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+vector non-reserved: --begin
+vector non-reserved: --end (duration: 0.213416 sec)
+vector reserved: --begin
+vector reserved: --end (duration: 0.173853 sec)
+list: --begin
+list: --end (duration: 0.813498 sec)
+set: --begin
+set: --end (duration: 11.4212 sec)
+unordered set: --begin
+unordered set: --end (duration: 5.45165 sec)
+#+end_example
+

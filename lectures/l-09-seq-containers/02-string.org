@@ -1,0 +1,67 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: std::string
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+* Additional string constructors
+
+The constructor will have different behaviour depending on the data type we use:
+
+| string(Cstring, n)         | returns a string with the first n chars of C style string        |
+| string(Cppstring, pos)     | returns a string from position pos of std::string                |
+| string(Cppstring, pos,len) | returns a string from position pos of std::string of at most len |
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+int main()
+{
+   // if we pass a C type string
+   // copy only first n characters
+   std::string st("abcdefghijklmnopr",10); 
+   std::cout << st << std::endl;
+
+   // st now contains abcdefghijk
+   // passsing a string copies from the given location
+   std::string st2(st,3); 
+   std::cout << st2 << std::endl;
+
+   // you can also select a number of characters to copy
+   std::string st3(st,3,2); 
+   std::cout << st3 << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+abcdefghij
+defghij
+de
+#+end_example
+
+
+* substr
+
+Given a string st
+
+| st.substr(pos, len) | returns a string from position pos of maximum length len|
+
+
+* insert/erase
+
+In addition to the iterators versions (see insert/erase in containers)
+
+
+| st.insert(pos, st2) | Insert st at position pos                    |
+| st.erase(pos, len)  | erase at position pos at most len characters |
+
+* find

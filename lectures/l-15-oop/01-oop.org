@@ -160,6 +160,11 @@ int main(void) {
 
 #+END_SRC
 
+#+RESULTS:
+#+begin_example
+Hello. I am Bob
+#+end_example
+
 * Another example:
 
 - Overriding some methods of the base class
@@ -258,7 +263,7 @@ Hello. I am littleBob
 
 * Constructors
 
-A derived base can reuse the constructors of the parent class:
+A derived class can reuse the constructors of the parent class:
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -332,8 +337,12 @@ class B: public A {
    public:
       B(std::string _name, std::string _prefix="jr"): A(_name) {
           prefix = _prefix;
-      }; // call constructor of 
-      std::string getName() { return prefix + " " + A::getName(); };
+      };
+
+      // define getName  using the getName of class A
+      std::string getName() { 
+          return prefix + " " + A::getName();
+      };
 };
 
 int main(void) {

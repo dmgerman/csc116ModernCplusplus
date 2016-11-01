@@ -619,12 +619,12 @@ Container: a: b: c: d: e:  :  :  :  :  :  :  :  :  :  :  :  :  :  :  :
 
 the following operations all create the object to be inserted (it is a copy of the parameter)
 
-| name                 | description                                                     | return type |
-|----------------------+-----------------------------------------------------------------+-------------|
-| push_back(el)        | inserts el at the end of the collection.                        | void        |
-| push_front(el)       | inserts el at the beginning of the collection                   | void        |
-| insert(it, el)       | inserts el before the given iterator it position                | iterator    |
-| insert(it1, itb, ite | inserts  before it1 copies of the values in the range [itb,ite) | iterator    |
+| name                  | description                                                     | return type |
+|-----------------------+-----------------------------------------------------------------+-------------|
+| push_back(el)         | inserts el at the end of the collection.                        | void        |
+| push_front(el)        | inserts el at the beginning of the collection                   | void        |
+| insert(it, el)        | inserts el before the given iterator it position                | iterator    |
+| insert(it1, itb, ite) | inserts  before it1 copies of the values in the range [itb,ite) | iterator    |
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -678,7 +678,7 @@ list2: w: -: x: y: z: 0:
 list3: w: -: x: y: z: 0: b: c: d: e: 9:
 #+end_example
 
-Taking advantage that insert returns an in iterator
+Taking advantage that insert returns an iterator
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -706,5 +706,194 @@ int main()
 #+RESULTS:
 #+begin_example
 dequeue: 4: 3: 2: 1: 0:
+#+end_example
+
+* Accessing elements
+
+Assuming c is a container
+
+| c.back()  | Last element                         |
+| c.front() | first element. Equivalent to c.at(0) |
+
+These does not work for list and forward_list
+
+| c[n]    | Access n-th element of the (0-based) |
+| c.at(n) | Same as c[n] but with boundary checks |
+
+All of them return references:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> v {10,11,12,13};
+
+   v.front() = 0;
+   v.at(1) = 1;
+   v[2] = 2;
+   v.back() = 3;
+
+   for (auto el: v) {
+      std::cout << el << std::endl;
+   } 
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0
+1
+2
+3
+#+end_example
+
+
+* Removing elements
+
+Assuming c is a container 
+
+| c.pop_back()      | removes last element. Not valid for forward_list               |
+| c.pop_front()     | removes first element. Not valid for vector, string            |
+| c.erase(it)       | removes element pointed to by iterator it                      |
+| c.erase(itb, ite) | removes elements from iterator itb to just before iterator ite |
+| c.clear()         | clear the container                                            |
+
+* Resizing a container
+
+
+Assuming c is a container
+
+| c.resize(n)   | resize to given number. if n < c.size(), it truncates the container |
+| c.resize(n,v) | any elements added have value v                                     |
+
+* find
+
+find() returns a position in the string if the parameter is found
+string::npos otherwise
+
+| st.find(st2)| returns the position where st2 is found, if it exists|
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>  
+
+int main ()
+{
+  std::string str ("This is the sea");
+  std::string str2 ("is");
+
+  // different member versions of find in the same order as above:
+  std::size_t found = str.find(str2);
+  if (found!=std::string::npos)
+    std::cout << "Found at: " << found << '\n';
+
+  found=str.find("is",found+1);
+  if (found!=std::string::npos)
+    std::cout << "second 'is found at: " << found << '\n';
+
+  return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Found at: 2
+second 'is found at: 5
+#+end_example
+
+* rfind
+
+rfind() searches backwards
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>  
+
+int main ()
+{
+  std::string str ("This is the sea");
+  std::string str2 ("is");
+
+  // different member versions of find in the same order as above:
+  std::size_t found = str.rfind(str2);
+  if (found!=std::string::npos)
+    std::cout << "Found at: " << found << '\n';
+
+  found=str.rfind("is",found-1);
+  if (found!=std::string::npos)
+    std::cout << "second 'is found at: " << found << '\n';
+
+  return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Found at: 5
+second 'is found at: 2
+#+end_example
+
+* Conversions
+
+| std::to_string(val)   | Converts numeric value to a string                                        |
+| std::stoi(st, pt, b)  | returns the numeric presentation of the beginning of string in given base |
+| std::stol(st, pt, b)  |                                                                           |
+| std::stoll(st, pt, b) |                                                                           |
+| std::stof(st, pt, b)  | returns the numeric presentation of the beginning of string               |
+| std::stod(st, pt, b)  |                                                                           |
+| std::stold(st, pt, b) |                                                                           |
+
+- The last 6 functions set the pointer to the position after the number
+- b is a given base
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   std::string st {};
+
+   st = std::to_string(10789) +  "ABC";
+
+   std::cout << "String: " << st << std::endl;
+
+   int i;
+   int j;
+   int k;
+   int l;
+   size_t posI;
+   size_t posJ;
+   size_t posK;
+   size_t posL;
+
+   i = std::stoi(st, &posI, 10);
+   j = std::stoi(st, &posJ, 8);
+   k = std::stoi(st, &posK, 16);
+   l = std::stoi(st, &posL, 2);
+
+   std::cout << "i: " << i << " Pos: "<< posI << std::endl;
+   std::cout << "j: " << j << " Pos: "<< posJ<< std::endl;
+   std::cout << "k: " << k << " Pos: "<< posK<< std::endl;
+   std::cout << "l: " << l << " Pos: "<< posL<< std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+String: 10789ABC
+i: 10789 Pos: 5
+j: 71 Pos: 3
+k: 276339388 Pos: 8
+l: 2 Pos: 2
 #+end_example
 
