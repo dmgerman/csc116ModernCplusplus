@@ -10,6 +10,52 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 1200)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1200
+#+end_example
+
+
+* maps and sets come in two versions
+ 
+  - ordered: map/set
+  - unordered: unordered_map/unordered_set
+
+
+* Requirements on the elements that are inserted 
+
+** For map/set
+
+  - elements should be comparable with operator <
+  
+
+** for unordered_map/unordered_set
+
+  - elements should be comparable with the operator ==
+   
+* Data structured used for ordered map/set
+
+Trees:
+
+
+[[./1000px-Red-black_tree_example.svg.png]]
+
+
+
+- Depth of tree is order log(n)
+- Cost of search/insertion/deletion is log(n)
+- Data is kept in order
+
+* Data structure used for unordered map/set
+
+[[./hash-table.png]]
+
+- Amortized constant insertion/deletion/lookup times
+- Incapable of ordered access
 
 
 * When to use map/set vs unordered map/set
@@ -30,8 +76,17 @@
 
 - data is not kept in order
 
+* Testing how fast each container is
 
 From: http://kohei.us/2010/03/31/stl-container-performance-on-data-insertion/
+
+This program testes the speed of insertion into each container:
+
+- vector
+- vector but spaced is reserved in advance
+- list
+- set
+- unordered set
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <vector>
@@ -142,4 +197,17 @@ set: --end (duration: 11.4212 sec)
 unordered set: --begin
 unordered set: --end (duration: 5.45165 sec)
 #+end_example
+
+- set took twice the speed of unordered set
+- vector is the fastest
+
+* When to use ordered/unordered
+
+- Always use unordered set/map unless it is important to have it in order
+
+
+  
+
+
+
 
