@@ -1,0 +1,1055 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Algorithms
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+
+* The algorithms library
+
+- This is a small set of functions that can operate on any container
+- They solve very common programming problems
+
+
+* Example: find
+
+- works for any sequential collection
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+int main()
+{
+//   std::vector<int> coll{2,4,5,10,19,-3};
+//   std::list<int> coll{2,4,5,10,19,-3};
+   std::deque<int> coll{2,4,5,10,19,-3};
+
+
+   for(int i=0;i<10;i++) {
+      auto result = std::find(coll.cbegin(), coll.cend(), i);
+      std::cout << "Value " << i << " " ;
+      if (result != coll.cend()) {
+          std::cout << "was found " << *result  << std::endl;
+      } else {
+          std::cout << "was NOT found " << std::endl;
+      }
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value 0 was NOT found 
+Value 1 was NOT found 
+Value 2 was found 2
+Value 3 was NOT found 
+Value 4 was found 4
+Value 5 was found 5
+Value 6 was NOT found 
+Value 7 was NOT found 
+Value 8 was NOT found 
+Value 9 was NOT found
+#+end_example
+
+* Some non-modifying algorithms
+
+
+** find
+
+- takes a pair of iterators defining a section of a collection
+  - e.g. .begin(), .end(); .cbeing()+1, .end()-2; rbegin(), rend()
+- if not found, find returns the second iterator
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+int main()
+{
+   std::vector<int> coll{2,4,5,10,19,-3};
+
+   for(int i=0;i<10;i++) {
+      auto result = std::find(coll.begin(), coll.begin()+2, i);
+      std::cout << "Value " << i << " " ;
+      // notice that result equal to second parm of find
+      // means not found!
+      if (result != coll.begin()+2) {
+          std::cout << "was found " << *result  << std::endl;
+      } else {
+          std::cout << "was NOT found " << std::endl;
+      }
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value 0 was NOT found 
+Value 1 was NOT found 
+Value 2 was found 2
+Value 3 was NOT found 
+Value 4 was found 4
+Value 5 was NOT found 
+Value 6 was NOT found 
+Value 7 was NOT found 
+Value 8 was NOT found 
+Value 9 was NOT found
+#+end_example
+
+** accumulate
+
+- adds all elements in the collection, starting with a given value
+- returns the sum of all of them
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+int main()
+{
+   std::vector<int> coll{0,1,2,3,4,5};
+
+   auto sum = std::accumulate(coll.begin(), coll.end(), 0);
+   std::cout << "Sum: " << sum  << std::endl;
+
+   sum = std::accumulate(coll.begin(), coll.end(), 10);
+   std::cout << "Sum2: " << sum  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Sum 15
+Sum2 25
+#+end_example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+int main()
+{
+   std::vector<std::string> coll{"0","1","2","3","4"};
+
+   auto sum = std::accumulate(coll.begin(), coll.end(), std::string {});
+   std::cout << "Sum: " << sum  << std::endl;
+
+   sum = std::accumulate(coll.begin(), coll.end(),std::string {"begin"});
+// this would not work: we need to cast the begin to std::string
+//   sum = std::accumulate(coll.begin(), coll.end(),"begin");
+   std::cout << "Sum2: " << sum  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+*** Accumulate requires that the operators + and = are defined for the class
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+class A {
+  int i;
+public:
+  A(int _i) :i(_i){};
+  A&operator=(A b) {i=b.i; return *this;};
+  int operator+(A b) const {return i+b.i;};
+  int get() { return i;};
+};
+
+int main()
+{
+   std::vector<A> coll{{1},{2},{3},{4},{5}};
+
+   auto sum = std::accumulate(coll.begin(), coll.end(), A {0});
+   std::cout << "Sum: " << sum.get()  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Sum: 15
+#+end_example
+
+** equal
+
+Compare two containers
+
+- pass 3 iterators
+- first 2 delimit the first container
+- third is beginning of second container range
+- second container range should have at least the same number of elements as in the first pair of iterators
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <iomanip>
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5};
+   std::vector<int> col2{0,1,2,3,4,5};
+   std::vector<int> col3{1,2,3,4,5,6};
+
+   bool diff = std::equal(col1.cbegin(), col1.cend(), col2.cbegin());
+   std::cout << std::boolalpha << "Result: " << diff  << std::endl;
+
+   diff = std::equal(col1.cbegin(), col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result2: " << diff  << std::endl;
+
+   // compare from second element of first collection
+   diff = std::equal(col1.cbegin()+1, col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result3: " << diff  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Result: true
+Result2: false
+Result3: true
+#+end_example
+
+
+elements in collection should define the equal operator
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+
+class A {
+  int i;
+public:
+  A(int _i) :i(_i){};
+  bool operator==(A b) const {return i ==b.i;};
+  int get() { return i;};
+};
+
+int main()
+{
+   std::vector<A> col1{{0}, {1},{2},{3},{4},{5}};
+   std::vector<A> col2{{0}, {1},{2},{3},{4},{5}};
+   std::vector<A> col3{{1}, {2},{3},{4},{5}};
+
+   bool diff = std::equal(col1.cbegin(), col1.cend(), col2.cbegin());
+   std::cout << std::boolalpha << "Result: " << diff  << std::endl;
+
+   diff = std::equal(col1.cbegin(), col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result2: " << diff  << std::endl;
+
+   // compare from second element of first collection
+   diff = std::equal(col1.cbegin()+1, col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result3: " << diff  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Result: true
+Result2: false
+Result3: true
+#+end_example
+
+we can compare two types of collections
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iomanip>
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5};
+   std::list<int> col2{0,1,2,3,4,5};
+   std::deque<int> col3{1,2,3,4,5,6};
+
+   bool diff = std::equal(col1.cbegin(), col1.cend(), col2.cbegin());
+   std::cout << std::boolalpha << "Result: " << diff  << std::endl;
+
+   diff = std::equal(col1.cbegin(), col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result2: " << diff  << std::endl;
+
+   // compare from second element of first collection
+   diff = std::equal(col1.cbegin()+1, col1.cend(), col3.cbegin());
+   std::cout << std::boolalpha << "Result3: " << diff  << std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Result: true
+Result2: false
+Result3: true
+#+end_example
+
+** is_sorted
+
+Returns true if range is sorted
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <iomanip>
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5};
+
+   bool sorted = std::is_sorted(col1.cbegin(), col1.cend());
+   std::cout << std::boolalpha << "sorted col1: " << sorted  << std::endl;
+
+   std::vector<int> col2{0,2,1,2,3,4,5};
+
+   sorted = std::is_sorted(col2.cbegin(), col2.cend());
+   std::cout << std::boolalpha << "sorted col2: " << sorted  << std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+sorted col1: true
+sorted col2: false
+#+end_example
+
+
+
+** count
+
+- count number of occurrences of value
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iomanip>
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5,1,2,3,1};
+
+   int count = std::count(col1.begin(), col1.end(), 1);
+   std::cout << "1 occurs " << count << " times"  << std::endl;
+
+   count = std::count(col1.begin(), col1.end(), 7);
+   std::cout << "7 occurs " << count << " times"  << std::endl;
+
+   std::vector<std::string> col2{"this", "is", "the", "sea", "and", "is", "cold"};
+   count = std::count(col2.begin(), col2.end(), "is");
+   std::cout << "'is' occurs " << count << " times"  << std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 occurs 3 times
+7 occurs 0 times
+'is' occurs 2 times
+#+end_example
+
+** min_element, max_element, minmax_element
+
+- Return min and max of a container sequence
+- they return iterators
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iomanip>
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5,1,2,3,1};
+
+   {
+      auto min = std::min_element(col1.begin(), col1.end());
+      auto max = std::max_element(col1.begin(), col1.end());
+      std::cout << "min  " << *min << " max" << *max << std::endl;
+      auto both = std::minmax_element(col1.begin(), col1.end());
+      std::cout << "min: [" << *(both.first) << "] max: [" << *(both.second) << "]" << std::endl;
+
+   }
+ 
+   std::vector<std::string> col2{"this", "is", "the", "sea", "and", "is", "cold"};
+   {
+      auto min = std::min_element(col2.begin(), col2.end());
+      auto max = std::max_element(col2.begin(), col2.end());
+      std::cout << "min: [" << *min << "] max: [" << *max << "]" << std::endl;
+      auto both = std::minmax_element(col2.begin(), col2.end());
+      std::cout << "min: [" << *(both.first) << "] max: [" << *(both.second) << "]" << std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+min  0 max5
+min: [0] max: [5]
+min: [and] max: [this]
+min: [and] max: [this]
+#+end_example
+
+
+
+* Some modifying algorithms
+
+** fill
+
+- set the values of a collection
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iomanip>
+
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5,6,7,8,9};
+
+   print(col1);
+
+   std::fill(col1.begin(), col1.end(), -1);
+   
+   print(col1);
+
+   std::fill(col1.begin(), col1.begin()+col1.size()/2, 5);
+
+   print(col1);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 0: 1: 2: 3: 4: 5: 6: 7: 8: 9: 
+Container: -1: -1: -1: -1: -1: -1: -1: -1: -1: -1: 
+Container: 5: 5: 5: 5: 5: -1: -1: -1: -1: -1:
+#+end_example
+
+** fill_n
+
+- sets n elements to given value
+- it assumes that size is valid
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iomanip>
+
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1{0,1,2,3,4,5,6,7,8,9};
+
+   std::fill_n(col1.begin(), 3,-1);
+   
+   print(col1);
+
+//   std::fill_n(col1.begin()+2, 10, 5);
+   std::fill_n(col1.begin()+2, 4, 5);
+
+   print(col1);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: -1: -1: -1: 3: 4: 5: 6: 7: 8: 9: 
+Container: -1: -1: 5: 5: 5: 5: 6: 7: 8: 9:
+#+end_example
+
+** algorithms do not check boundaries!!!!
+
+- they assume that parameters are valid
+
+** back_inserter
+
+- C++ has a special type of iterator that can add elements to a collection
+- it auto-increments when used to assign a value
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col {1,2};
+   // this appends to the collection
+   auto it = std::back_inserter(col);
+   *it = 10;
+   *it = 20;
+   *it = 30;
+   print(col);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 10: 20: 30:
+#+end_example
+
+** We can use it to append to the end
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col {1,2};
+   std::fill_n(back_inserter(col), 10, 3);
+   print(col);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3:
+#+end_example
+
+
+
+** copy
+
+- copies elements from one collection to another
+- destination should be set to the proper size
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3};
+   std::list<int> col2 {};
+
+   col2.resize(col1.size());
+   // this appends to the collection
+   std::copy(col1.begin(), col1.end(), col2.begin());
+   print(col2);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3:
+#+end_example
+
+- we can also use back_inserter
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3};
+   std::list<int> col2 {};
+
+   std::copy(col1.begin(), col1.end(), back_inserter(col2));
+   print(col2);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3:
+#+end_example
+
+
+
+** replace
+
+- replace a given value with another
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,1,2,3,1,2,3};
+
+   print(col1);
+   std::replace(col1.begin(), col1.end(), 2, 9);
+   print(col1);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+Container: 1: 9: 3: 1: 9: 3: 1: 9: 3:
+#+end_example
+
+** replace_copy
+
+- makes the copy replacing 
+- at the same time replaces certain values
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::list<int> col1 {1,2,3,1,2,3,1,2,3};
+   std::vector<int> col2;
+   
+   print(col1);
+   std::replace_copy(col1.begin(), col1.end(), std::back_inserter(col2),
+                     2, 9);
+   print(col1);
+   print(col2);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+Container: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+Container: 1: 9: 3: 1: 9: 3: 1: 9: 3:
+#+end_example
+
+* algorithms that reorder elements
+
+** sort
+
+- sorts the elements of a collection
+- does not work for lists (they don't have random access)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(T &v) 
+{ 
+   std::cout << "Container: "; 
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,1,2,3,1,2,3};
+   
+   print(col1);
+   std::sort(col1.begin(), col1.end());
+   print(col1);
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Container: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+Container: 1: 1: 1: 2: 2: 2: 3: 3: 3:
+#+end_example
+
+** unique
+
+- if vector is sorted
+  - reorders  the elements of a container, place the unique ones at the front
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,1,2,3,1,2,3};
+   
+   // this appends to the collection
+   print("Starting: ", col1);
+   std::unique(col1.begin(), col1.end());
+   print("after unique: ",col1);
+
+   std::sort(col1.begin(), col1.end());
+   print("after sort: ", col1);
+   std::unique(col1.begin(), col1.end());
+   print("unique after sort: ",col1);
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Starting: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+after unique: 1: 2: 3: 1: 2: 3: 1: 2: 3: 
+after sort: 1: 1: 1: 2: 2: 2: 3: 3: 3: 
+unique after sort: 1: 2: 3: 2: 2: 2: 3: 3: 3:
+#+end_example
+
+- it returns an iterator
+- we can use it to remove duplicates
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,1,2,3,1,2,3};
+   
+   // this appends to the collection
+   std::sort(col1.begin(), col1.end());
+   print("after sort: ", col1);
+   auto non_unique = std::unique(col1.begin(), col1.end());
+   print("unique after sort: ",col1);
+   col1.erase(non_unique, col1.end());
+   print("after erase: ",col1);
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+after sort: 1: 1: 1: 2: 2: 2: 3: 3: 3: 
+unique after sort: 1: 2: 3: 2: 2: 2: 3: 3: 3: 
+after erase: 1: 2: 3:
+#+end_example
+
+** random_shuffle
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,4,5};
+   
+   for(int i=0;i<5;i++) {
+     std::random_shuffle(col1.begin(), col1.end());
+     print("After random_shuffle: ",col1);
+   }
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+After random_shuffle: 5: 4: 2: 3: 1: 
+After random_shuffle: 5: 2: 1: 4: 3: 
+After random_shuffle: 5: 1: 3: 2: 4: 
+After random_shuffle: 1: 4: 5: 2: 3: 
+After random_shuffle: 2: 3: 4: 5: 1:
+#+end_example
+
+
+** reverse elements of collection
+
+- reverse elements
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {0,1,2,3,4,5};
+   
+   print("Original:         ",col1);
+   std::reverse(col1.begin(), col1.end());
+   print("Reversed:         ",col1);
+   std::reverse(col1.begin(), col1.end());
+   print("Back to original: ",col1);
+
+   std::reverse(col1.begin(), col1.begin()+col1.size()/2);
+   print("Reversing 1/2:    ",col1);
+ 
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Original:         0: 1: 2: 3: 4: 5: 
+Reversed:         5: 4: 3: 2: 1: 0: 
+Back to original: 0: 1: 2: 3: 4: 5: 
+Reversing 1/2:    2: 1: 0: 3: 4: 5:
+#+end_example
+
+* set operations
+
+- set_union, set_difference, set_intersection
+- the functions assume that the collections are sorted
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+int main()
+{
+   std::vector<int> col1 {0,0,1,2,3,4,5,6,7,8,9,9};
+   std::vector<int> col2 {1,2,2,2,3};
+
+   if (!std::is_sorted(col1.cbegin(), col1.cend()) || 
+       !std::is_sorted(col2.cbegin(), col2.cend())) {
+      throw std::runtime_error("values should be sorted");
+   }
+
+   std::vector<int> uni;
+   std::vector<int> diff;
+   std::vector<int> inter;
+
+   std::set_union(col1.begin(), col1.end(), col2.begin(), col2.end(), std::back_inserter(uni));
+   std::set_intersection(col1.begin(), col1.end(), col2.begin(), col2.end(), std::back_inserter(inter));
+   std::set_difference(col1.begin(), col1.end(), col2.begin(), col2.end(), std::back_inserter(diff));
+
+   print("Col1:        ",  col1);
+   print("Col2:        ",  col2);
+   print("Union:       ",  uni);
+   print("Difference:  ",  diff);
+   print("Intersection:",  inter);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Col1:        0: 0: 1: 2: 3: 4: 5: 6: 7: 8: 9: 9: 
+Col2:        1: 2: 2: 2: 3: 
+Union:       0: 0: 1: 2: 2: 2: 3: 4: 5: 6: 7: 8: 9: 9: 
+Difference:  0: 0: 4: 5: 6: 7: 8: 9: 9: 
+Intersection:1: 2: 3:
+#+end_example
+
+
