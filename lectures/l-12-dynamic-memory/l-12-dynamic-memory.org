@@ -546,7 +546,7 @@ digraph {
 
 [[./before3.png]]
 
-* Assignment of pointers takes updates the count of references
+* Assignment of pointers updates the count of references
 
 
 [[./before3.png]]
@@ -573,7 +573,7 @@ digraph {
 } 
 #+end_src
 
-[[./before4.png]]
+  [[./before3.png]]    [[./before4.png]] 
 
 - when the counter reaches zero, the memory is released
 - in C, memory would be *impossible* to deallocate
