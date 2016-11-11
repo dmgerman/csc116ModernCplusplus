@@ -1,0 +1,477 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Dynamic Memory
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* So far in this course:
+
+- Objects are allocated when they are created
+  (by their constructors)
+
+- Objects are destroyed by their destructors
+
+** Local variables 
+ 
+ - created then they are declared
+ - destroyed when their local ends (block or function)
+
+** Parameters
+
+ - created when the function is called
+ - destroyed when the function ends
+
+**  Static variables 
+
+  - are created before their fist use
+  - they are destroyed when the program ends
+
+** Global variables
+
+ - are created before main is executed
+ - they are destroyed after main ends
+
+
+* So far: Memory management
+
+- All their memory is allocated by the object itself
+- e.g.
+  - a vector allocates the memory it needs when we declare it and or resize it
+
+- This memory is deallocated by the destructor
+
+
+
+* Dynamically allocated objects
+
+- their life time is independent of the scope where they are created
+- they exist until they are explicitly deallocated
+
+* Dynamically allocated objects
+
+- They are a *major* source of bugs
+
+* C style memory allocation
+
+- pointers:
+
+#+BEGIN_SRC C++
+<type>* pot;
+#+END_SRC
+
+- Example:
+
+#+BEGIN_SRC C++
+char *ptr;
+int *p2;
+FILE *file;
+#+END_SRC
+
+* C++ memory allocation
+
+Two operations:
+
+- *new*: allocates memory
+- *delete*: frees memory
+
+
+* Managing Memory directly
+
+- This type of memory management is equivalent to that in C
+- The programmer must allocate the space pointed by the pointer
+- The programmer must deallocate the space pointed by the pointer
+
+* new/delete
+
+- *new* uses a type as its argument. It allocates enough memory for such type
+- *delete* releases that memory
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+int main()
+{
+   int *pi = new int;
+   std::string *pst = new std::string;
+   
+   *pi = 5;
+   std::cout << "Value *pi: " << *pi << std::endl;
+
+   *pst = std::string {"abc"};
+
+   std::cout << "Value *pst: [" << *pst << "]" << std::endl;
+  
+   auto *parray = new int[10]; // allocate an array of ints
+
+   for(int i=0;i<10;i++) 
+       *(parray+1) = i;
+
+   // we can also allocate using a number of bytes
+
+   delete pi;
+   delete pst;
+   delete parray;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value *pi: 5
+Value *pst: [abc]
+#+end_example
+
+* new with initializer:
+
+- Use constructor in the *new*
+- even for basic datatypes
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+int main()
+{
+   int *pi = new int();
+   std::string *pst = new std::string();
+   
+   std::cout << "Value *pi: " << *pi << std::endl;
+
+   std::cout << "Value *pst: [" << *pst << "]" << std::endl;
+
+   delete pi;
+   delete pst;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value *pi: 0
+Value *pst: []
+#+end_example
+
+* new can infer the type from a variable
+
+#+BEGIN_SRC C++
+new auto(var); // allocates memory to point an
+               // object of the same type as var
+#+END_SRC
+
+Example:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+int main()
+{
+   double d {3.5};
+
+   auto *p = new auto(d);
+   
+   *p = 4;
+
+   std::cout << "Value *p: " << *p << std::endl;
+
+   delete p;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value *p: 4
+#+end_example
+
+* What happens if there is no more memory?
+
+- if not enough memory, *new* throws an exception
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   char *p = new char[10000000000000];
+
+   delete(p);
+
+   return 0;
+}
+
+#+END_SRC
+
+Fails with the following exception: 'std::bad_alloc'
+
+#+BEGIN_EXAMPLE
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+#+END_EXAMPLE
+
+** We can avoid the exception if we check the return value
+
+#+BEGIN_SRC C++
+#include <new> 
+
+new (nothrow) <type>;
+#+END_SRC
+
+- Null pointer in C++ is *nullptr*
+- Equivalent to NULL in C
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <new>  
+#include <iostream>
+int main()
+{
+   long long int i = 10000000000000;
+  
+  std::cout << "Attempting to allocate " << i << " bytes... " ;
+
+   char *p = new (std::nothrow) char[i];
+
+   if (p == nullptr) 
+      std::cout << "failure!!!" << std::endl;
+   else 
+      std::cout << "success." << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Attempting to allocate 10000000000000 bytes... failure!!!
+#+end_example
+
+* smart pointers: C++ safer pointers
+
+Two memory management classes in the std
+
+- *std::unique_ptr*: only one pointer can point to the same object
+- *std::shared_ptr*: multiple pointers can point to the same object
+
+
+* std::shared_pointer
+
+- They make memory management much easier 
+- and safe
+- they should be used instead of bare pointers (C style)
+- A *std::shared_pointer* does everything a bare pointer does
+  - plus it automatically releases the memory it points to when it is no longer accessible
+  - i.e. there is no *std::shared_pointer* that points to the memory any more
+  - no need to ever call *delete*
+
+#+BEGIN_SRC C++
+std::shared_ptr<std::string> p1; // pointer to string
+std::shared_ptr<int> p2;         // pointer to int
+std::shared_ptr<std::vector<double>> p3; // points to a vector of double
+#+END_SRC
+
+- *the declaration does not allocate the pointer!*
+
+* constructors
+
+- it can be initialized to a pointer
+- nullptr
+- or with new
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <memory>
+
+int main () 
+{
+  std::shared_ptr<int> p1;
+  std::shared_ptr<int> p2 (new int);
+  // make p3 point to the same place as p2
+  std::shared_ptr<int> p3 (p2);
+  std::shared_ptr<int> p4 (nullptr);
+
+  *p2 = 2;
+  std::cout << "value pointed by p2 " << *p2 << std::endl;
+  std::cout << "value pointed by p3 " << *p3 << std::endl;
+
+  // p1 and p4 point to nullptr
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+value pointed by p2 2
+value pointed by p3 2
+#+end_example
+
+* It is not possible to assign to a shared_pointer
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <memory>
+int main()
+{
+   std::shared_ptr<int> p1;
+   
+   p1 = new int;
+   std::cout << "value pointed by p1 " << *p1 << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+operator = *not defined* for the class std::shared_ptr
+
+#+BEGIN_EXAMPLE
+/tmp/test.cpp: In function ‘int main()’:
+/tmp/test.cpp:10:7: error: no match for ‘operator=’ (operand types are ‘std::shared_ptr<int>’ and ‘int*’)
+    p1 = new int;
+       ^
+
+#+END_EXAMPLE
+
+
+* std::make_shared
+
+- To assign to a shared_pointer we must use *std::make_shared*
+- allocates and initializes memory as required
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+int main()
+{
+   std::shared_ptr<int> p1;
+   
+   // allocate memory for p1, set it to value 10
+   p1 = std::make_shared<int>(10);
+
+   // create a point to a string
+   // initializes with given constructor 
+   auto p2 = std::make_shared<std::string>("abc"); 
+
+   std::cout << "value pointed by p1 " << *p1 << std::endl;
+   std::cout << "value pointed by p2 " << *p2 << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+value pointed by p1 10
+value pointed by p2 abc
+#+end_example
+
+* reset
+
+- stops making the shared_ptr point to a given location
+- if last shared_ptr, then delete memory
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+int main()
+{
+   std::shared_ptr<int> p1;
+   
+   // allocate memory for p1, set it to value 10
+   p1 = std::make_shared<int>(10);
+
+   // create a point to a string
+   // initializes with given constructor 
+   std::shared_ptr<int> p2 (p1);
+ 
+   std::cout << "value pointed by p1 " << *p1 << std::endl;
+   std::cout << "value pointed by p2 " << *p2 << std::endl;
+
+   p1.reset();
+   p2.reset();
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+value pointed by p1 10
+value pointed by p2 10
+#+end_example
+
+
+* We can inspect how many pointers point to the same location
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <memory>
+
+int main () 
+{
+  std::shared_ptr<int> p1 (new int);
+  std::shared_ptr<int> p2 (p1);
+  // make p3 point to the same place as p2
+  std::shared_ptr<int> p3 (p1);
+  std::shared_ptr<int> p4 (nullptr);
+
+  *p1 = 2;
+  std::cout << "value pointed by p1 " << *p1 << std::endl;
+  std::cout << "value pointed by p2 " << *p2 << std::endl;
+  std::cout << "value pointed by p3 " << *p3 << std::endl;
+
+  std::cout << "count p1 " << p1.use_count() << std::endl;
+  std::cout << "count p2 " << p2.use_count() << std::endl;
+  std::cout << "count p3 " << p3.use_count() << std::endl;
+
+  std::cout << "Resetting one pointer" << std::endl;
+
+  p1.reset();
+  
+  std::cout << "count p1 " << p1.use_count() << std::endl;
+  std::cout << "count p2 " << p2.use_count() << std::endl;
+  std::cout << "count p3 " << p3.use_count() << std::endl;
+
+  std::cout << "Resetting the other two" << std::endl;
+
+  p2.reset();
+  p3.reset();
+
+  std::cout << "count p2 " << p2.use_count() << std::endl;
+  std::cout << "count p3 " << p3.use_count() << std::endl;
+
+
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+value pointed by p1 2
+value pointed by p2 2
+value pointed by p3 2
+count p1 3
+count p2 3
+count p3 3
+Resetting one pointer
+count p1 0
+count p2 2
+count p3 2
+Resetting the other two
+count p2 0
+count p3 0
+#+end_example
+
