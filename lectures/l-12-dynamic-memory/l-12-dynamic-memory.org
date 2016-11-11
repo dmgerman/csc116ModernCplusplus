@@ -573,7 +573,7 @@ digraph {
 } 
 #+end_src
 
-  [[./before3.png]]    [[./before4.png]] 
+Before:   [[./before3.png]] After:    [[./before4.png]] 
 
 - when the counter reaches zero, the memory is released
 - in C, memory would be *impossible* to deallocate
