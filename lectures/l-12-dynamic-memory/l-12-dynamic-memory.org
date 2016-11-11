@@ -502,8 +502,6 @@ digraph {
 } 
 #+end_src
 
-[[./before.png]]
-
 #+BEGIN_SRC C++
 p1.reset();
 #+END_SRC
