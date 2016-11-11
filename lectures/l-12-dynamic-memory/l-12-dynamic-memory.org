@@ -267,7 +267,7 @@ Two memory management classes in the std
 
 - They make memory management much easier 
 - and safe
-- they should be used instead of bare pointers (direct memory allocation)
+- they should be used instead of bare pointers (direct memory allocation style)
 - A *std::shared_pointer* does everything a bare pointer does
   - plus it automatically releases the memory it points to when it is no longer accessible
   - i.e. if there is no *std::shared_pointer* that points to the memory any more
@@ -282,7 +282,7 @@ std::shared_ptr<std::vector<double>> p3; // points to a vector of double
 
 - *the declaration does not necessarily allocate the pointer!*
 
-* constructors
+* constructors of shared_pointer
 
 - it can be initialized to a pointer
 - nullptr
