@@ -575,8 +575,27 @@ Before:  [[./before3.png]] After:    [[./before4.png]]
 * Automatic deallocation
 
 - when the counter reaches zero, the memory is released
-- in C, memory would be *impossible* to deallocate
-  - it will be lost memory until program terminates
+- no need to ever call *delete*
+- it guarantees no wasted memory
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   {
+      std::shared_ptr<int> p1 (new int);
+      // counter to new int is one
+
+      *p1 = 5;
+       
+   } // at the end of the scope of p1, its memory is automatically released
+   // because its counter reaches 0
+   // no need to use delete
+
+   return 0;
+}
+
+#+END_SRC
 
 * swap
 
