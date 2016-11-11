@@ -30,7 +30,7 @@
 
 **  Static variables 
 
-  - are created before their fist use
+  - are created before their first use
   - they are destroyed when the program ends
 
 ** Global variables
