@@ -503,7 +503,6 @@ digraph {
 } 
 #+end_src
 
-[[./before.png]]
 
 #+begin_src dot :file before2.png :cmdline -Tpng :exports none :results silent
 digraph { 
@@ -544,12 +543,10 @@ digraph {
 } 
 #+end_src
 
-[[./before3.png]]
+Before: [[./before.png]]  After:   [[./before3.png]]
 
 * Assignment of pointers updates the count of references
 
-
-[[./before3.png]]
 
 #+BEGIN_SRC C++
 p2 = p1;
@@ -573,7 +570,9 @@ digraph {
 } 
 #+end_src
 
-Before:   [[./before3.png]] After:    [[./before4.png]] 
+Before:  [[./before3.png]] After:    [[./before4.png]] 
+
+* Automatic deallocation
 
 - when the counter reaches zero, the memory is released
 - in C, memory would be *impossible* to deallocate
@@ -583,8 +582,6 @@ Before:   [[./before3.png]] After:    [[./before4.png]]
 
 - swap pointers, keeping their counters intact
 
-
-[[./before3.png]]
 
 #+BEGIN_SRC C++
 std::swap(p1,p2);
@@ -619,4 +616,7 @@ digraph {
 } 
 #+end_src
 
-[[./before5.png]]
+
+Before:  [[./before3.png]] After:    [[./before5.png]] 
+
+
