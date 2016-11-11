@@ -1,4 +1,4 @@
-#+STARTUP: showall
+,#+STARTUP: showall
 #+STARTUP: lognotestate
 #+TAGS:
 #+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
@@ -217,7 +217,9 @@ terminate called after throwing an instance of 'std::bad_alloc'
   what():  std::bad_alloc
 #+END_EXAMPLE
 
-** We can avoid the exception if we check the return value
+** We can avoid the exception
+
+- but we must check the return value
 
 #+BEGIN_SRC C++
 #include <new> 
@@ -268,8 +270,9 @@ Two memory management classes in the std
 - they should be used instead of bare pointers (C style)
 - A *std::shared_pointer* does everything a bare pointer does
   - plus it automatically releases the memory it points to when it is no longer accessible
-  - i.e. there is no *std::shared_pointer* that points to the memory any more
-  - no need to ever call *delete*
+  - i.e. if there is no *std::shared_pointer* that points to the memory any more
+    - memory is *released*
+- no need to ever call *delete*
 
 #+BEGIN_SRC C++
 std::shared_ptr<std::string> p1; // pointer to string
@@ -277,7 +280,7 @@ std::shared_ptr<int> p2;         // pointer to int
 std::shared_ptr<std::vector<double>> p3; // points to a vector of double
 #+END_SRC
 
-- *the declaration does not allocate the pointer!*
+- *the declaration does not necessarily allocate the pointer!*
 
 * constructors
 
@@ -329,7 +332,7 @@ int main()
 
 #+END_SRC
 
-operator = *not defined* for the class std::shared_ptr
+- the operator= *is not defined* for the class std::shared_ptr
 
 #+BEGIN_EXAMPLE
 /tmp/test.cpp: In function ‘int main()’:
@@ -343,7 +346,7 @@ operator = *not defined* for the class std::shared_ptr
 * std::make_shared
 
 - To assign to a shared_pointer we must use *std::make_shared*
-- allocates and initializes memory as required
+- it allocates memory for the pointer
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -413,7 +416,6 @@ value pointed by p1 10
 value pointed by p2 10
 #+end_example
 
-
 * We can inspect how many pointers point to the same location
 
 
@@ -424,8 +426,9 @@ value pointed by p2 10
 int main () 
 {
   std::shared_ptr<int> p1 (new int);
+  // make p2 point to the same place as p1
   std::shared_ptr<int> p2 (p1);
-  // make p3 point to the same place as p2
+  // make p3 point to the same place as p1
   std::shared_ptr<int> p3 (p1);
   std::shared_ptr<int> p4 (nullptr);
 
@@ -475,3 +478,150 @@ count p2 0
 count p3 0
 #+end_example
 
+* reset can also allocate a new pointer
+
+#+BEGIN_SRC C++
+std::shared_ptr<int> p1 (new int);
+*p1 = 10;
+std::shared_ptr<int> p2 (p1);
+std::shared_ptr<int> p3 (p1);
+#+END_SRC
+
+#+begin_src dot :file before.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         2 [style=nonfilled,label="b|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:3",shape=record];
+
+         p1 -> 1
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before.png]]
+
+#+BEGIN_SRC C++
+p1.reset();
+#+END_SRC
+
+#+begin_src dot :file before2.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         nullptr [color=black,fontcolor=white];
+
+#         2 [style=nonfilled,label="b|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:2",shape=record];
+
+         p1 -> nullptr
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before2.png]]
+
+#+BEGIN_SRC C++
+p1.reset(new int);
+*p1 = 20;
+#+END_SRC
+
+#+begin_src dot :file before3.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         nullptr [color=black,fontcolor=white];
+
+         2 [style=nonfilled,label="20|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:2",shape=record];
+
+         p1 -> 2
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before3.png]]
+
+* Assignment of pointers takes updates the count of references
+
+
+[[./before3.png]]
+
+#+BEGIN_SRC C++
+p2 = p1;
+#+END_SRC
+
+
+#+begin_src dot :file before4.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         nullptr [color=black,fontcolor=white];
+
+         2 [style=nonfilled,label="20|count:2",shape=record];
+         1 [style=nonfilled,label="10|count:1",shape=record];
+
+         p1 -> 2
+         p2 -> 2;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before4.png]]
+
+- when the counter reaches zero, the memory is released
+- in C, memory would be *impossible* to deallocate
+  - it will be lost memory until program terminates
+
+* swap
+
+- swap pointers, keeping their counters intact
+
+
+[[./before3.png]]
+
+#+BEGIN_SRC C++
+std::swap(p1,p2);
+#+END_SRC
+
+equivalent to
+
+#+BEGIN_SRC C++
+p1.std::swap(p2);
+#+END_SRC
+
+or 
+
+#+BEGIN_SRC C++
+p2.std::swap(p1);
+#+END_SRC
+
+#+begin_src dot :file before5.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         nullptr [color=black,fontcolor=white];
+
+         2 [style=nonfilled,label="20|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:2",shape=record];
+
+         p1 -> 1
+         p2 -> 2;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before5.png]]
