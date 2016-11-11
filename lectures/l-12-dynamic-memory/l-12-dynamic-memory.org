@@ -505,10 +505,6 @@ digraph {
 
 [[./before.png]]
 
-#+BEGIN_SRC C++
-p1.reset();
-#+END_SRC
-
 #+begin_src dot :file before2.png :cmdline -Tpng :exports none :results silent
 digraph { 
          graph [fontname = "Helvetica"]
