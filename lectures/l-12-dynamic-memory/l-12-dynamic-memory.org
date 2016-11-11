@@ -20,7 +20,7 @@
 
 ** Local variables 
  
- - created then they are declared
+ - created when they are declared
  - destroyed when their local ends (block or function)
 
 ** Parameters
