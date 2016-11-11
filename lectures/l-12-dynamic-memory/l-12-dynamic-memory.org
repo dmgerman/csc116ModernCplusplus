@@ -416,7 +416,8 @@ value pointed by p1 10
 value pointed by p2 10
 #+end_example
 
-* We can inspect how many pointers point to the same location
+* Memory allocated using a smart pointer keeps a counter to the number of smart pointers that point to it
+
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
