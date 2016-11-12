@@ -537,12 +537,9 @@ digraph {
          rankdir=LR;
          node [shape = rectangle,style=filled];
          
-#         nullptr [color=black,fontcolor=white];
-
-         2 [style=nonfilled,label="20|count:1",shape=record];
          1 [style=nonfilled,label="10|count:2",shape=record];
-
-         p1 -> 2
+         2 [style=nonfilled,label="20|count:1",shape=record];
+         p1 -> 2;
          p2 -> 1;
          p3 -> 1;
 } 
@@ -564,14 +561,12 @@ digraph {
          rankdir=LR;
          node [shape = rectangle,style=filled];
          
-#         nullptr [color=black,fontcolor=white];
-
-         2 [style=nonfilled,label="20|count:2",shape=record];
          1 [style=nonfilled,label="10|count:1",shape=record];
-
+         2 [style=nonfilled,label="20|count:2",shape=record];
          p1 -> 2
          p2 -> 2;
          p3 -> 1;
+
 } 
 #+end_src
 
@@ -871,4 +866,38 @@ p1 has been allocated. Pointing to address 0x1dd1c20
 --releasing memory 
 p1 has NOT been allocated. Pointing to address 0
 #+end_example
+
+Before:  [[./unique.png]]     After: [[./unique2.png]]
+
+
+#+begin_src dot :file unique.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         nullptr [color=white,fontcolor=white];
+
+         2 [style=nonfilled,label="42"];
+         p1
+         p2 -> nullptr [color=white]
+
+         p1 -> 2
+} 
+#+end_src
+
+
+#+begin_src dot :file unique2.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         2 [style=nonfilled,label="42"];
+
+         p1 
+         p2 -> 2;
+} 
+#+end_src
+
 
