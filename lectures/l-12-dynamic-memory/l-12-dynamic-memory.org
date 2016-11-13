@@ -460,7 +460,7 @@ Example: three pointers pointing to an integer (value 10)
 
 int main () 
 {
-  std::shared_ptr<int> p1 (new int);
+  std::shared_ptr<int> p1 = std::make_shared<int>();
   // make p2 point to the same place as p1
   std::shared_ptr<int> p2 (p1);
   // make p3 point to the same place as p1
@@ -516,7 +516,7 @@ count p3 0
 * reset can also allocate a new pointer
 
 #+BEGIN_SRC C++
-std::shared_ptr<int> p1 (new int(10));
+std::shared_ptr<int> p1 = std::make_shared<int>(10);
 std::shared_ptr<int> p2 (p1);
 std::shared_ptr<int> p3 (p1);
 #+END_SRC
@@ -524,10 +524,8 @@ std::shared_ptr<int> p3 (p1);
 #+RESULTS:
 
 
-
-
 #+BEGIN_SRC C++
-p1.reset(new int(20));
+p1.reset(std::make_shared<int>(20));
 #+END_SRC
 
 
@@ -552,10 +550,12 @@ Before:  [[./before3.png]] After:    [[./before4.png]]
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+#include <memory>
+
 int main()
 {
    {
-      std::shared_ptr<int> p1 (new int);
+      std::shared_ptr<int> p1 = std::make_shared<int>();
       // counter to new int is one
 
       *p1 = 5;
@@ -568,6 +568,7 @@ int main()
 }
 
 #+END_SRC
+
 
 * swap
 
@@ -607,7 +608,7 @@ Before:  [[./before3.png]] After:    [[./before5.png]]
 int main () 
 {
   std::shared_ptr<int> p0;
-  std::shared_ptr<int> p1 (new int);
+  std::shared_ptr<int> p1 = std::make_shared<int>();
 
   if (p0) {
     std::cout << "p0 has been allocated "  << std::endl;
@@ -626,7 +627,7 @@ int main ()
 #+RESULTS:
 #+begin_example
 p0 ha NOT been allocated. Pointing to address 0
-p1 has been allocated. Pointing to address0x1e31c20
+p1 has been allocated. Pointing to address0x21adc30
 #+end_example
 
 * std::unique_ptr
