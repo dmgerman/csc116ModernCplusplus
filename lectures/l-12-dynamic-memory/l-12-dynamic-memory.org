@@ -63,8 +63,6 @@
 - their life time is independent of the scope where they are created
 - they exist until they are explicitly deallocated
 
-* Dynamically allocated objects
-
 - They are a *major* source of bugs
 
 * C style memory allocation
@@ -81,6 +79,21 @@
 char *ptr;
 int *p2;
 FILE *file;
+
+// bad allocation technique
+p2 = malloc(sizeof(int));
+
+// safest way to allocate a pointer in C
+ptr = malloc(sizeof(*ptr)); 
+
+// even better way to allocate memory
+// clean the memory during allocation!
+p2 = calloc(1, sizeof(*p2));
+
+// using the pointer
+
+int i = *p2;
+
 #+END_SRC
 
 * C++ memory allocation
@@ -206,26 +219,32 @@ Value *p: 4
 * What happens if there is no more memory?
 
 - if not enough memory, *new* throws an exception
+- Fails with an exception: 'std::bad_alloc'
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
-   char *p = new char[10000000000000];
+   try {
 
-   delete(p);
+       char *p = new char[10000000000000];
+       delete(p);
+
+   } catch (std::bad_alloc err){
+      std::cout << "Allocation exception: " <<err.what()  << std::endl;
+   } catch (std::exception err){
+      std::cout << "Exception: " << err.what() << std::endl;
+   } 
 
    return 0;
 }
 
 #+END_SRC
 
-Fails with the following exception: 'std::bad_alloc'
-
-#+BEGIN_EXAMPLE
-terminate called after throwing an instance of 'std::bad_alloc'
-  what():  std::bad_alloc
-#+END_EXAMPLE
+#+RESULTS:
+#+begin_example
+Allocation exception: std::bad_alloc
+#+end_example
 
 ** We can avoid the exception
 
@@ -819,6 +838,6 @@ p1 has NOT been allocated. Pointing to address 0
 
 - In Modern C++ only std::unique_ptr and std::shared_prt should be used
 - There is no reason to allocate memory directly using *new*
-- You should *never* release memory using delete
+- You should *never* release memory using *delete*
 - In fact, unless you are writing libraries, you should never have to allocate memory directly
   - done by the standard library containers: vector, list, string, map, set, etc.
