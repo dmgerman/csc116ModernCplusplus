@@ -30,7 +30,7 @@
 ** Local variables 
  
  - created when they are declared
- - destroyed when their local ends (block or function)
+ - destroyed when their scope ends (block, function, global)
 
 ** Parameters
 
