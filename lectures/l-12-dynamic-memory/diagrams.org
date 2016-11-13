@@ -1,0 +1,143 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: make diagrams for notes
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 500)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+500
+#+end_example
+
+
+#+begin_src dot :file before.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         2 [style=nonfilled,label="b|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:3",shape=record];
+
+         p1 -> 1
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before.png]]
+
+#+begin_src dot :file before2.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         nullptr [color=black,fontcolor=white];
+
+#         2 [style=nonfilled,label="b|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:2",shape=record];
+
+         p1 -> nullptr
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before2.png]]
+
+#+begin_src dot :file before3.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         1 [style=nonfilled,label="10|count:2",shape=record];
+         2 [style=nonfilled,label="20|count:1",shape=record];
+         p1 -> 2;
+         p2 -> 1;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before3.png]]
+
+#+begin_src dot :file before4.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         1 [style=nonfilled,label="10|count:1",shape=record];
+         2 [style=nonfilled,label="20|count:2",shape=record];
+         p1 -> 2
+         p2 -> 2;
+         p3 -> 1;
+
+} 
+#+end_src
+
+[[./before4.png]]
+
+#+begin_src dot :file before5.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+#         nullptr [color=black,fontcolor=white];
+
+         2 [style=nonfilled,label="20|count:1",shape=record];
+         1 [style=nonfilled,label="10|count:2",shape=record];
+
+         p1 -> 1
+         p2 -> 2;
+         p3 -> 1;
+} 
+#+end_src
+
+[[./before5.png]]
+
+#+begin_src dot :file unique.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         nullptr [color=white,fontcolor=white];
+
+         2 [style=nonfilled,label="42"];
+         p1
+         p2 -> nullptr [color=white]
+
+         p1 -> 2
+} 
+#+end_src
+
+[[./unique.png]]
+
+#+begin_src dot :file unique2.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         2 [style=nonfilled,label="42"];
+
+         p1 
+         p2 -> 2;
+} 
+#+end_src
+
+[[./unique2.png]]

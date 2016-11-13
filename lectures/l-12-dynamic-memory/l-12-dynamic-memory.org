@@ -10,6 +10,15 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 500)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+500
+#+end_example
+
 
 * So far in this course:
 
@@ -84,13 +93,14 @@ Two operations:
 
 * Managing Memory directly
 
-- This type of memory management is equivalent to that in C
+- This type of memory management is equivalent to memory management in C
 - The programmer must allocate the space pointed by the pointer
 - The programmer must deallocate the space pointed by the pointer
 
 * new/delete
 
 - *new* uses a type as its argument. It allocates enough memory for such type
+  - no need to worry about how many bytes to allocate
 - *delete* releases that memory
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -257,7 +267,7 @@ Attempting to allocate 10000000000000 bytes... failure!!!
 
 * smart pointers: C++ safer pointers
 
-Two memory management classes in the std
+Two memory management classes in modern C++:
 
 - *std::unique_ptr*: only one pointer can point to the same object
 - *std::shared_ptr*: multiple pointers can point to the same object
@@ -358,7 +368,7 @@ int main()
    // allocate memory for p1, set it to value 10
    p1 = std::make_shared<int>(10);
 
-   // create a point to a string
+   // create a pointer to a string
    // initializes with given constructor 
    auto p2 = std::make_shared<std::string>("abc"); 
 
@@ -494,56 +504,13 @@ std::shared_ptr<int> p3 (p1);
 
 #+RESULTS:
 
-#+begin_src dot :file before.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-#         2 [style=nonfilled,label="b|count:1",shape=record];
-         1 [style=nonfilled,label="10|count:3",shape=record];
-
-         p1 -> 1
-         p2 -> 1;
-         p3 -> 1;
-} 
-#+end_src
 
 
-#+begin_src dot :file before2.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-         nullptr [color=black,fontcolor=white];
-
-#         2 [style=nonfilled,label="b|count:1",shape=record];
-         1 [style=nonfilled,label="10|count:2",shape=record];
-
-         p1 -> nullptr
-         p2 -> 1;
-         p3 -> 1;
-} 
-#+end_src
 
 #+BEGIN_SRC C++
 p1.reset(new int(20));
 #+END_SRC
 
-#+begin_src dot :file before3.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-         1 [style=nonfilled,label="10|count:2",shape=record];
-         2 [style=nonfilled,label="20|count:1",shape=record];
-         p1 -> 2;
-         p2 -> 1;
-         p3 -> 1;
-} 
-#+end_src
 
 Before: [[./before.png]]  After:   [[./before3.png]]
 
@@ -555,20 +522,6 @@ p2 = p1;
 #+END_SRC
 
 
-#+begin_src dot :file before4.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-         1 [style=nonfilled,label="10|count:1",shape=record];
-         2 [style=nonfilled,label="20|count:2",shape=record];
-         p1 -> 2
-         p2 -> 2;
-         p3 -> 1;
-
-} 
-#+end_src
 
 Before:  [[./before3.png]] After:    [[./before4.png]] 
 
@@ -618,23 +571,6 @@ or
 p2.std::swap(p1);
 #+END_SRC
 
-#+begin_src dot :file before5.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-#         nullptr [color=black,fontcolor=white];
-
-         2 [style=nonfilled,label="20|count:1",shape=record];
-         1 [style=nonfilled,label="10|count:2",shape=record];
-
-         p1 -> 1
-         p2 -> 2;
-         p3 -> 1;
-} 
-#+end_src
-
 
 Before:  [[./before3.png]] After:    [[./before5.png]] 
 
@@ -679,9 +615,9 @@ p1 has been allocated. Pointing to address0x1e31c20
 - A std::shared_ptr can share the object it points to
 - Only one std::unique_ptr can point to an object
 
-** initialization
+** initialization: make_unique
 
-- No equivalent to make_shared
+- *make_unique* is the equivalent to *make_shared*
 - instead, use new
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -692,8 +628,8 @@ p1 has been allocated. Pointing to address0x1e31c20
 int main()
 {
    std::unique_ptr<int> p1;
-   std::unique_ptr<int> p2(new int(42));
-   std::unique_ptr<std::string> p3(new std::string("abc"));
+   std::unique_ptr<int> p2 = std::make_unique<int>(42);
+   std::unique_ptr<std::string> p3 = std::make_unique<std::string>("abc");
    
    if (p1) {
       std::cout << "p1 has been allocated. Pointing to address" << p1.get() << std::endl;
@@ -719,9 +655,9 @@ int main()
 #+RESULTS:
 #+begin_example
 p1 has NOT been allocated 
-p2 has been allocated. Pointing to address 0x1014c20
+p2 has been allocated. Pointing to address 0x8e9c20
    value 42
-p3 has been allocated. Pointing to address 0x1014c40
+p3 has been allocated. Pointing to address 0x8e9c40
    value [abc]
 #+end_example
 
@@ -744,7 +680,7 @@ One way is to copy it at constructor time
 
 int main()
 {
-   std::unique_ptr<int> p1(new int(42));
+   std::unique_ptr<int> p1 = std::make_unique<int>(42);
    
    if (p1) {
       std::cout << "p1 has been allocated. Pointing to address " << p1.get() << std::endl;
@@ -774,17 +710,21 @@ int main()
 
 #+RESULTS:
 #+begin_example
-p1 has been allocated. Pointing to address 0x75cc20
+p1 has been allocated. Pointing to address 0x10cfc20
    value [42]
 --moving pointer to another one 
 p1 has NOT been allocated. Pointing to address 0
-p2 has been allocated. Pointing to address 0x75cc20
+p2 has been allocated. Pointing to address 0x10cfc20
    value [42]
 #+end_example
 
 ** Copying a pointer: reset
 
 | q.reset(p.release()) |  moves memory from p to q, set p to nullptr|
+
+- reset takes one std::unique_ptr as a parameter.
+- the pointer is moved from the parameter to the unique_ptr making the call (the current pointer)
+- any previous memory the current pointer points to is released
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -793,7 +733,7 @@ p2 has been allocated. Pointing to address 0x75cc20
 
 int main()
 {
-   std::unique_ptr<int> p1(new int(42));
+   std::unique_ptr<int> p1 = std::make_unique<int>(42);
    
    if (p1) {
       std::cout << "p1 has been allocated. Pointing to address " << p1.get() << std::endl;
@@ -821,13 +761,16 @@ int main()
 
 #+RESULTS:
 #+begin_example
-p1 has been allocated. Pointing to address 0x17bfc20
+p1 has been allocated. Pointing to address 0x24dfc20
    value [42]
 --moving pointer to another one 
 p1 has NOT been allocated. Pointing to address 0
-p2 has been allocated. Pointing to address 0x17bfc20
+p2 has been allocated. Pointing to address 0x24dfc20
    value [42]
 #+end_example
+
+Before:  [[./unique.png]]     After: [[./unique2.png]]
+
 
 ** releasing the memory of a std::unique_ptr
 
@@ -839,7 +782,7 @@ use p.reset(nullptr)
 
 int main()
 {
-   std::unique_ptr<int> p1(new int(42));
+   std::unique_ptr<int> p1 = std::make_unique<int>(42);
    
    if (p1) {
       std::cout << "p1 has been allocated. Pointing to address " << p1.get() << std::endl;
@@ -861,43 +804,21 @@ int main()
 
 #+RESULTS:
 #+begin_example
-p1 has been allocated. Pointing to address 0x1dd1c20
+p1 has been allocated. Pointing to address 0x1dc0c20
    value [42]
 --releasing memory 
 p1 has NOT been allocated. Pointing to address 0
 #+end_example
 
-Before:  [[./unique.png]]     After: [[./unique2.png]]
+* Warning
 
+- Never call *delete* directly on the memory pointed by smart pointers
+- Never call *new* to assign to assign it directly to a smart pointer
 
-#+begin_src dot :file unique.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-         nullptr [color=white,fontcolor=white];
+* Final remarks
 
-         2 [style=nonfilled,label="42"];
-         p1
-         p2 -> nullptr [color=white]
-
-         p1 -> 2
-} 
-#+end_src
-
-
-#+begin_src dot :file unique2.png :cmdline -Tpng :exports none :results silent
-digraph { 
-         graph [fontname = "Helvetica"]
-         rankdir=LR;
-         node [shape = rectangle,style=filled];
-         
-         2 [style=nonfilled,label="42"];
-
-         p1 
-         p2 -> 2;
-} 
-#+end_src
-
-
+- In Modern C++ only std::unique_ptr and std::shared_prt should be used
+- There is no reason to allocate memory directly using *new*
+- You should *never* release memory using delete
+- In fact, unless you are writing libraries, you should never have to allocate memory directly
+  - done by the standard library containers: vector, list, string, map, set, etc.
