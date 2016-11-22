@@ -1,0 +1,573 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Functional programming
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Functions
+
+- In modern programming languages functions are like any other variable
+- In C, this is via function pointers
+- In C++ new features are provided
+
+In the following example, we can define the same function in two different ways:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <functional>
+
+std::function<void(std::string)> f = [] (std::string msg) -> void { 
+   std::cout << msg << std::endl;
+};
+
+void g(std::string msg) { 
+   std::cout << msg << std::endl;
+}
+
+int main()
+{
+   f("abc");
+   g("abc");
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+abc
+abc
+#+end_example
+
+But we usually simplify the type of the function using auto:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <functional>
+
+auto f = [] (std::string msg) -> void { 
+   std::cout << msg << std::endl;
+};
+
+void g(std::string msg) { 
+   std::cout << msg << std::endl;
+}
+
+int main()
+{
+   f("abc");
+   g("abc");
+
+   return 0;
+}
+
+#+END_SRC
+
+* Syntax:
+
+#+BEGIN_SRC C++
+auto functionName = [] (parameterList) -> returnType { body; };
+#+END_SRC
+
+* []
+
+- When [], they simply act like any global function declared in a program
+
+* lambdas are closures
+
+- In general, these types of functions are called lambdas
+- they are closures: capable of "carrying" part of the environment where they are created (using []
+  - more on that later 
+  
+* Why do we want to do this?
+
+- We can store functions in variables
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <functional>
+
+auto f = [] (std::string msg) -> void { 
+   std::cout << msg << std::endl;
+};
+
+auto g = f;
+
+int main()
+{
+   g("abc");
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+abc
+#+end_example
+
+* Another example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <functional>
+
+auto inc = [] (int i) -> int { 
+   return i+1;
+};
+
+auto dec = [] (int i) -> int { 
+   return i-1;
+};
+
+auto square = [] (int i) -> int { 
+   return i*i;
+};
+
+auto half = [] (int i) -> int { 
+   return i/2;
+};
+
+std::vector<
+   std::function<int(int)>
+   > funVec = {
+         inc, 
+         dec, 
+         square, 
+         half, 
+         [](int i)->int{return i*i*i;} 
+   };
+
+int main()
+{
+   for (auto f : funVec) {
+       std::cout << f(5) << std::endl;
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+6
+4
+25
+2
+125
+#+end_example
+
+* We can also pass them as parameters
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <functional>
+
+auto inc = [] (int i) -> int { 
+   return i+1;
+};
+
+
+int apply(int i, std::function<int(int)> f) {
+   return f(i);
+}
+
+int main()
+{
+
+   std::cout << apply(10, inc) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+11
+#+end_example
+
+
+* We can declare a function without assigning it to a variable
+
+- called anonymous functions
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <functional>
+
+int apply(int i, std::function<int(int)> f) {
+   return f(i);
+}
+
+int main()
+{
+   std::cout << apply(5, [] (int i) -> int { return i+1;});
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+6
+#+end_example
+
+* Many algorithms take lambdas as parameters
+
+- They become very powerful by making them more generic
+
+
+** std::for_each
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{1,2,3,4,5};
+    
+   std::for_each(v.begin(), v.end(),  [](int n) { 
+      std::cout << n << std::endl;
+   });
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+2
+3
+4
+5
+#+end_example
+
+** using for_each to modify the vector
+
+We can also modify the vector if pass a reference
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{1,2,3,4,5};
+    
+   std::for_each(v.begin(), v.end(),  [](int &n) { 
+      n *= 10 ;
+   });
+
+   std::for_each(v.begin(), v.end(),  [](int n) { 
+      std::cout << n << std::endl;
+   });
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+10
+20
+30
+40
+50
+#+end_example
+
+** We can also use functions instead of anonymous lambdas
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+
+void by10(int &n)
+{
+    n *= 10;
+}
+
+void printInt(int &n)
+{
+      std::cout << n << std::endl;
+}
+
+
+int main()
+{
+   std::vector<int> v{1,2,3,4,5};
+    
+   std::for_each(v.begin(), v.end(), by10);
+
+   std::for_each(v.begin(), v.end(),  printInt);
+
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+10
+20
+30
+40
+50
+#+end_example
+
+* std::count_if
+
+- Count how many elements of a collection satisfy a given condition
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{1,-2,-3,-4,5};
+    
+   int count = std::count_if(v.begin(), v.end(),  [](int &n)->bool { 
+      return n > 0;
+   });
+
+   std::cout << "Positive elements: " << count << std::endl;
+   
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Positive elements: 2
+#+end_example
+
+
+** std::all_of
+
+Returns true if all the elements satisfy a given condition
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{1,-2,-3,-4,5};
+    
+   auto positive = [](int n) -> bool { return n > 0; };
+
+   bool allPos = std::all_of(v.begin(), v.end(),  positive);
+
+   std::cout << "All are positive elements: " << allPos << std::endl;
+   
+   std::vector<int> v2{1,2,3};
+
+   bool allPos2 = std::all_of(v2.begin(), v2.end(),  positive);
+
+   std::cout << "All are positive elements: " << allPos2 << std::endl;
+
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+All are positive elements: 0
+All are positive elements: 1
+#+end_example
+
+** std::sort without a lambda
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <string>
+
+int main()
+{
+   std::vector<std::string> v{"0123", "123", "13", "1"};
+    
+   sort(v.begin(), v.end());
+
+   std::for_each(v.begin(), v.end(), 
+                [](std::string &st) { 
+                   std::cout << st << std::endl;
+                }
+        );
+
+   return 0;
+} 
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0123
+1
+123
+13
+#+end_example
+
+** std::sort with a lambda
+
+- it takes a function with two parameters. 
+- returns true if first parm less than second
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+
+int main() { 
+
+   std::vector<std::string> v{"0123", "123", "13", "1"};
+    
+   sort(v.begin(), v.end(), 
+        [](std::string &st1, std::string &st2) { 
+           return std::stoi(st1) < std::stoi(st2); 
+        }
+     );
+
+   std::for_each(v.begin(), v.end(), [](std::string &st) { std::cout << st << std::endl;} );
+
+   return 0; }
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+13
+0123
+123
+#+end_example
+
+** std::transform
+
+- Convert a collection into another
+- Also known as map
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+#include <list>
+
+int f(std::string st) {
+   return std::stoi(st);
+}
+
+
+int main() {
+  
+   std::vector<std::string> v{"0123", "123", "13", "1"};
+   std::list<int> out;
+   
+   std::back_insert_iterator< std::list<int> > b_insert (out);
+   
+   std::transform (v.begin(), 
+                   v.end(), 
+                   b_insert, f); 
+
+   std::for_each(out.begin(), out.end(), [](int &i) { std::cout << i << std::endl;} );
+
+   return 0; 
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+123
+123
+13
+1
+#+end_example
+
+** std::accumulate 
+
+- Reduces the values of a collection to a single value
+- Also known as reduce, fold
+- Takes a starting value
+- And a function to combine the elements to generate the next element
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+#include <list>
+
+std::string combine(std::string prev, std::string st) {
+   return prev + " -> " + st;
+}
+
+int main() {
+  
+   std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
+   
+   // assumes vector has at least 1 element
+   // we are using first element as starting point
+   // and we start accumulate on the second
+   std::string result = std::accumulate (
+                   v.begin()+1,  // start in second element
+                   v.end(), 
+                   v.at(0),   // use element zero as starting value
+                   combine); 
+
+   std::cout << result << std::endl;
+
+   return 0; 
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+alpha -> beta -> gamma -> delta
+#+end_example
+
+The code above is equivalent to:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+std::string combine(std::string prev, std::string st) {
+   return prev + " -> " + st;
+}
+
+int main() {
+  
+   std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
+   
+   std::string result = v.at(0);
+   for (auto it = v.begin()+ 1; it < v.end(); it++) {
+      result = combine(result, *it);
+   } 
+
+   std::cout << result << std::endl;
+
+   return 0; 
+}
+
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+alpha -> beta -> gamma -> delta
+#+end_example
+

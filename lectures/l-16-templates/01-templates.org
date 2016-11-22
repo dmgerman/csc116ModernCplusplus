@@ -1,0 +1,504 @@
+#+STARTUP: showall
+#+STARTUP: lognotestate
+#+TAGS:
+#+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
+#+DRAWERS: HIDDEN STATE
+#+TITLE: Templates and generic programming
+#+CATEGORY: 
+#+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
+#+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
+#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:R               :results output  :colnames yes
+
+
+* Introduction
+
+- Generic programming deals with types that are not known at time the program is written
+- We write generic code that is independent of a particular type: we *write the template*
+- When we use the generic code, we supply the type to create an instance of that generic program: 
+   *we instantiate the template*
+
+* Example:
+
+We need to write a function to compare two strings. 
+
+Return 0 if both strings the same, -1 if first > second, 2 if second > first
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+int compare(const std::string &v1, const std::string &v2)
+{
+    if (v1 < v2) return -1;
+    if (v2 < v1) return 1;
+    return 0;
+}
+#+END_SRC
+
+Now we need to write one for doubles:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+int compare(const std::double &v1, const std::string &v2)
+{
+    if (v1 < v2) return -1;
+    if (v2 < v1) return 1;
+    return 0;
+}
+#+END_SRC
+
+They both almost identical
+
+* Template
+  
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+template <typename T>
+int compare(const T &v1, const T &v2)
+{
+    if (v1 < v2) return -1;
+    if (v2 < v1) return 1;
+    return 0;
+}
+#+END_SRC
+
+* Defining a template
+
+- Starts with the word template
+- Followed by template parameter list (between <>)
+- Each parameter is a type
+
+* How use
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+
+template <typename T>
+int compare(const T &v1, const T &v2)
+{
+    if (v1 < v2) return -1;
+    if (v2 < v1) return 1;
+    return 0;
+}
+
+int main()
+{
+    std::cout << compare(2,1) << std::endl;
+    std::cout << compare("abc","def") << std::endl;
+    std::cout << compare(std::vector<int>{1,2,3},std::vector<int>{1,2,3}) << std::endl;
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+1
+0
+#+end_example
+
+* Another example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+
+template <typename T1, typename T2>
+T1 divide(T1 v1, T2 v2)
+{ 
+    return v1 / v2;
+}
+
+int main()
+{
+   std::cout << divide(1,2) << std::endl;
+   std::cout << divide(1,2.0) << std::endl;
+   std::cout << divide(1.0,2) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC  
+
+#+RESULTS:
+#+begin_example
+0
+0
+0.5
+#+end_example
+
+* Another example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+#include <typeinfo>
+
+template <typename T>
+void print_collection(std::string msg, T &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+
+
+int main()
+{
+   std::vector<int> v{1,2,3};
+   std::string st {"abc"};
+
+   print_collection("Vector",v);
+   print_collection("String",v);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Vector
+0: 1
+1: 2
+2: 3
+String
+0: 1
+1: 2
+2: 3
+#+end_example
+
+* Compilation errors
+
+Compilation errors come in two flavours:
+
+- Compiling the template
+- Instantiating the template
+  - they can be very confusing
+
+** Instantiation errors
+
+- Usually the problem is that some features of the type required by the template are not present
+- Example:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+#include <typeinfo>
+
+template <typename T>
+void print_collection(std::string msg, T &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+
+int main()
+{
+   std::vector<std::vector<int>> v{{1,2},{3,4}};
+
+   print_collection("Vector of vectors",v);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+The error is long:
+
+#+BEGIN_EXAMPLE
+/tmp/babel-23722t_X/C-src-23722ztb.cpp: In instantiation of ‘void print_collection(std::__cxx11::string, T&) [with T = std::vector<std::vector<int> >; std::__cxx11::string = std::__cxx11::basic_string<char>]’:
+/tmp/babel-23722t_X/C-src-23722ztb.cpp:23:42:   required from here
+/tmp/babel-23722t_X/C-src-23722ztb.cpp:15:32: error: no match for ‘operator<<’ (operand types are ‘std::basic_ostream<char>’ and ‘std::vector<int>’)
+        std::cout << i++ << ": "<< it << std::endl;
+                                ^
+#+END_SRC
+
+It shows that the type used (in this case std::vector<std::vector<int>> does not support the operation << 
+
+The template instantiates the following code:
+
+#+BEGIN_SRC C++
+void print_collection(std::string msg, std::vector<std::vector<int>> &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {  
+       // it is a type std::vector<int>
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+#+END_SRC
+
+
+Another example:
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <vector>
+#include <typeinfo>
+
+template <typename T>
+void print_collection(std::string msg, T &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+
+int main()
+{
+   int i;
+
+   print_collection("Int",i);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_EXAMPLE
+/tmp/babel-23722t_X/C-src-23722A_V.cpp: In instantiation of ‘void print_collection(std::__cxx11::string, T&) [with T = int; std::__cxx11::string = std::__cxx11::basic_string<char>]’:
+/tmp/babel-23722t_X/C-src-23722A_V.cpp:23:28:   required from here
+/tmp/babel-23722t_X/C-src-23722A_V.cpp:14:5: error: ‘begin’ was not declared in this scope
+     for(auto it: l) {
+     ^
+/tmp/babel-23722t_X/C-src-23722A_V.cpp:14:5: note: suggested alternative:
+#+END_EXAMPLE
+
+In this case the type int does not support to iterate with a for. See code below 
+(equivalent instantiation)
+
+#+BEGIN_SRC C++
+void print_collection(std::string msg, int &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {  // l is an it!
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+#+END_SRC
+
+* Class templates
+
+We can also create classes templates:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+template <typename T>
+class A {
+   T data;
+public:
+   T get() { return data; };
+   void set(T _v) { data = _v;};
+};
+
+int main()
+{
+   A<int> var1;
+   var1.set(5);
+   A<std::string> var2;
+   var2.set("abc");
+   
+   std::cout << "Value of var1: " << var1.get() << std::endl;
+   std::cout << "Value of var2: " << var2.get() << std::endl;
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of var1 5
+Value of var2 abc
+#+end_example
+
+- Template classes are instantiated with the form:
+
+#+BEGIN_SRC C++
+templateName<instanceType> variable;
+#+END_SRC
+
+- This is similar to the way standard library data structures (such as std::vector, or std::list).
+
+* Defining method outside the class declaration
+
+- In that case, every method should be preceeded with *template <typename ...>*
+- See below:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+template <typename T>
+class A {
+   T data;
+public:
+   T get();
+   void set(T _v);
+};
+
+template <typename T>
+T A<T>::get() 
+{ 
+  return data; 
+}
+
+template <typename T>
+void A<T>::set(T _v)
+{ 
+   data = _v;
+}
+
+int main()
+{
+   A<int> var1;
+   var1.set(5);
+   A<std::string> var2;
+   var2.set("abc");
+   
+   std::cout << "Value of var1: " << var1.get() << std::endl;
+   std::cout << "Value of var2: " << var2.get() << std::endl;
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of var1: 5
+Value of var2: abc
+#+end_example
+
+* Member templates
+
+- Classes can have methods that are templates
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+class B
+{  
+    int v;
+public:
+    B(int _v): v(_v) {};
+    
+    template <typename T>
+    void print(T first) {
+       std::cout << first << ":" << v << std::endl;
+    }
+};
+
+int main()
+{
+   B val1(5);
+   
+   val1.print("string");
+   val1.print(int(5));
+   val1.print(double(10));
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+string:5
+5:5
+10:5
+#+end_example
+
+* And we can make member templates inside class templates
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+template <typename T>
+class A {
+   T data;
+public:
+   T get() { return data; };
+   void set(T _v) { data = _v;};
+    template <typename T2>
+    void print(T2 first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+   
+};
+
+int main()
+{
+   A<int> var1;
+   var1.set(5);
+   A<std::string> var2;
+   var2.set("abc");
+   
+   var1.print("value of var1");
+   var1.print(int(0));
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+value of var1:5
+0:5
+#+end_example
+
+* Recommendations
+
+- Make sure that a template uses only features expected to be found in the instantiation types
+  - such as any operators or functions used must be supported by the type
+
+Example: 
+- template requires that T2 supports << operator to be printed to stdout.
+- we cannot pass a std::vector<int> to it, because it does not support it
+
+#+BEGIN_SRC C++
+    template <typename T2>
+    void print(T2 first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+#+END_SRC
+
+- Use *auto* variables to avoid using types
+
+Example: 
+  - the for loop variable is type auto
+  - "follows" the template type
+
+#+BEGIN_SRC C++
+template <typename T>
+void print_collection(std::string msg, T &l)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: l) {
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+#+END_SRC
+
+- In some cases, write the class for a given type, and then 
