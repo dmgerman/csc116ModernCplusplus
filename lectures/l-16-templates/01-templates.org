@@ -44,10 +44,17 @@ int compare(const std::double &v1, const std::string &v2)
 }
 #+END_SRC
 
-They both almost identical
+They both almost identical, except for the names of the types.
 
 * Template
   
+A template allows us to write it one, instantiate it many times
+
+- Starts with the word template
+- Followed by the template parameters list (between <>)
+- Each parameter is a type
+- The generic function follows
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 template <typename T>
 int compare(const T &v1, const T &v2)
@@ -58,13 +65,11 @@ int compare(const T &v1, const T &v2)
 }
 #+END_SRC
 
-* Defining a template
-
-- Starts with the word template
-- Followed by template parameter list (between <>)
-- Each parameter is a type
 
 * How use
+
+- Simply call the function with the corresponding parameters. 
+- C++ will instantiate a corresponding function based on the available templates
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -81,8 +86,9 @@ int compare(const T &v1, const T &v2)
 int main()
 {
     std::cout << compare(2,1) << std::endl;
-    std::cout << compare("abc","def") << std::endl;
-    std::cout << compare(std::vector<int>{1,2,3},std::vector<int>{1,2,3}) << std::endl;
+    std::cout << compare(std::string("abc"),std::string("def")) << std::endl;
+    std::cout << compare(std::vector<int>{1,2,3},
+                         std::vector<int>{1,2,3}) << std::endl;
 
     return 0;
 }
@@ -100,6 +106,7 @@ int main()
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+#include <complex>
 
 template <typename T1, typename T2>
 T1 divide(T1 v1, T2 v2)
@@ -109,10 +116,10 @@ T1 divide(T1 v1, T2 v2)
 
 int main()
 {
-   std::cout << divide(1,2) << std::endl;
-   std::cout << divide(1,2.0) << std::endl;
-   std::cout << divide(1.0,2) << std::endl;
-
+   std::cout << divide(1,2) << std::endl;   // integers
+   std::cout << divide(1,2.0) << std::endl; // integer and double
+   std::cout << divide(1.0,2) << std::endl; // double and integer
+   std::cout << divide(std::complex<int>(1,2), 2); // int complex and int
    return 0;
 }
 
@@ -123,34 +130,39 @@ int main()
 0
 0
 0.5
+(0,1)
 #+end_example
 
 * Another example
+
+- We have used versions of this before
+- Allows to print any collection 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
-#include <typeinfo>
+#include <list>
 
 template <typename T>
-void print_collection(std::string msg, T &l)
+void print_collection(std::string msg, T &col)
 {
     std::cout << msg  << std::endl;
     int i {0};
-    for(auto it: l) {
+    for(auto it: col) {
        std::cout << i++ << ": "<< it << std::endl;
     } 
 }
-
 
 int main()
 {
    std::vector<int> v{1,2,3};
    std::string st {"abc"};
+   std::list<double> l{1.2, 3.5};
 
    print_collection("Vector",v);
-   print_collection("String",v);
+   print_collection("String",st);
+   print_collection("List",l);
 
    return 0;
 }
@@ -164,10 +176,56 @@ Vector
 1: 2
 2: 3
 String
-0: 1
-1: 2
-2: 3
+0: a
+1: b
+2: c
+List
+0: 1.2
+1: 3.5
 #+end_example
+
+* When to use a function template
+
+- When we require a function that can take more than one type of parameters
+- We do not want to typecast the parameters to into another one
+
+* When can we use a function template
+
+- When the code is generic enough that we can use it with different types
+- When the type used in the instance has all the features required by the template
+
+** Example: 
+
+this template requires:
+   - that a variable of type T can be traversed with a for loop (for auto...)
+   - that each of the elements of the type T have the << operator (cout <<...)
+
+#+BEGIN_SRC C++
+template <typename T>
+void print_collection(std::string msg, T &col)
+{
+    std::cout << msg  << std::endl;
+    int i {0};
+    for(auto it: col) {
+       std::cout << i++ << ": "<< it << std::endl;
+    } 
+}
+#+END_SRC
+
+** Example 2
+
+This template requires:
+
+- that the type T1 can be divided by a T2
+- that the result of the division can be typecasted to a T1
+
+#+BEGIN_SRC C++
+template <typename T1, typename T2>
+T1 divide(T1 v1, T2 v2)
+{ 
+    return v1 / v2;
+}
+#+END_SRC
 
 * Compilation errors
 
@@ -200,7 +258,9 @@ void print_collection(std::string msg, T &l)
 
 int main()
 {
-   std::vector<std::vector<int>> v{{1,2},{3,4}};
+   std::vector<
+        std::vector<int>
+        > v{{1,2},{3,4}};
 
    print_collection("Vector of vectors",v);
 
@@ -439,16 +499,72 @@ class A {
 public:
    T get() { return data; };
    void set(T _v) { data = _v;};
-    template <typename T2>
+
+   template <typename T2>
     void print(T2 first) {
        std::cout << first << ":" << data << std::endl;
     }
-   
+
+/*
+    void print(std::string first) {
+       std::cout << first << ":" << data << std::endl;
+    };
+    void print(int first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+    void print(double first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+*/
 };
 
 int main()
 {
-   A<int> var1;
+   A<int,double> var1;
+   var1.set(5);
+   A<std::string> var2;
+   var2.set("abc");
+   
+   var1.print("value of var1");
+   var1.print(int(0));
+
+   return 0;
+}
+
+#+END_SRC
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+
+template <typename T,typename T2>
+class A {
+   T data;
+public:
+   T get() { return data; };
+   void set(T _v) { data = _v;};
+
+    void print(T2 first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+   
+/*
+    void print(std::string first) {
+       std::cout << first << ":" << data << std::endl;
+    };
+    void print(int first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+    void print(double first) {
+       std::cout << first << ":" << data << std::endl;
+    }
+*/
+};
+
+int main()
+{
+   A<int,double> var1;
    var1.set(5);
    A<std::string> var2;
    var2.set("abc");
@@ -501,4 +617,5 @@ void print_collection(std::string msg, T &l)
 }
 #+END_SRC
 
-- In some cases, write the class for a given type, and then 
+- In some cases, write the class for a given type, and then "templatize" them
+

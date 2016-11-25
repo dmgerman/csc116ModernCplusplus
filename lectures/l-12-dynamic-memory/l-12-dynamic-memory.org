@@ -130,7 +130,7 @@ int main()
 
    *pst = std::string {"abc"};
 
-   std::cout << "Value *pst: [" << *pst << "]" << std::endl;
+   std::cout << "Value: *pst: [" << *pst << "]" << std::endl;
   
    auto *parray = new int[10]; // allocate an array of ints
 
@@ -150,7 +150,7 @@ int main()
 #+RESULTS:
 #+begin_example
 Value *pi: 5
-Value *pst: [abc]
+Value: *pst: [abc]
 #+end_example
 
 * new with initializer:

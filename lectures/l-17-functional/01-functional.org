@@ -24,9 +24,15 @@ In the following example, we can define the same function in two different ways:
 #include <string>
 #include <functional>
 
-std::function<void(std::string)> f = [] (std::string msg) -> void { 
+std::function<void(std::string)> f = [] (std::string msg) -> void 
+{ 
    std::cout << msg << std::endl;
 };
+
+auto f2 = [] (std::string msg) -> void { 
+   std::cout << msg << std::endl;
+};
+
 
 void g(std::string msg) { 
    std::cout << msg << std::endl;
@@ -236,20 +242,92 @@ int main()
 
 ** std::for_each
 
+- three parameters
+  1. begin iterator
+  2. end iterator
+  3. lambda
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
+
+
+void print_list(std::vector<int> v)
+{
+   int count {0};
+   std::for_each(v.begin(), v.end(),  [&](int n) { 
+      if (count++) 
+         std::cout << " -> ";
+      std::cout << n;
+   });
+   std::cout << std::endl;
+}
+
 int main()
 {
    std::vector<int> v{1,2,3,4,5};
-    
-   std::for_each(v.begin(), v.end(),  [](int n) { 
-      std::cout << n << std::endl;
+
+   print_list(v);
+
+   int x = 10;
+
+   auto funct = [x](int n) {
+     std::cout << x << ":" << n << std::endl;
+   };
+
+   std::for_each(v.begin(), v.end(),  funct);
+
+   x = 0;
+
+   std::for_each(v.begin(), v.end(),  [&](int n) { 
+      std::cout << x++ << ":" << n << std::endl;
    });
+
+   std::cout << "Value of x " << x << std::endl;
    return 0;
 } 
 
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 -> 2 -> 3 -> 4 -> 5
+10:1
+10:2
+10:3
+10:4
+10:5
+0:1
+1:2
+2:3
+3:4
+4:5
+Value of x 5
+#+end_example
+
+- This is a simpler example. Note how the function/lambda must have one parameter only
+- The type of the parameter must be the type of the collection
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+
+void f(int i)
+{
+    std::cout << i << std::endl;
+}
+
+int main()
+{
+   std::vector<int> v{1,2,3,4,5};
+    
+   std::for_each(v.begin(), v.end(), f);
+   return 0;
+} 
+
+#+END_SRC
+
+
 
 #+RESULTS:
 #+begin_example
@@ -260,9 +338,41 @@ int main()
 5
 #+end_example
 
-** using for_each to modify the vector
+** using [&]
 
-We can also modify the vector if pass a reference
+- allow the modification of the captured variables
+- this program counts the number of elements in the vector:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+
+
+
+int main()
+{
+   std::vector<int> v{1,2,3,4,5};
+   int count {};
+   std::for_each(v.begin(), v.end(), [&](int){
+       count++;
+   });
+
+   std::cout << "Elements in v : " << count << std::endl;
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Elements in v : 5
+#+end_example
+
+
+
+** using the lambda in for_each to modify the vector
+
+- We can also modify the vector if the lambda receives the parameter by-reference, instead of by-value
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -274,6 +384,10 @@ int main()
    std::for_each(v.begin(), v.end(),  [](int &n) { 
       n *= 10 ;
    });
+
+   for(int &n) { 
+      n *= 10 ;
+   }
 
    std::for_each(v.begin(), v.end(),  [](int n) { 
       std::cout << n << std::endl;
@@ -334,6 +448,7 @@ int main()
 * std::count_if
 
 - Count how many elements of a collection satisfy a given condition
+- lambda returns true if the element is to be counted in the total
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -348,6 +463,11 @@ int main()
 
    std::cout << "Positive elements: " << count << std::endl;
    
+   // the following code is equivalent to v.count()
+   count = std::count_if(v.begin(), v.end(),  [](int &n)->bool { 
+      return true;
+   });
+
    return 0;
 } 
 
@@ -393,7 +513,9 @@ All are positive elements: 0
 All are positive elements: 1
 #+end_example
 
-** std::sort without a lambda
+** std::sort
+
+- without a lambda
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -426,8 +548,8 @@ int main()
 
 ** std::sort with a lambda
 
-- it takes a function with two parameters. 
-- returns true if first parm less than second
+- allows for specific orderings
+- also useful when parameters do not support < operator
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
@@ -444,7 +566,11 @@ int main() {
         }
      );
 
-   std::for_each(v.begin(), v.end(), [](std::string &st) { std::cout << st << std::endl;} );
+   std::for_each(v.begin(), 
+                 v.end(), 
+                 [](std::string &st) { 
+                       std::cout << st << std::endl;
+   });
 
    return 0; }
 #+END_SRC
@@ -457,10 +583,96 @@ int main() {
 123
 #+end_example
 
+** Another example
+
+Sort by length of the string
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+
+int main() { 
+
+   std::vector<std::string> v{"Jenaway", "Data", "Picard", "Spock"};
+    
+   sort(v.begin(), v.end(), 
+        [](std::string &st1, std::string &st2) { 
+           return st1.length() < st2.length(); 
+        }
+     );
+
+   std::for_each(v.begin(), 
+                 v.end(), 
+                 [](std::string &st) { 
+                       std::cout << st.length() << ":" << st << std::endl;
+   });
+
+   return 0; }
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+4:Data
+5:Spock
+6:Picard
+7:Jenaway
+#+end_example
+
+** Another example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+
+class A {
+   std::string data;
+public:
+   A(std::string d) :data(d) {};
+   auto get() { return data;};
+};
+
+int main() 
+{ 
+
+   std::vector<A> v{A{"Jenaway"}, A{"Data"}, A{"Picard"}, A{"Spock"}};
+    
+   sort(v.begin(), v.end(), 
+        [](A &first, A &second) { 
+           return first.get() < second.get(); 
+        }
+     );
+
+   std::for_each(v.begin(), 
+                 v.end(), 
+                 [](A &el) { 
+                 std::cout << el.get() << std::endl;
+   });
+
+   return 0; 
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Data
+Jenaway
+Picard
+Spock
+#+end_example
+
 ** std::transform
 
 - Convert a collection into another
-- Also known as map
+- Also known as map (in functional languages)
+- not to be confused with map the data structure
+
+- four parameters:
+   1. begin iterator
+   2. end iterator
+   3. begin iterator of result collection
+   4. lambda
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
@@ -480,10 +692,12 @@ int main() {
    
    std::back_insert_iterator< std::list<int> > b_insert (out);
    
+   // use a back inserter to insert into the new list
    std::transform (v.begin(), 
                    v.end(), 
                    b_insert, f); 
 
+   // print it
    std::for_each(out.begin(), out.end(), [](int &i) { std::cout << i << std::endl;} );
 
    return 0; 
@@ -502,8 +716,45 @@ int main() {
 
 - Reduces the values of a collection to a single value
 - Also known as reduce, fold
-- Takes a starting value
-- And a function to combine the elements to generate the next element
+- Parameters:
+  1. begin iterator
+  2. end iterator
+  3. initial value (must be same type as elements in collection)
+  4. a function to combine the elements to generate the next element
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream> 
+#include <algorithm> 
+#include <string>
+#include <list>
+
+std::string concatenate(std::string prev, std::string st) {
+   return prev + st;
+}
+
+int main() 
+{
+  
+   std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
+   
+   std::string result = std::accumulate (
+                   v.begin(),  
+                   v.end(), 
+                   std::string{},  
+                   concatenate
+      ); 
+
+   std::cout << result << std::endl;
+
+   return 0; 
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+alphabetagammadelta
+#+end_example
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
@@ -515,7 +766,8 @@ std::string combine(std::string prev, std::string st) {
    return prev + " -> " + st;
 }
 
-int main() {
+int main() 
+{
   
    std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
    
@@ -569,5 +821,209 @@ int main() {
 #+RESULTS:
 #+begin_example
 alpha -> beta -> gamma -> delta
+#+end_example
+
+* Advantages of Lambdas
+
+- They can be defined local to a block (functions have global scope)
+- They can have capture lists
+
+#+BEGIN_SRC C++
+auto functionName = [capture list] (parameterList) -> returnType { body; };
+#+END_SRC
+
+
+* Capture lists
+
+- The capture list is a list of variables in the environment available within the function
+- It means those variables are part of the function 
+
+- Cases:
+
+  - [] captures nothing
+  - [=] captures used variables by value
+  - [&] captures used variables by reference 
+  - [a,&b] captures specific variable by value (a) or reference (b)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <functional>
+
+std::function<int(int)> create_function_incr_by_value(int value)
+{
+    auto inc = [value] (int i) -> int { return i+value; };
+
+    return inc;
+}
+
+int main()
+{
+   auto incr_by_2 = create_function_incr_by_value(2);
+   auto incr_by_5 = create_function_incr_by_value(5);
+
+   std::cout << incr_by_2(10) << std::endl;
+   std::cout << incr_by_5(10) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+12
+15
+#+end_example
+
+
+** When  is this useful?
+
+We can use local values in the function that we pass to the algorithm
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{1,-2,-3,-4,5};
+   int x = 2;
+   int count = std::count_if(v.begin(), v.end(),  [x](int &n)->bool { 
+      return n > x;
+   });
+
+   std::cout << "Values above x: " << count << std::endl;
+   
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Values above x: 1
+#+end_example
+
+
+We can also pass by reference, in that case we can modify the value:
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+int main()
+{
+   std::vector<int> v{-3,-2,-1,0,1,2,3};
+   int called = 0;
+   int sum = 0;
+   int count = std::count_if(v.begin(), v.end(),  [&](int &n)->bool { 
+      called++;
+      sum+=n;
+      return n > 0;
+   });
+
+   std::cout << "Number of positive values: " << count << std::endl;
+   std::cout << "lambda was called: " << called << " times " << std::endl;
+   std::cout << "The sum of all elements is " << sum << std::endl;
+   return 0;
+} 
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Number of positive values: 3
+lambda was called: 7 times 
+The sum of all elements is 0
+#+end_example
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+#include <map>
+#include <functional>
+
+
+
+auto f2 = [](int i)->std::pair<int,int>{return std::pair<int,int>(i,i*i*i);};
+
+std::map<
+   std::string,
+   std::function<int(int)>
+   > extra = {
+         {"fun", f}
+    };
+
+int main()
+{
+
+   auto f= [](int i)->int {return i*i*i;};
+
+
+   int i {2};
+   std::cout << extra["fun"](i++) << std::endl;
+//   std::cout << f2(i++).second << std::endl;
+   return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+8
+#+end_example
+
+* Yes, we can do everything without loops
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <map>
+#include <algorithm>
+#include <functional>
+
+int main()
+{
+   std::ifstream myfile ("example.txt");
+   std::string line;
+   std::map<std::string,int> names;
+
+   std::cout << "Lines read: " << std::endl;
+
+   std::function<void()> read = [&]() {
+       if (std::getline (myfile,line)) {
+          std::cout << line << std::endl;
+          names[line]++;
+          read();
+       } 
+   };
+   read();
+
+   std::cout << "Aggregated: " << std::endl;
+
+   std::for_each(names.begin(), names.end(),  [&](auto p) { 
+      std::cout << p.first << ":" << p.second << std::endl;
+   });
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Lines read: 
+Cat
+Dog
+Horse
+Dog
+Dog
+Cat
+Aggregated: 
+Cat:2
+Dog:3
+Horse:1
 #+end_example
 
