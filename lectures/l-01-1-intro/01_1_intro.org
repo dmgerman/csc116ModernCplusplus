@@ -51,14 +51,14 @@ echo $?
 
 int main()
 {
-    std::cout << "Hello world " << std::endl;
+    std::cout << "Hello world 1 " << std::endl;
     return 0;
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-Hello world
+Hello world 1
 #+end_example
 
 * Type safety

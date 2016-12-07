@@ -271,7 +271,7 @@ int main()
 
    int x = 10;
 
-   auto funct = [x](int n) {
+   auto funct = [=](int n) {
      std::cout << x << ":" << n << std::endl;
    };
 
@@ -279,7 +279,7 @@ int main()
 
    x = 0;
 
-   std::for_each(v.begin(), v.end(),  [&](int n) { 
+   std::for_each(v.begin(), v.end(),  [](int n) { 
       std::cout << x++ << ":" << n << std::endl;
    });
 
@@ -290,20 +290,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-1 -> 2 -> 3 -> 4 -> 5
-10:1
-10:2
-10:3
-10:4
-10:5
-0:1
-1:2
-2:3
-3:4
-4:5
-Value of x 5
-#+end_example
 
 - This is a simpler example. Note how the function/lambda must have one parameter only
 - The type of the parameter must be the type of the collection
@@ -385,7 +371,8 @@ int main()
       n *= 10 ;
    });
 
-   for(int &n) { 
+   // modern C++
+   for(int &n: v) { 
       n *= 10 ;
    }
 
@@ -429,7 +416,7 @@ int main()
     
    std::for_each(v.begin(), v.end(), by10);
 
-   std::for_each(v.begin(), v.end(),  printInt);
+   std::for_each(v.begin(), v.end(), printInt);
 
    return 0;
 } 
@@ -550,6 +537,7 @@ int main()
 
 - allows for specific orderings
 - also useful when parameters do not support < operator
+- the lambda returns true if first parameter less than second
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
@@ -560,6 +548,7 @@ int main() {
 
    std::vector<std::string> v{"0123", "123", "13", "1"};
     
+
    sort(v.begin(), v.end(), 
         [](std::string &st1, std::string &st2) { 
            return std::stoi(st1) < std::stoi(st2); 
@@ -876,9 +865,9 @@ int main()
 #+end_example
 
 
-** When  is this useful?
+** When is this useful?
 
-We can use local values in the function that we pass to the algorithm
+We can use local values in the lambda that we pass to the algorithm
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -936,7 +925,7 @@ lambda was called: 7 times
 The sum of all elements is 0
 #+end_example
 
-
+* This is just a silly example
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -975,6 +964,8 @@ int main()
 
 * Yes, we can do everything without loops
 
+- Count number of repeated lines in input file, 
+- output them in lexicographical order 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -1006,7 +997,7 @@ int main()
    std::for_each(names.begin(), names.end(),  [&](auto p) { 
       std::cout << p.first << ":" << p.second << std::endl;
    });
-
+   
    return 0;
 }
 

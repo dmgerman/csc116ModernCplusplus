@@ -446,10 +446,10 @@ value pointed by p2 10
 * Memory allocated using a smart pointer keeps a counter to the number of smart pointers that point to it
 
 
-| p.unique() | returns true if pointer has only one instance      |
-| p.count()  | returns the number of pointers sharing the pointer |
+| p.unique()    | returns true if pointer has only one instance      |
+| p.use_count() | returns the number of smart pointers sharing the address |
 
-Example: three pointers pointing to an integer (value 10)
+Example: three smart pointers pointing to an integer (value 10)
 
 [[./before.png]]
 
