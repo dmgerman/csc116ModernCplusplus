@@ -71,7 +71,7 @@ inside -4
 After -4
 #+end_example
 
-* Also true for for (collections)
+* Also true traversing collections (for auto)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -133,7 +133,7 @@ int main()
     print_vector(var);
 
     for(auto &c : var) {
-       
+       c += 10;
     }
     print_vector(var);
 
@@ -194,6 +194,7 @@ Value 16
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+#include <iomanip>
 
 int main()
 {
@@ -202,15 +203,24 @@ int main()
 
    unsigned int &r {i};
 
-   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
-   r++;
-   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
-   r = j;
-   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
-   r = 9;
-   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
-   i = 20;
-   std::cout << "i " << i << " j " << j << " r " << r << std::endl;
+   // modern C++ way to declare functions within functions
+   //   called lambdas
+   auto print = [&] () { 
+       std::cout << "i: " << std::setw(2) << i << 
+                   " j: " << std::setw(2) << j << 
+                   " r: " << std::setw(2) << r << std::endl;
+   };
+
+   print ();
+
+   r++; print ();
+      
+   r = j; print();
+   
+   r = 9; print ();
+   
+   i = 20; print();
+
    return 0;
 }
 
@@ -218,11 +228,11 @@ int main()
 
 #+RESULTS:
 #+begin_example
-i 4 j 10 r 4
-i 5 j 10 r 5
-i 10 j 10 r 10
-i 9 j 10 r 9
-i 20 j 10 r 20
+i:  4 j: 10 r:  4
+i:  5 j: 10 r:  5
+i: 10 j: 10 r: 10
+i:  9 j: 10 r:  9
+i: 20 j: 10 r: 20
 #+end_example
 
 
@@ -245,8 +255,19 @@ int main()
 
 #+RESULTS:
 
+#+BEGIN_EXAMPLE
+/tmp/babel-3815z2J/C-src-3815Zpt.cpp: In function ‘int main()’:
+/tmp/babel-3815z2J/C-src-3815Zpt.cpp:13:8: error: assignment of read-only variable ‘i’
+    i = 20; // will fail
+        ^~
+#+END_EXAMPLE
 
-Google preferred way to name const global variables: prefix with k
+
+* Google preferred way to name const global variables
+
+https://google.github.io/styleguide/cppguide.html
+
+- prefix name with k
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 const int kDaysInAWeek = 7;
@@ -260,6 +281,8 @@ int main()
 
 ** In parameters to functions
 
+You can't modify a const parameter
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
@@ -268,7 +291,6 @@ void print_value(const int value)
    value +=10; // not allowed
    std::cout << "Value " << value << std::endl;
 }
-
 
 int main()
 {
@@ -279,9 +301,16 @@ int main()
 
 #+END_SRC
 
+#+BEGIN_EXAMPLE
+/tmp/babel-3815z2J/C-src-3815zLi.cpp: In function ‘void print_value(int)’:
+/tmp/babel-3815z2J/C-src-3815zLi.cpp:11:12: error: assignment of read-only parameter ‘value’
+    value +=10; // not allowed
+#+END_EXAMPLE
 #+RESULTS:
 
 ** Extends to references
+
+once you define a reference const, you can't change the value it refer to
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -297,7 +326,12 @@ int main()
 
 #+END_SRC
 
-#+RESULTS:
+#+BEGIN_EXAMPLE
+/tmp/babel-3815z2J/C-src-3815NuW.cpp: In function ‘int main()’:
+/tmp/babel-3815z2J/C-src-3815NuW.cpp:14:8: error: assignment of read-only reference ‘r’
+    r = 20;  // invalid
+#+END_EXAMPLE
+
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -323,5 +357,5 @@ int main()
 
 ** So why then use references for const parameters?
 
-- Because it is cheaper (in general) to pass a reference.
+- Because it is cheaper (in general) to pass a reference than a copy
 
