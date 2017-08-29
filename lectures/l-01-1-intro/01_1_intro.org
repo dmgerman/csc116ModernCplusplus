@@ -18,13 +18,74 @@
   - data types
   - algorithms
 - Generic programming
+- Much, much better than C
 
-* Simple construcsts
+* The C++ we are going to learn
 
-std::vector<type> 
-std::string
-auto variables
-for loops
+- Modern C++
+- also known as C++ 14 
+- Do not waste your time learning older C++
+
+
+* Simpler constructs than C
+
+| std::vector<type>  |
+| std::string        |
+| auto variables     |
+| improved for loops |
+
+
+* Learning a language
+
+- Learn the syntax
+- Learn the semantics
+- Learn the idioms
+
+* Example: 
+
+- count frequency of elements in an "array" (a vector)
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main()
+{
+   std::vector<std::string> names {"Canada", "Japan", "Spain", "Japan", "Italy", "Canada", "Japan"};
+   std::map <std::string, int> frequency {};
+   for (auto n : names) {
+       frequency[n] ++;
+   }
+   for (auto f : frequency) {
+       std::cout << "The frequency of " << f.first << " is " << f.second << std::endl;
+   }
+   std::cout << "--------------------" << std::endl;
+   std::for_each(frequency.begin(), 
+                 frequency.end(), 
+                 [](auto &a){ std::cout << "The frequency of " << a.first << " is " << a.second << std::endl;});
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+The frequency of Canada is 2
+The frequency of Italy is 1
+The frequency of Japan is 3
+The frequency of Spain is 1
+--------------------
+The frequency of Canada is 2
+The frequency of Italy is 1
+The frequency of Japan is 3
+The frequency of Spain is 1
+#+end_example
+
+
+
 
 * Simplest program
 
@@ -37,7 +98,7 @@ int main()
 
 #+RESULTS:
 
-Demo exit code
+Demo exit code (run in the command line)
 
 #+BEGIN_SRC sh
 ./hello
@@ -80,7 +141,9 @@ int main()
 Value of i is 3
 #+end_example
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror
+This program generates a compilation error
+
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror -pedantic-errors
 #include <iostream>
 
 int main()
@@ -94,12 +157,30 @@ int main()
 
 #+RESULTS:
 
+But this one compiles and runs:
+
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror -pedantic-errors
+#include <iostream>
+
+int main()
+{
+    int i  = 3.5;
+    std::cout << "Value of i is " << i << std::endl;
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Value of i is 3
+#+end_example
+
+
 * Vectors not Arrays
 
-- Show example of array
-- Show an example of array out of limits
-- Show an example of array size
-- Show an example of array size
+- Do not use arrays in C++
+- Instead, use a vector
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -108,13 +189,6 @@ int main()
 int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
-    std::string hello {"Hello"};
-    std::string name {"dmg"};
-    std::cout << hello + " " << name << std::endl;
- 
-    if (name == "dmg") {
-        std::cout << "I recognize you, " << name << std::endl;
-    }
 
     for(int i {0};i<5;i++) {
         std::cout << numbers[i] << std::endl;
@@ -126,14 +200,16 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Hello dmg
-I recognize you, dmg
 1
 2
 3
 4
 5
 #+end_example
+
+* They are safer to use
+
+The following program has a bug:
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -143,7 +219,7 @@ int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
 
-    for(int i {0};i<10;i++) {
+    for(int i {1};i<=5;i++) {
         std::cout << numbers[i] << std::endl;
     }
 
@@ -153,18 +229,15 @@ int main()
 
 #+RESULTS:
 #+begin_example
-1
 2
 3
 4
 5
 0
-4113
-0
-858851888
-943206709
 #+end_example
 
+- For the purpose of this course, never use [] to access elements of an array
+- Instead, use .at()
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -174,7 +247,7 @@ int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
 
-    for(int i {0};i<10;i++) {
+    for(int i {1};i<=5;i++) {
         std::cout << numbers.at(i) << std::endl;
     }
 
@@ -182,7 +255,12 @@ int main()
 }
 #+END_SRC
 
-#+RESULTS:
+#+BEGIN_EXAMPLE
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 5) >= this->size() (which is 5)
+#+END_EXAMPLE
+
+* But we can do better:
 
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
@@ -210,6 +288,10 @@ int main()
 5
 #+end_example
 
+* Nah, these control are obsolete, use an iterator
+
+- after all, control  variables of for loops are a big source of bugs
+
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -233,6 +315,11 @@ int main()
 The sum is 15
 #+end_example
 
+* But they also make for very generic code
+
+- We don't have to change the loop, and still works for strings
+- see how strings are defined
+- note semantics of + when dealing with strings
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -257,9 +344,7 @@ int main()
 The sum is 12345
 #+end_example
 
-
-
-Generic operations
+- Another example
 
 
 #+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
@@ -286,6 +371,12 @@ int main()
 the sum of the vector is 102202
 #+end_example
 
+* C++ also have a large set of "algorithms"
+
+- Why reinvent the wheel? 
+- Adding the elements of an array is something that needs to be done frequently
+- use std::accumulate
+
 #+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
@@ -308,8 +399,12 @@ int main()
 the sum of the vector is 21
 #+end_example
 
-What if we want to use complex numbers instead of integers? In this case, let us complex values:
-Note how the initialization converts and in to a complex. But we can also intialize complex numbers
+* Algorithms are genetic
+
+- What if we want to use complex numbers instead of integers? 
+- et us complex values:
+- Note how the initialization converts and int to a complex. 
+- But we can also initialize complex numbers
 
 #+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
@@ -334,8 +429,7 @@ int main()
 the sum of the vector is (21,-1)
 #+end_example
 
-We can also accumulate strings:
-
+* We can also accumulate strings:
 
 #+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
 #include <iostream>
@@ -360,3 +454,10 @@ int main()
 the sum of the vector is 123456
 #+end_example
 
+* Conclusion
+
+- C++ is much more powerful than C
+- Complex semantics (and some extra syntax)
+- Lots of powerful data structures 
+- Type-safe
+- Generic
