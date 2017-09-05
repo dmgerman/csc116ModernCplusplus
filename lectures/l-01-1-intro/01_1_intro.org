@@ -403,7 +403,7 @@ the sum of the vector is 21
 
 - What if we want to use complex numbers instead of integers? 
 - Lets use complex values:
-- Note how the initialization converts and int to a complex. 
+- Note how the initialization converts an int to a complex. 
 - But we can also initialize complex numbers
 
 #+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
