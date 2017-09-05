@@ -85,8 +85,6 @@ The frequency of Spain is 1
 #+end_example
 
 
-
-
 * Simplest program
 
 #+BEGIN_SRC C++
@@ -402,7 +400,7 @@ the sum of the vector is 21
 * Algorithms are generic
 
 - What if we want to use complex numbers instead of integers? 
-- Lets use complex values:
+- Let us use complex values:
 - Note how the initialization converts an int to a complex. 
 - But we can also initialize complex numbers
 
