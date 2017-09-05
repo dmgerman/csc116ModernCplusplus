@@ -399,10 +399,10 @@ int main()
 the sum of the vector is 21
 #+end_example
 
-* Algorithms are genetic
+* Algorithms are generic
 
 - What if we want to use complex numbers instead of integers? 
-- et us complex values:
+- Lets use complex values:
 - Note how the initialization converts and int to a complex. 
 - But we can also initialize complex numbers
 
