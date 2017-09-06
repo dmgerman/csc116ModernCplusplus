@@ -11,8 +11,8 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 #+OPTIONS: ^:nil
 
-Problems to solve in kattis
-
+* Week 1
+ 
 1. [[https://open.kattis.com/problems/hello][Hello World]]
 2. [[https://open.kattis.com/problems/r2][R2]]
 3. [[https://open.kattis.com/problems/cold][Cold-puter Science]]
