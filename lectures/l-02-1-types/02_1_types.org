@@ -17,7 +17,6 @@
 - Compound
 - Standard library (objects)
 
-
 * Fundamental types: same as in C
 
 - Int
@@ -31,10 +30,15 @@
 #include <iostream>
 int main()
 {
+   char aChar {101};
+   short aShort {200};
    int anInt {5};
    float aFloat {1000.3};
    double aDouble {124.3};
    bool   aBool {false};
+
+   std::cout << aChar << std::endl;
+   std::cout << aShort << std::endl;
 
    std::cout << anInt << std::endl;
    std::cout << aFloat << std::endl;
@@ -49,6 +53,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
+A
+200
 5
 1000.3
 124.3
@@ -112,7 +118,6 @@ Type has infinity: true
 ** But I am too lazy...
 
 so I use decltype to avoid typing the name of the type over and over again.
-
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
 #include <iostream>     // std::cout

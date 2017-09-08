@@ -12,9 +12,18 @@
 #+OPTIONS: ^:nil
 
 * Week 1
- 
-1. [[https://open.kattis.com/problems/hello][Hello World]]
-2. [[https://open.kattis.com/problems/r2][R2]]
-3. [[https://open.kattis.com/problems/cold][Cold-puter Science]]
+
+These problems are very simple, but require you learn to do
+input and output of strings and numbers. 
+
+| Simple                                                                    | [[https://open.kattis.com/problems/hello][Hello World]]        |
+| Simple arithmetic                                                         | [[https://open.kattis.com/problems/r2][R2]]                 |
+| Simple comparison                                                         | [[https://open.kattis.com/problems/cold][Cold-puter Science]] |
+| Simple arithmetic                                                         | [[https://open.kattis.com/problems/tarifa][Tarifa]]             |
+| Simple arithmetic (use % operator)                                        | [[https://open.kattis.com/problems/oddities][Oddities]]           |
+| Read the problem                                                          | [[https://open.kattis.com/problems/carrots][Carrots]]            |
 
 
+For later: 
+
+| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]] |

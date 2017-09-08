@@ -10,6 +10,7 @@
 #+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
+
 * Declaring variables is just like in C
 
 But it can be done anywhere in the code
@@ -18,7 +19,7 @@ But it can be done anywhere in the code
 #include <iostream>
 int main()
 {
-   int i={};
+   int i {};
 
    std::cout << i << std::endl;
 
@@ -37,7 +38,34 @@ int main()
 5
 #+end_example
 
-As in C, variables have scope
+
+
+* Scope can be a pain
+
+- But it is based on relatively simple rules
+- C++ uses lexical scope
+  - A variable can only be referenced in the environment where  it is defined
+
+* What is an environment?
+
+- an area of memory associated with a block of code where its variables are placed
+
+- a variable is created in the environment where it is defined
+
+- the program has a global environment
+  - where global variables live
+
+- a block {} defines an environment
+  - within the current environment
+
+* How does the compiler find a variable?
+
+- the compiler looks up a variable:
+  - in the current environment
+  - if not found, in its parent environment
+  - if not found, in its parent environment
+  - until it reaches the global environment
+- if not found, output error (variable not found)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -45,14 +73,16 @@ int main()
 {
    int i {10};
 
-   std::cout << i << std::endl;
+   std::cout << "1. " << i << std::endl;
    
    {
+      std::cout << "2. " << i << std::endl;
       int i {5};
-      std::cout << i << std::endl;
+      std::cout << "3. " << i << std::endl;
       i = 0;
    }
-   std::cout << i << std::endl;
+
+   std::cout << "4. " << i << std::endl;
 
    return 0;
 }
@@ -61,12 +91,45 @@ int main()
 
 #+RESULTS:
 #+begin_example
-10
-5
-10
+1. 10
+2. 10
+3. 5
+4. 10
 #+end_example
 
-** The for loop (and other loops) create their own environment 
+- We cannot define two variables with the same name in the same environment
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+int main()
+{
+   int i {10};
+
+   {
+      int i {5};
+      std::cout << i << std::endl;
+      i = 0;
+   }
+
+   double i {0.1}; // this declaration is an error
+
+   return 0;
+}
+
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+/tmp/babel-3872Bka/C-src-3872Yfl.cpp: In function ‘int main()’:
+/tmp/babel-3872Bka/C-src-3872Yfl.cpp:19:11: error: conflicting declaration ‘double i’
+    double i {0.1};
+           ^
+/tmp/babel-3872Bka/C-src-3872Yfl.cpp:11:8: note: previous declaration as ‘int i’
+    int i {10};
+        ^
+#+END_EXAMPLE
+
+
+** The for loop  creates their own environment 
 
 - even if they have no braces 
 
@@ -81,7 +144,7 @@ int main()
    int i {-5};
    std::cout << i << std::endl;
 
-   for(int i=0;i<3;i++)
+   for(int i {};i<3;i++)
       std::cout << i << std::endl;
    
    std::cout << i << std::endl;
@@ -103,6 +166,8 @@ int main()
 
 ** A function invocation creates its own environment
 
+- Invocation!
+- I repeat: each invocation of a function creates an environment
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -130,14 +195,23 @@ int main()
 -100
 #+end_example
 
+- see what happens with recursion
+- each execution of my_function creates a different environment
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int i=-100;
 
 void my_function(int i)
 {
-   i++;
-   std::cout << i << std::endl;
+   std::cout << "Start: " << i << std::endl;
+   if (i < 0) {
+       i++;
+       std::cout << i << std::endl;
+       std::cout << "Before: " << i << std::endl;
+       my_function(i + 1);
+       std::cout << "After: " << i << std::endl;
+   }
 }
 
 int main()
@@ -145,6 +219,7 @@ int main()
    std::cout << i << std::endl;
    int i {-5};
    my_function(i);
+
    std::cout << i << std::endl;
 
    return 0;
@@ -155,7 +230,19 @@ int main()
 #+RESULTS:
 #+begin_example
 -100
+Start: -5
 -4
+Before: -4
+Start: -3
+-2
+Before: -2
+Start: -1
+0
+Before: 0
+Start: 1
+After: 0
+After: -2
+After: -4
 -5
 #+end_example
 

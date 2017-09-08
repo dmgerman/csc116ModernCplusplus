@@ -18,6 +18,7 @@
 - [[#c-example][C++ Example:]]
 - [[#simplest-program][Simplest program]]
 - [[#hello-world][Hello world]]
+- [[#readwrite-fromto-standard-inputoutput][Read/write from/to standard input/output]]
 - [[#type-safety][Type safety]]
 - [[#vectors-not-arrays][Vectors not Arrays]]
   - [[#they-are-safer-to-use][They are safer to use]]
@@ -25,15 +26,17 @@
   - [[#why-hardcode-the-length][Why hardcode the length?]]
 - [[#nah-these-for-loops-are-obsolete-use-an-iterator][Nah, these "for" loops are obsolete, use an iterator]]
 - [[#but-they-also-make-for-very-generic-code][But they also make for very generic code]]
-- [[#c-also-have-a-large-set-of-algorithms][C++ also have a large set of "algorithms"]]
+- [[#c-has-a-large-set-of-algorithms][C++ has a large set of "algorithms"]]
   - [[#algorithms-are-generic][Algorithms are generic]]
   - [[#we-can-also-accumulate-strings][We can also accumulate strings:]]
+- [[#but-wait-there-is-more-we-can-create-our-own-generic-algorithms][But wait, there is more: we can create our own generic algorithms]]
 - [[#conclusion][Conclusion]]
 
 * What is c++
 
 - Type safe
 - Object oriented
+- Functional programming features
 - Powerful standard library
   - data types
   - algorithms
@@ -119,6 +122,7 @@ int main()
 
 Demo exit code (run in the command line)
 
+t
 #+BEGIN_SRC sh
 ./hello
 echo $?
@@ -131,15 +135,58 @@ echo $?
 
 int main()
 {
-    std::cout << "Hello world 1 " << std::endl;
+    std::cout << "Hello world" << std::endl;
     return 0;
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-Hello world 1
+Hello world
 #+end_example
+
+* Read/write from/to standard input/output
+
+This is the input to read
+
+#+BEGIN_EXAMPLE
+daniel
+5
+#+END_EXAMPLE
+
+
+#+header: :stdin input
+#+BEGIN_SRC C++ :exports both :cmdline < dmg.txt :results output
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string name;
+    int times;
+    std::getline(std::cin, name); // read entire line, stripping end of line
+    std::cin >> times;  // read next number
+                        // skipping whitespace... 
+ 
+    for(unsigned int i=0;i<times;i++) {
+       std::cout << "Hello " << name << " " << times << " times " << std::endl;
+    }
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Hello daniel german 4 times 
+Hello daniel german 3 times 
+Hello daniel german 2 times 
+Hello daniel german 1 times 
+Hello daniel german 0 times
+#+end_example
+
+
 
 * Type safety
 
@@ -214,7 +261,7 @@ int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
 
-    for(int i {0};i<5;i++) {
+    for(unsigned int i {0};i<5;i++) {
         std::cout << numbers[i] << std::endl;
     }
 
@@ -243,7 +290,7 @@ int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
 
-    for(int i {1};i<=5;i++) {
+    for(unsigned int i {1};i<=5;i++) {
         std::cout << numbers[i] << std::endl;
     }
 
@@ -273,13 +320,15 @@ int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5};
 
-    for(int i {1};i<=5;i++) {
+    for(unsigned int i {1};i<=5;i++) {
         std::cout << numbers.at(i) << std::endl;
     }
 
     return 0;
 }
 #+END_SRC
+
+#+RESULTS:
 
 #+BEGIN_EXAMPLE
 terminate called after throwing an instance of 'std::out_of_range'
@@ -348,7 +397,6 @@ The sum is 15
 - We don't have to change the loop, and still works for strings
 - see how strings are defined
 - note semantics of + when dealing with strings
-- this code is identical to the previous, except for the initialization
 
 #+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
 #include <iostream>
@@ -373,7 +421,7 @@ int main()
 The sum is 12345
 #+end_example
 
-* C++ also have a large set of "algorithms"
+* C++ has a large set of "algorithms"
 
 - Why reinvent the wheel? 
 - Adding the elements of an array is something that needs to be done frequently
@@ -405,7 +453,6 @@ the sum of the vector is 21
 ** Algorithms are generic
 
 - What if we want to use complex numbers instead of integers? 
-- Let us use complex values:
 - Note how the initialization converts an int to a complex. 
 - But we can also initialize complex numbers
 
@@ -455,6 +502,44 @@ int main()
 #+begin_example
 the sum of the vector is 123456
 #+end_example
+
+* But wait, there is more: we can create our own generic algorithms
+
+- Sometimes we really need the index to a vector element
+- But we know that incrementing indices to vectors is error prone
+- This will look like black magic now, but by the end of the term it should make sense
+
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
+#include <iostream>
+#include <string>
+#include <vector>
+#include <functional>
+
+template<typename T>
+void for_with_index(T& container, std::function<void(size_t, typename T::value_type&)> op)
+{
+    size_t idx = 0;
+    for(auto& value : container)
+        op(idx++, value);
+}
+
+int main()
+{
+    std::vector<std::string> sv {"a", "b", "c"};
+    // use a lambda, first parm is the index, second the vector
+    for_with_index(sv, [](auto i, auto v) {
+        std::cout << i << " " << v << std::endl;
+    });
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0 a
+1 b
+2 c
+#+end_example
+
 
 * Conclusion
 
