@@ -31,7 +31,7 @@
 - In old C++ functions could not be written inside functions
 - Defeats the purpose of scoping
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++ :results verbatim :export both
 #include <iostream>
 
 // we need to pass all parameters
@@ -63,7 +63,7 @@ int main()
 ** First some new syntax
 
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++ :results verbatim :export both
 #include <iostream>
 #include <functional>
 
@@ -99,7 +99,7 @@ int main()
 No, if we make j be part of the environment of my_function
 
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++ :results verbatim :export both
 #include <iostream>
 #include <functional>
 
@@ -131,7 +131,7 @@ int main()
 
 ** use auto (except when you need recursion) 
 
-#+BEGIN_SRC C++ 
+#+BEGIN_SRC C++ :export both
 #include <iostream>
 #include <functional>
 
@@ -370,8 +370,6 @@ int main()
 
    unsigned int &r {i};
 
-   // modern C++ way to declare functions within functions
-   //   called lambdas
    auto print = [&] () { 
        std::cout << "i: " << std::setw(2) << i << 
                    " j: " << std::setw(2) << j << 
