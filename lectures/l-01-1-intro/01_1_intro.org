@@ -489,7 +489,7 @@ int main()
 {
     std::vector<std::string> numbers {"1", "2", "3", "4", "5", "6"};
 
-    auto sum = std::accumulate(numbers.begin(), numbers.end(), std::string{});
+    auto sum = std::accumulate(numbers.begin()+1, numbers.end(), std::string{""});
 
     std::cout << "the sum of the vector is " << sum << std::endl;
     return 0;
@@ -500,7 +500,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-the sum of the vector is 123456
+the sum of the vector is 23456
 #+end_example
 
 * But wait, there is more: we can create our own generic algorithms
@@ -529,15 +529,16 @@ int main()
     // use a lambda, first parm is the index, second the vector
     for_with_index(sv, [](auto i, auto v) {
         std::cout << i << " " << v << std::endl;
+        i++;
     });
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-0 a
-1 b
-2 c
+1 a
+2 b
+3 c
 #+end_example
 
 

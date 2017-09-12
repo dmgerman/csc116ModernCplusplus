@@ -7,15 +7,24 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++   :xournal /tmp/rip.cpp          :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror 
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
+** Table of Contents                                                    :TOC:
+- [[#declaring-variables-is-just-like-in-c][Declaring variables is just like in C]]
+- [[#scope-can-be-a-pain][Scope can be a pain]]
+- [[#what-is-an-environment][What is an environment?]]
+- [[#at-run-time][At run time]]
+- [[#how-does-the-compiler-find-a-variable][How does the compiler find a variable?]]
+  - [[#the-for-loop--creates-their-own-environment][The for loop  creates their own environment]]
+  - [[#a-function-invocation-creates-its-own-environment][A function invocation creates its own environment]]
+- [[#functional-calls-environments-and-recursion][Functional calls, environments and recursion]]
 
 * Declaring variables is just like in C
 
 But it can be done anywhere in the code
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both :xournal /tmp/rip.cpp
 #include <iostream>
 int main()
 {
@@ -50,13 +59,18 @@ int main()
 
 - an area of memory associated with a block of code where its variables are placed
 
-- a variable is created in the environment where it is defined
+- a variable is created in the environment where it is defined 
 
 - the program has a global environment
   - where global variables live
 
 - a block {} defines an environment
   - within the current environment
+
+* At run time
+
+- a given environment is created when its block starts to execute
+- it is destroyed when the block ends
 
 * How does the compiler find a variable?
 
@@ -195,9 +209,11 @@ int main()
 -100
 #+end_example
 
+* Functional calls, environments and recursion
+
 - see what happens with recursion
 - each execution of my_function creates a different environment
-
+  
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int i=-100;

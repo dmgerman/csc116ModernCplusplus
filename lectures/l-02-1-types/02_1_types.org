@@ -10,6 +10,20 @@
 #+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
+** Table of Contents                                                    :TOC:
+- [[#data-types][Data types]]
+- [[#fundamental-types-same-as-in-c][Fundamental types: same as in C]]
+  - [[#but-i-am-too-lazy][But I am too lazy...]]
+  - [[#but-i-am-really-really-lazy][But I am really, really lazy]]
+  - [[#unsigned-modifier][Unsigned modifier]]
+  - [[#long-modifier][Long modifier]]
+  - [[#and-you-can-apply-them-both-size-and-sign-modifiers][and you can apply them both: size and sign modifiers:]]
+  - [[#16-bits][16 bits]]
+- [[#narrowing-conversions][Narrowing conversions]]
+- [[#do-i-care-about-all-of-this-for-the-exam][Do I care about all of this for the exam?]]
+- [[#type-conversions][Type conversions]]
+  - [[#forcing-the-type-of-a-constant][Forcing the type of a constant]]
+  - [[#corollary][Corollary:]]
 
 * Data types
 
@@ -19,10 +33,10 @@
 
 * Fundamental types: same as in C
 
-- Int
-- Double
-- Float
-- Boolean
+- int
+- double
+- float
+- bool
 - char
   (and some char friends)
 
@@ -310,7 +324,7 @@ int main ()
 {
   int myFloat {0};
   signed float mySignedFloat {0};
-  unsigned float myUnsignedFloat {0};
+  unsigned float myUnsignedFloat {0}; // does not work
 
 
   print_type_info(myFloat);

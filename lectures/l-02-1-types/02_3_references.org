@@ -7,11 +7,166 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results verbatim :exports both :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
+
+** Table of Contents                                                    :TOC:
+- [[#new-concept-functions-as-first-class-citizens][New concept: functions as first class citizens]]
+  - [[#first-some-new-syntax][First some new syntax]]
+  - [[#but-do-we-need-to-parametrize-j][But, do we need to parametrize j?]]
+  - [[#use-auto-except-when-you-need-recursion][use auto (except when you need recursion)]]
+- [[#scope-again][Scope again]]
+- [[#references][References]]
+- [[#also-true-traversing-collections-for-auto][Also true traversing collections (for auto)]]
+  - [[#another-example][Another example]]
+- [[#we-can-also-declare-variables-that-are-references-to-variables][We can also declare variables that are references to variables]]
+- [[#const][Const]]
+- [[#google-preferred-way-to-name-const-global-variables][Google preferred way to name const global variables]]
+  - [[#in-parameters-to-functions][In parameters to functions]]
+  - [[#extends-to-references][Extends to references]]
+  - [[#so-why-then-use-references-for-const-parameters][So why then use references for const parameters?]]
+
+* New concept: functions as first class citizens
+
+- In old C++ functions could not be written inside functions
+- Defeats the purpose of scoping
+
+#+BEGIN_SRC C++ :results verbatim
+#include <iostream>
+
+// we need to pass all parameters
+void my_function(int i, int j)
+{
+   std::cout << i << " " << j << std::endl;
+}
+
+int main()
+{
+   int i {-5};
+   int j {1};
+   int k {100};
+
+   my_function(i,j);
+   my_function(k,j);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-5 1
+100 1
+#+end_example
+
+** First some new syntax
+
+
+#+BEGIN_SRC C++ :results verbatim
+#include <iostream>
+#include <functional>
+
+// we need to pass all parameters
+//void my_function(int i, int j)
+std::function<void(int,int)> my_function = [&](int i, int j) {
+   std::cout << i << " " << j << std::endl;
+};
+
+int main()
+{
+
+   int i {-5};
+   int j {1};
+   int k {100};
+
+   my_function(i,j);
+   my_function(k,j);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-5 1
+100 1
+#+end_example
+
+** But, do we need to parametrize j?
+
+No, if we make j be part of the environment of my_function
+
+
+#+BEGIN_SRC C++ :results verbatim
+#include <iostream>
+#include <functional>
+
+// we need to pass all parameters
+int main()
+{
+
+   int i {-5};
+   int j {1};
+   int k {100};
+
+   std::function<void(int)> my_function = [&](int n) {
+      std::cout << n << " " << j << std::endl;
+   };
+
+   my_function(i);
+   my_function(k);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-5 1
+100 1
+#+end_example
+
+** use auto (except when you need recursion) 
+
+#+BEGIN_SRC C++ 
+#include <iostream>
+#include <functional>
+
+// we need to pass all parameters
+int main()
+{
+
+   int i {-5};
+   int j {1};
+   int k {100};
+
+   auto my_function = [&](int n) {
+      std::cout << n << " " << j << std::endl;
+   };
+
+   my_function(i);
+   my_function(k);
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+-5 1
+100 1
+#+end_example
+
 
 
 * Scope again
+
+- in C++ parameters are new variables (copy-by-value)
+- they are independent of the variables passed as parameters in the call
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -44,6 +199,10 @@ After -5
 
 * References
 
+- they allow modification of a parameter
+- they are "like" a pointer, but safer
+- A reference is variable that points to another one
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
@@ -72,6 +231,10 @@ After -4
 #+end_example
 
 * Also true traversing collections (for auto)
+
+- Note how the scope of the for loop creates local variables (copies)
+- References can be used to modify the original value 
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -151,20 +314,24 @@ int main()
 #+end_example
 
 
+** Another example
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+#include <functional>
 
-void print_value(int value)
-{
+//void print_value(int value)
+std::function<void(int)> print_value = [&] (int value) {
    value +=10;
    std::cout << "Value " << value << std::endl;
-}
+};
 
-void print_value2(int &value)
-{
+//void print_value2(int &value)
+std::function<void(int&)> print_value2 = [&] (int &value) 
+{ 
    value +=10;
    std::cout << "Value " << value << std::endl;
-}
+};
 
 
 int main()

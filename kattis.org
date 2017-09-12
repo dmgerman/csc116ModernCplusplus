@@ -23,7 +23,34 @@ input and output of strings and numbers.
 | Simple arithmetic (use % operator)                                        | [[https://open.kattis.com/problems/oddities][Oddities]]           |
 | Read the problem                                                          | [[https://open.kattis.com/problems/carrots][Carrots]]            |
 
+* Week 2
 
-For later: 
+| Use a for loop. make sure your counter variable is local to the loop       | [[https://open.kattis.com/problems/timeloop][Stuck In A Time Loop]] |
+| Use a function that takes the number of lines to read                      | [[https://open.kattis.com/problems/speedlimit][Speed Limit]]          |
+| Be careful when convertin floating point numbers to ints                   | [[https://open.kattis.com/problems/faktor][Faktor]]               |
+| After you solve it, see if you can do it WIHOUT an if statement. See below | [[https://open.kattis.com/problems/spavanac][Spavanac]]             |
+| Trigonometry. See below                                                    | [[https://open.kattis.com/problems/ladder][Ladder]]               |
 
-| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]] |
+1. spavanac
+
+The % operation can be very useful to deal with values that "rotate around a certain limit" operation.
+
+((a +b) % b ) will always return a positive number. For example, (-1 + 24) % 24 => 23
+
+This means you can solve this problem WITHOUT an if statement. The hint is to convert the time to minutes, and then use
+the % operator to deal with "invalid" times. Then convert back the minutes to hours when you output.
+
+2. Ladder
+
+Remember to convert degrees to radians. All trig. functions in C++ (and in C) require angles to be in radians.
+See http://www.cplusplus.com/reference/cmath/
+
+Use #include <cmath> 
+
+
+* For later
+
+| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]]    |
+| Compare two vectors!!!!          | [[https://open.kattis.com/problems/bijele][Bijele]] |
+|                                  |        |
+
