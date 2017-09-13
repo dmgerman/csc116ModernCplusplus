@@ -12,7 +12,8 @@
 
 * Prelude: chars
 
-chars can be operated like ints
+- chars can be operated like ints
+- a char can be used an a signed int of size 1 byte
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -42,28 +43,6 @@ B
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
@@ -85,22 +64,6 @@ int main()
 A
 65
 #+end_example
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -131,32 +94,26 @@ b
 98
 #+end_example
 
-
 * Strings
 
 ** Reference
-
  http://www.cplusplus.com/reference/string/string/
 
 ** Tutorial
-
  https://www.tutorialspoint.com/cplusplus/cpp_strings.htm
 
 ** Caveats
 
-
-
 In C++ we have two types of strings:
 
-- C type: char[]
+- C type: char[] and char*
 
 #+BEGIN_SRC C++
 char filename[] = "myFile.txt";
 char *filename = "myFile.txt";
 #+END_SRC
 
-
-std::string
+- std::string
 
 #+BEGIN_SRC C++
 #include <string>
@@ -167,7 +124,10 @@ std::string emptyString2 {};
 
 #+END_SRC
 
-
+- For this course, never, ever, declare a char[] or char*
+- Always use std::string
+- .size() returns the length of the string
+- .empty() returns true is if the string is ""
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic -Werror :exports both
 #include <iostream>
@@ -177,7 +137,7 @@ int main()
 {
     std::string filename {"filename.txt"};
     std::string emptyString {""};
-    std::string another {};
+    std::string another {}; // initializes to empty string
     another = filename;
     std::cout << "Content: " << filename << std::endl;
     std::cout << "Empty: " << emptyString.size() << std::endl;
@@ -197,7 +157,7 @@ It is really Empty
 #+end_example
 
 
-* As we discussed before we can traverse an array as a sequence of characters:
+* We can traverse an array as a sequence of characters:
 
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
@@ -206,22 +166,18 @@ It is really Empty
 
 int main()
 {
-    std::string filename {"abc"};
-    for(int i=0;i<filename.size();i++) {
+    std::string filename {"vic"};
+    for(unsigned int i=0;i<filename.size();i++) {
         std::cout << "position " << i << " value " 
                   << filename.at(i) << std::endl;
     }
+    std::cout << "1. " << filename << std::endl;
+
     for(char c : filename) {
-        std::cout << "char " << c << std::endl;   
+        std::cout << "2. Char " << c << std::endl;   
+        c++;
     }
-    for(const char &c : filename) {
-        std::cout << "char " << c << std::endl;   
-        c= 10;
-    }
-    for(int i=0;i<filename.size();i++) {
-        std::cout << "position " << i << " value " 
-                  << filename.at(i) << std::endl;
-    }
+    std::cout << "3. " << filename << std::endl;
 
     return 0;
 }
@@ -229,10 +185,22 @@ int main()
 #+END_SRC
 
 #+RESULTS:
+#+begin_example
+position 0 value v
+position 1 value i
+position 2 value c
+1. vic
+2. Char v
+2. Char i
+2. Char c
+3. vic
+#+end_example
 
 
 * We can modify the characters in the string
 
+- using a reference in a for-loop
+- use .at()
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -244,11 +212,14 @@ int main()
     for(int i=0;i<filename.size();i++) {
        filename.at(i) = 'X'; // notice single quote for characters
     }
-    std::cout << "First: " << filename << std::endl;
+    std::cout << "1: " << filename << std::endl;
     for(char &c:filename) {
        c = 'Z'; 
     }
-    std::cout << "Second: " << filename << std::endl;
+    std::cout << "2: " << filename << std::endl;
+    filename.at(0) = 'a';
+    filename.at(1) = 'b';
+    std::cout << "3: " << filename << std::endl;
 
     return 0;
 }
@@ -257,8 +228,9 @@ int main()
 
 #+RESULTS:
 #+begin_example
-First: XXX
-Second: ZZZ
+1: XXX
+2: ZZZ
+3: abZ
 #+end_example
 
 * We can add characters to a string
@@ -270,13 +242,13 @@ Second: ZZZ
 
 int main()
 {
-    std::string filename {"abc"};
+    std::string filename {"abc-"};
     // append a string to the end
-    filename += "ijk";
-    std::cout << "First: " << filename << std::endl;
+    filename += "ijk.";
+    std::cout << "1. " << filename << std::endl;
     // we can also append characters!
     filename += 'z';
-    std::cout << "Second: " << filename << std::endl;
+    std::cout << "2. " << filename << std::endl;
     return 0;
 }
 
@@ -284,8 +256,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
-First: abcijk
-Second: abcijkz
+1. abc-ijk.
+2. abc-ijk.z
 #+end_example
 
 * Be careful:
@@ -303,16 +275,20 @@ int main()
 {
     std::string greeting {};
 
-    greeting = "Your name is " + "bob";
+    greeting = "Your name is " + "bob"; // we cannot add one char array to another
     std::cout << greeting << std::endl;
     return 0;
 }
 
 #+END_SRC
 
-#+RESULTS:
+#+BEGIN_EXAMPLE
+/tmp/babel-2558967A/C-src-25589UJI.cpp: In function ‘int main()’:
+/tmp/babel-2558967A/C-src-25589UJI.cpp:15:32: error: invalid operands of types ‘const char [14]’ and ‘const char [4]’ to binary ‘operator+’
+     greeting = "Your name is " + "bob";
+#+END_EXAMPLE
 
-We need first to convert the char array to a string:
+We need first to convert the char array to a std::string then we can add the other
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -321,8 +297,8 @@ We need first to convert the char array to a string:
 int main()
 {
     std::string greeting {};
-
-    greeting = std::string("Your name is ") + "bob"; // called typecasting
+    // typecase the char array to a std::string
+    greeting = std::string("Your name is ") + "bob"; 
     std::cout << greeting << std::endl;
     return 0;
 }
@@ -336,6 +312,8 @@ Your name isbob
 
 * Convert a string to numbers
 
+- we need to use special functions to convert a string to an number
+
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
@@ -347,15 +325,16 @@ int main()
     std::string str3 {"31337 with words"};
     std::string str4 {"words and 2"};
 
-    int myint1 = std::stoi(str1);
-    int myint2 = std::stoi(str2);
-    int myint3 = std::stoi(str3);
+    int myint1 { std::stoi(str1) };
+    int myint2 { std::stoi(str2) };
+    int myint3 { std::stoi(str3) };
    // int myint4 = std::stoi(str4); // this one is invalid, will create an exception
- 
+    double myd { std::stod(str2) };
     std::cout << "std::stoi(\"" << str1 << "\") is " << myint1 << '\n';
     std::cout << "std::stoi(\"" << str2 << "\") is " << myint2 << '\n';
     std::cout << "std::stoi(\"" << str3 << "\") is " << myint3 << '\n';
-
+    std::cout << "std::stod(\"" << str2 << "\") is " << myd << '\n';
+    
     return 0;
 }
 
@@ -366,9 +345,12 @@ int main()
 std::stoi("45") is 45
 std::stoi("3.14159") is 3
 std::stoi("31337 with words") is 31337
+std::stod("3.14159") is 3.14159
 #+end_example
 
 * Compare strings
+
+- Very easy: just use == like any basic type
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -405,7 +387,14 @@ me and he are the same
 
 * Reading strings
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+This is the input to read
+
+#+BEGIN_EXAMPLE
+daniel
+#+END_EXAMPLE
+
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both :cmdline < dmg.txt
 #include <iostream>
 #include <string>
 
@@ -421,23 +410,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Your name is
+Your name is daniel
 #+end_example
 
-
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
-#include <iostream>
-#include <string>
-
-int main()
-{
-    std::string name {};
-    name = std::stoi("This 32 47");
-    std::cout << "Your name is " + name << std::endl;
-    return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
 
