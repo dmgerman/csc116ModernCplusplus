@@ -197,6 +197,9 @@ int main()
    std::cout << i << std::endl;
    int i {-5};
    my_function(i);
+   {
+      int i {0};
+   } 
 
    return 0;
 }

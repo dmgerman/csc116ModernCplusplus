@@ -13,15 +13,15 @@
 ** Table of Contents                                                    :TOC:
 - [[#new-concept-functions-as-first-class-citizens][New concept: functions as first class citizens]]
   - [[#first-some-new-syntax][First some new syntax]]
-  - [[#but-do-we-need-to-parametrize-j][But, do we need to parametrize j?]]
+  - [[#but-do-we-need-to-parameterize-j][But, do we need to parameterize j?]]
   - [[#use-auto-except-when-you-need-recursion][use auto (except when you need recursion)]]
 - [[#scope-again][Scope again]]
 - [[#references][References]]
-- [[#also-true-traversing-collections-for-auto][Also true traversing collections (for auto)]]
+- [[#also-true-for-traversing-collections-for-auto][Also true for traversing collections (for auto)]]
   - [[#another-example][Another example]]
 - [[#we-can-also-declare-variables-that-are-references-to-variables][We can also declare variables that are references to variables]]
 - [[#const][Const]]
-- [[#google-preferred-way-to-name-const-global-variables][Google preferred way to name const global variables]]
+- [[#const-global-variables][const global variables]]
   - [[#in-parameters-to-functions][In parameters to functions]]
   - [[#extends-to-references][Extends to references]]
   - [[#so-why-then-use-references-for-const-parameters][So why then use references for const parameters?]]
@@ -54,14 +54,13 @@ int main()
 
 #+END_SRC
 
-#+RESULTS:
+v#+RESULTS:
 #+begin_example
 -5 1
 100 1
 #+end_example
 
 ** First some new syntax
-
 
 #+BEGIN_SRC C++ :results verbatim :export both
 #include <iostream>
@@ -94,7 +93,7 @@ int main()
 100 1
 #+end_example
 
-** But, do we need to parametrize j?
+** But, do we need to parameterize j?
 
 No, if we make j be part of the environment of my_function
 
@@ -113,6 +112,7 @@ int main()
 
    std::function<void(int)> my_function = [&](int n) {
       std::cout << n << " " << j << std::endl;
+      my_function(3);
    };
 
    my_function(i);
@@ -131,11 +131,11 @@ int main()
 
 ** use auto (except when you need recursion) 
 
-#+BEGIN_SRC C++ :export both
+#+BEGIN_SRC C++ :export both :results verbatim
 #include <iostream>
 #include <functional>
 
-// we need to pass all parameters
+
 int main()
 {
 
@@ -144,9 +144,8 @@ int main()
    int k {100};
 
    auto my_function = [&](int n) {
-      std::cout << n << " " << j << std::endl;
+       std::cout << n << " " << j << std::endl;
    };
-
    my_function(i);
    my_function(k);
 
@@ -208,12 +207,13 @@ After -5
 
 void my_function(int &r)
 {
+   r--;
    std::cout << "inside " << r << std::endl;
 }
 
 int main()
 {
-   int i {-5};
+   int i {0};
    std::cout << "Before " << i << std::endl;
    my_function(i);
    std::cout << "After "<< i << std::endl;
@@ -225,16 +225,15 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Before -5
-inside -4
-After -4
+Before 0
+inside -1
+After -1
 #+end_example
 
-* Also true traversing collections (for auto)
+* Also true for traversing collections (for auto)
 
 - Note how the scope of the for loop creates local variables (copies)
 - References can be used to modify the original value 
-
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -367,7 +366,6 @@ int main()
 {
    unsigned int i {4};
    unsigned int j {10};
-
    unsigned int &r {i};
 
    auto print = [&] () { 
@@ -377,13 +375,9 @@ int main()
    };
 
    print ();
-
    r++; print ();
-      
    r = j; print();
-   
    r = 9; print ();
-   
    i = 20; print();
 
    return 0;
@@ -428,11 +422,13 @@ int main()
 #+END_EXAMPLE
 
 
-* Google preferred way to name const global variables
+* const global variables
 
-https://google.github.io/styleguide/cppguide.html
-
+- this is the one of the few reasons you would like to have a global variable
+- Google preferred way to name 
+ https://google.github.io/styleguide/cppguide.html
 - prefix name with k
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 const int kDaysInAWeek = 7;
@@ -446,7 +442,8 @@ int main()
 
 ** In parameters to functions
 
-You can't modify a const parameter
+- indicate that you can't modify a parameter
+- in general, this is a good idea
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -475,7 +472,7 @@ int main()
 
 ** Extends to references
 
-once you define a reference const, you can't change the value it refer to
+- once you define a reference const, you can't change the value it refers to
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -483,13 +480,15 @@ once you define a reference const, you can't change the value it refer to
 int main()
 {
    int i { 5 };
-   const int &r = i;
+   const int &r {i};
    i= 10;   // ok
    r = 20;  // invalid
    return 0;
 }
 
 #+END_SRC
+
+#+RESULTS:
 
 #+BEGIN_EXAMPLE
 /tmp/babel-3815z2J/C-src-3815NuW.cpp: In function ‘int main()’:
@@ -498,9 +497,12 @@ int main()
 #+END_EXAMPLE
 
 
+- this is for a parameter, indicates that even we got a reference, it is immutable
+- signals to the person using the function that the parameter is not going to be changed
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+
 
 void print_value(const int &value)
 {
@@ -517,10 +519,16 @@ int main()
 
 #+END_SRC
 
-#+RESULTS:
+#+BEGIN_EXAMPLE
+/tmp/babel-2558967A/C-src-25589a3A.cpp: In function ‘void print_value(const int&)’:
+/tmp/babel-2558967A/C-src-25589a3A.cpp:13:12: error: assignment of read-only reference ‘value’
+    value +=10; // not allowed
+            ^~
+zsh:1: permission denied: /tmp/babel-2558967A/C-bin-25589nBH
+#+END_EXAMPLE
 
 
 ** So why then use references for const parameters?
 
-- Because it is cheaper (in general) to pass a reference than a copy
-
+- Because in general it is cheaper (faster) to pass a reference than a copy
+- specially for complex values
