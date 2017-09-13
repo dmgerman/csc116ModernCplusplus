@@ -15,6 +15,7 @@
   - [[#first-some-new-syntax][First some new syntax]]
   - [[#but-do-we-need-to-parameterize-j][But, do we need to parameterize j?]]
   - [[#use-auto-except-when-you-need-recursion][use auto (except when you need recursion)]]
+  - [[#what-does-this-output][What does this output?]]
 - [[#scope-again][Scope again]]
 - [[#references][References]]
 - [[#also-true-for-traversing-collections-for-auto][Also true for traversing collections (for auto)]]
@@ -161,6 +162,37 @@ int main()
 #+end_example
 
 
+
+** What does this output?
+
+- apply the same scoping rules as before
+
+#+BEGIN_SRC C++ :export both :results verbatim
+#include <iostream>
+#include <functional>
+int i {0};
+
+auto execute(std::function<void()> action) {
+   int i {5};
+   action();
+};
+int main()
+{
+   auto before = [&]() {
+       std::cout << "In before: " << i << std::endl;
+   };
+
+   int i {-1};
+
+   auto after = [&]() {
+       std::cout << "In after: " << i << std::endl;
+   };
+   execute(before);
+   execute(after);
+
+   return 0;
+}
+#+END_SRC
 
 * Scope again
 
