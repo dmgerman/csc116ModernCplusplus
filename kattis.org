@@ -28,7 +28,7 @@ input and output of strings and numbers.
 | Use a for loop. make sure your counter variable is local to the loop       | [[https://open.kattis.com/problems/timeloop][Stuck In A Time Loop]] |
 | Use a function that takes the number of lines to read                      | [[https://open.kattis.com/problems/speedlimit][Speed Limit]]          |
 | Be careful when convertin floating point numbers to ints                   | [[https://open.kattis.com/problems/faktor][Faktor]]               |
-| After you solve it, see if you can do it WIHOUT an if statement. See below | [[https://open.kattis.com/problems/spavanac][Spavanac]]             |
+| After you solve it, see if you can do it WITHOUT an if statement. See below | [[https://open.kattis.com/problems/spavanac][Spavanac]]             |
 | Trigonometry. See below                                                    | [[https://open.kattis.com/problems/ladder][Ladder]]               |
 
 1. spavanac
@@ -47,10 +47,13 @@ See http://www.cplusplus.com/reference/cmath/
 
 Use #include <cmath> 
 
+* Week 3
+
+| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]]    |
+
 
 * For later
 
-| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]]    |
 | Compare two vectors!!!!          | [[https://open.kattis.com/problems/bijele][Bijele]] |
 |                                  |        |
 

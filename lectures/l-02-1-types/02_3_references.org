@@ -32,7 +32,7 @@
 - In old C++ functions could not be written inside functions
 - Defeats the purpose of scoping
 
-#+BEGIN_SRC C++ :results verbatim :export both
+#+BEGIN_SRC C++ :results verbatim :exports both
 #include <iostream>
 
 // we need to pass all parameters
@@ -55,7 +55,7 @@ int main()
 
 #+END_SRC
 
-v#+RESULTS:
+#+RESULTS:
 #+begin_example
 -5 1
 100 1
@@ -167,7 +167,7 @@ int main()
 
 - apply the same scoping rules as before
 
-#+BEGIN_SRC C++ :export both :results verbatim
+#+BEGIN_SRC C++ :exports both :results verbatim 
 #include <iostream>
 #include <functional>
 int i {0};
