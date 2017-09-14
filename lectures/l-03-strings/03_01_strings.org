@@ -12,8 +12,8 @@
 
 * Prelude: chars
 
-- chars can be operated like ints
-- a char can be used an a signed int of size 1 byte
+- chars can be operated just like ints
+  - a char can be used an a signed int of size 1 byte
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -21,11 +21,11 @@
 int main()
 {
    char c { 'A'};
-   char d { 66};
-   std::cout << c << std::endl;
-   std::cout << d << std::endl;
-   std::cout << int(c) << std::endl;
-   c = = 0x20;
+   char d { 66 };
+   std::cout << c << std::endl 
+             << d << std::endl
+             << int(c) << std::endl;
+   c = 0x20;
    std::cout << c << std::endl;
 
    return 0;
@@ -38,10 +38,9 @@ int main()
 A
 B
 65
-)
 #+end_example
 
-
+- Note that a '1' is not the same as numeric 1
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -49,9 +48,8 @@ B
 int main()
 {
    char e { '1' };
-   std::cout << e << std::endl;
-   std::cout << int(e) << std::endl;
-
+   std::cout << e << std::endl 
+             << int(e) << std::endl;
    return 0;
 }
 
@@ -61,10 +59,10 @@ int main()
 #+begin_example
 1
 49
-A
-65
 #+end_example
 
+- We can use characters in numeric operations
+- it uses the "ASCII" value of the character
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -72,14 +70,13 @@ A
 int main()
 {
    char c { 'A'};
-   std::cout << c << std::endl;
-   std::cout << int(c) << std::endl;
+   std::cout << c << " " 
+             << int(c) << std::endl;
    c = c+5;
    std::cout << c << std::endl;
    c = '1' * 2;
-   std::cout << c << std::endl;
-   std::cout << int(' ') << std::endl;
-   std::cout << int(c) << std::endl;
+   std::cout << c << " " << int(' ') << " " 
+             << int(c) << std::endl;
    return 0;
 }
 
@@ -87,11 +84,9 @@ int main()
 
 #+RESULTS:
 #+begin_example
-A
+A 65
 F
-b
-32
-98
+b 32 98
 #+end_example
 
 * Strings
@@ -200,6 +195,7 @@ position 2 value c
 * We can modify the characters in the string
 
 - using a reference in a for-loop
+  - note that the proper type for the index is size_t, not int
 - use .at()
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
@@ -209,7 +205,7 @@ position 2 value c
 int main()
 {
     std::string filename {"abc"};
-    for(int i=0;i<filename.size();i++) {
+    for(size_t i=0;i<filename.size();i++) {
        filename.at(i) = 'X'; // notice single quote for characters
     }
     std::cout << "1: " << filename << std::endl;
@@ -262,10 +258,10 @@ int main()
 
 * Be careful:
 
-A bare sequence between quotes "as in this" is a char array. *Not a string!!*
+A bare sequence between quotes "as in this" is a char array. *Not a std::string!!*
 
-- Compiler, most of the time, will convert it to std::string as needed
-- But sometimes it does not: this program will fail
+- The compiler, most of the time, will convert it to std::string as needed
+- But sometimes it does cannot: this program will fail
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -276,6 +272,7 @@ int main()
     std::string greeting {};
 
     greeting = "Your name is " + "bob"; // we cannot add one char array to another
+                                        // at least one must be a std::string
     std::cout << greeting << std::endl;
     return 0;
 }
@@ -309,6 +306,28 @@ int main()
 #+begin_example
 Your name isbob
 #+end_example
+
+* Other string operations
+
+Lots of new operations
+
+http://www.cplusplus.com/reference/string/string/
+
+Examples:
+
+| size      | return length of the string                           |
+| clear     | reset the string to "" (empty string)                 |
+| empty     | is the string empty?                                  |
+| back      | returns last character                                |
+| front     | returns first character                               |
+| substr    | return a substring                                    |
+| find      | find a character or a substring in a string           |
+| push_back | add one character to the end of a string              |
+| pop_back  | remove last character (if it exists)                  |
+| +=        | append another string or a character to a string      |
+| erase     | remove some characters from the string                |
+| insert    | insert a substring or a character in a given location |
+
 
 * Convert a string to numbers
 
@@ -351,6 +370,7 @@ std::stod("3.14159") is 3.14159
 * Compare strings
 
 - Very easy: just use == like any basic type
+- We can use any typical comparison operation: >, <, >=, <=, ==, != 
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -361,19 +381,24 @@ int main()
     std::string you = "Bob";
     std::string me = "Daniel";    
     std::string he = "Daniel";
+    std::string she = "Daniela";
 
-    if (me == you) {
-        std::cout << "me and you are the same" << std::endl;
-    } else {
-        std::cout << "me and you are the diffent" << std::endl;
-    }
+    auto test = [&](std::string first, std::string second) {
+         std::cout << "'" << first << "' and '" << second << "' are " 
+           << ((first == second)? "the same" : "different")
+           << std::endl;
+    };
 
-    if (me == he) {
-        std::cout << "me and he are the same" << std::endl;
-    } else {
-        std::cout << "me and he are the diffent" << std::endl;
-    }
+    test(me, you);
+    test(me, he);
 
+    std::cout << std::boolalpha; // to print booleans nicely
+    std::cout << (he > she) << std::endl;
+    std::cout << (he >= she) << std::endl;
+    std::cout << (he < she) << std::endl;
+    std::cout << (he <= she) << std::endl;
+    std::cout << (he != she) << std::endl;
+    std::cout << (he == she) << std::endl;
     return 0;
 }
 
@@ -381,18 +406,29 @@ int main()
 
 #+RESULTS:
 #+begin_example
-me and you are the diffent
-me and he are the same
+'Daniel' and 'Bob' are different
+'Daniel' and 'Daniel' are the same
+false
+false
+true
+true
+true
+false
 #+end_example
 
 * Reading strings
 
-This is the input to read
+This is the input to read in the following examples.
 
 #+BEGIN_EXAMPLE
-daniel
+SpongeBob Square-Pants
+
+Daffy Duck!
 #+END_EXAMPLE
 
+** read one line at a time
+
+Note how the empty line is read
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both :cmdline < dmg.txt
 #include <iostream>
@@ -401,8 +437,10 @@ daniel
 int main()
 {
     std::string name {};
-    getline(std::cin, name);
-    std::cout << "Your name is " + name << std::endl;
+    while (getline(std::cin, name)) {
+       std::cout << "Line: " << name << std::endl;
+    }
+    
     return 0;
 }
 
@@ -410,7 +448,35 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Your name is daniel
+Line: SpongeBob Square-Pants
+Line: 
+Line: Daffy Duck!
 #+end_example
 
+** Or you can read one "token" at a time
 
+- this reads a "token" (word separated by "whitespace")
+- note how it skips whitespace before reading the token
+  - we don't read the empty line
+
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both :cmdline < dmg.txt
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::string word {};
+    while (std::cin >> word) {
+       std::cout << "Token: " << word << std::endl;
+    }
+    return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Token: SpongeBob
+Token: Square-Pants
+Token: Daffy
+Token: Duck!
+#+end_example

@@ -172,7 +172,7 @@ int main()
 #include <functional>
 int i {0};
 
-auto execute(std::function<void()> action) {
+auto execute = [&](std::function<void()> action) {
    int i {5};
    action();
 };
@@ -187,12 +187,19 @@ int main()
    auto after = [&]() {
        std::cout << "In after: " << i << std::endl;
    };
+   
    execute(before);
    execute(after);
 
    return 0;
 }
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+In before: 0
+In after: -1
+#+end_example
 
 * Scope again
 
@@ -458,7 +465,7 @@ int main()
 
 - this is the one of the few reasons you would like to have a global variable
 - Google preferred way to name 
- https://google.github.io/styleguide/cppguide.html
+  https://google.github.io/styleguide/cppguide.html
 - prefix name with k
 
 
