@@ -16,7 +16,7 @@ In some of the examples below I use the following function to print the vector.
 You need it to include it instead of in the examples below.
 
 #+BEGIN_SRC C++
-#include "/home/dmg/c++/mycode.hpp
+#include "mycode.hpp
 #+END_SRC
 
 #+BEGIN_SRC C++
@@ -31,6 +31,8 @@ void print_vector(std::string prefix, const std::vector<T> &vec)
     std::cout << "]"<< std::endl;
 }
 #+END_SRC
+
+#+RESULTS:
 
 
 * Vectors can be compared and assigned
@@ -84,7 +86,7 @@ But  vectors intVec1 and intVec2 are different now
 // comparing size, length, capacity and max_size
 #include <iostream>
 #include <vector>
-#include "/home/dmg/c++/mycode.hpp"
+#include "/tmp/mycode.hpp"
 
 void print_size(std::vector<int> &vec)
 {
@@ -128,16 +130,16 @@ size: 0 capacity: 10 max_size: 4611686018427387903
 #+end_example
 
 
-* it is possible to reserve a given size
+* it is possible to reserve a given size?
 
 - adding elements is expensive
-- hence it is good idea to reserve a size
+- hence it is good idea to pre-allocate (reserve) a size
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 // comparing size, length, capacity and max_size
 #include <iostream>
 #include <vector>
-#include "/home/dmg/c++/mycode.hpp"
+#include "/tmp/mycode.hpp"
 
 void print_size(std::vector<int> &vec)
 {
@@ -192,10 +194,7 @@ int main()
       std::cout << *it << " ";
    }
    std::cout << std::endl;
-   
-
-
-   return 0;
+    return 0;
 }
 
 #+END_SRC
@@ -226,9 +225,6 @@ int main()
       std::cout << el << " ";
    }
    std::cout << std::endl;
-   
-
-
    return 0;
 }
 
@@ -256,9 +252,6 @@ int main()
       std::cout << el << " ";
    }
    std::cout << std::endl;
-   
-
-
    return 0;
 }
 
@@ -273,7 +266,6 @@ int main()
 
 Note that, even though the container is traversed backwards, the iterator ~it~ is
 increments (not decremented):
-y
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -302,11 +294,12 @@ int main()
 
 * Iterators can be used to erase at specific elements
 
+- use method erase()
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
-#include "/home/dmg/c++/mycode.hpp"
+#include "/tmp/mycode.hpp"
 int main()
 {
    std::vector<int> numbers { 10, 11, 12, 13, 14, 15};
@@ -350,9 +343,6 @@ int main()
       std::cout << c << " ";
    }
    std::cout << std::endl;
-   
-
-
    return 0;
 }
 
@@ -366,7 +356,10 @@ a n i e
 * C style arrays
 
 - They are not objects!
-- They have no methods: at, size, resize, clear, etc.
+- They have no methods: at(), size(), resize(), clear(), etc.
+- You don't need them in C++
+
+- but you can use a "modern" for-loop without an index
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -398,47 +391,5 @@ int main()
 11
 12
 13
-#+end_example
-
-* Multi-dimensional array
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-#include <typeinfo>
-int main()
-{
-   int matrix1 [2][3] {{ 11, 12, 13},
-                        { 7, 8, 29}};
-   int matrix2 [2][3] {{ -4, 14, -13},
-                        { 3, 2, 13}};
-
-   int result [2][3] {};
-
-   for(int i=0;i<2;i++) {
-      for(int j=0;j<3;j++) {
-         result[i][j] = matrix1[i][j] + matrix2[i][j];
-      } 
-      std::cout << std::endl;
-   }
-
-   for(int i=0;i<2;i++) {
-      for(int j=0;j<3;j++) {
-         std::cout << result[i][j] << " " ;
-      } 
-      std::cout << std::endl;
-   }
-
-   std::cout << "-----------------" << std::endl;
-
-   return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-7 26 0 
-10 10 42 
------------------
 #+end_example
 

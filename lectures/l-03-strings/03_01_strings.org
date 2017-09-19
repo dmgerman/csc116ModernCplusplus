@@ -26,7 +26,7 @@ int main()
              << d << std::endl
              << int(c) << std::endl;
    c = 0x20;
-   std::cout << c << std::endl;
+   std::cout << "[" << c << "]" << std::endl;
 
    return 0;
 }
@@ -38,6 +38,7 @@ int main()
 A
 B
 65
+[ ]
 #+end_example
 
 - Note that a '1' is not the same as numeric 1
@@ -315,23 +316,27 @@ http://www.cplusplus.com/reference/string/string/
 
 Examples:
 
-| size      | return length of the string                           |
-| clear     | reset the string to "" (empty string)                 |
-| empty     | is the string empty?                                  |
-| back      | returns last character                                |
-| front     | returns first character                               |
-| substr    | return a substring                                    |
-| find      | find a character or a substring in a string           |
-| push_back | add one character to the end of a string              |
-| pop_back  | remove last character (if it exists)                  |
-| +=        | append another string or a character to a string      |
-| erase     | remove some characters from the string                |
-| insert    | insert a substring or a character in a given location |
 
+| Query  | size()             | return length of the string                      |
+|        | empty()            | is the string empty?                             |
+|        | back()             | returns last character                           |
+|        | front()            | returns first character                          |
+|        | substr(pos, len)   | return a substring                               |
+|        | find               | find a character or a substring in a string      |
+|--------+--------------------+--------------------------------------------------|
+| Modify | clear()            | reset the string to "" (empty string)            |
+|        | push_back(c)       | add  character c to the end of a string          |
+|        | pop_back()         | remove last character (if it exists)             |
+|        | +=                 | append another string or a character to a string |
+|        | erase(pos, len)    | remove some characters from the string           |
+|        | insert(pos, subst) | insert subst in a given location                 |
 
 * Convert a string to numbers
 
 - we need to use special functions to convert a string to an number
+
+| stoi | string to int    |
+| stod | string to double |
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -418,7 +423,7 @@ false
 
 * Reading strings
 
-This is the input to read in the following examples.
+Note: This is the input read in the following examples.
 
 #+BEGIN_EXAMPLE
 SpongeBob Square-Pants

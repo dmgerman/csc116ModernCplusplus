@@ -49,11 +49,24 @@ Use #include <cmath>
 
 * Week 3
 
-| Converting substrings to numbers | [[https://open.kattis.com/problems/pot][Pot]]    |
+| Converting substrings to numbers                | [[https://open.kattis.com/problems/pot][Pot]]                  |
+| Use sort                                        | [[https://open.kattis.com/problems/cups][Stacking cups]]        |
+| Vectors of vectors                              | [[https://open.kattis.com/problems/pet][Pet]]                  |
+| Simple character comparison in strings          | [[https://open.kattis.com/problems/detaileddifferences][Detailed differences]] |
+| Use a vector to store how many of each you need | [[https://open.kattis.com/problems/bijele][Bijele]]               |
+| Read different tokens in the input              | [[https://open.kattis.com/problems/acm][ACM]]                  |
 
+For sorting:
 
-* For later
+If you have a vector called vec (string or int), you can sort it with.
 
-| Compare two vectors!!!!          | [[https://open.kattis.com/problems/bijele][Bijele]] |
-|                                  |        |
+#+BEGIN_SRC C++
+std::sort(vec.begin(), vec.end());
+#+END_SRC
+
+and in reverse order with:
+
+#+BEGIN_SRC C++
+std::sort(vec.rbegin(), vec.rend());
+#+END_SRC
 

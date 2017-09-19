@@ -240,47 +240,49 @@ default [at 0,1] default
 #include <iostream>
 #include <vector>
 
+void print_matrix(const std::vector<std::vector<int>> &vec) {
+   std::cout << "Number Rows: " << vec.size() << std::endl;
+   for(auto row: vec) {
+      std::cout << "Row: (size: " << row.size() << ") ";
+      for(auto el: row) {
+         std::cout << el << " " ;
+      } 
+      std::cout << std::endl;
+   } 
+}
+
 int main()
 {
    std::vector<
        std::vector<int>
      > vec (2, std::vector<int>(3,0));
-
-   vec[1][2] = 9;
-
-   vec[0].clear();
-   vec[1].push_back(7);
-   vec.push_back({-3, 9});
-   std::cout << "Size: " << vec.size() << std::endl;
-
-   for(auto subvec: vec) {
-      std::cout << "Row: " ;
-      for(auto el: subvec) {
-         std::cout << el << " " ;
-      } 
-      std::cout << std::endl;
-   } 
-
+   print_matrix(vec);
+   vec.at(0).clear(); // erase one line
+   vec.at(1).at(2) = 9;
+   vec.at(1).push_back(7);
+   vec.push_back({-3, 9}); // push a row at once
+   print_matrix(vec);
 }
 
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-Size: 3
-Row: 
-Row: 0 0 9 7 
-Row: -3 9
+Number Rows: 2
+Row: (size: 3) 0 0 0 
+Row: (size: 3) 0 0 0 
+Number Rows: 3
+Row: (size: 0) 
+Row: (size: 4) 0 0 9 7 
+Row: (size: 2) -3 9
 #+end_example
-
-
 
 * Declaring a two dimensional vector
 
 Say we want a vector of two dimensions:
 
 In the following case have a vector of two dimensions but
-with first dimensions 5 and second dimension 2
+with first dimension equal 5 and second dimension 2
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
 #include <iostream>
@@ -313,8 +315,7 @@ int main()
         std::vector<double>  // each element of the vector is a vector
         > variableName       // name of the vector
         (5, // how many elements in the frist dimension
-         std::vector<double>(2) // It knows each element is a vector (the subvectors. Here we say exactly
-                                // what size each subvector to create
+         std::vector<double>(2) // Each row in the vector
             );
    std::cout  << "Size first dimension : " << variableName.size() << std::endl;
    std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
@@ -324,46 +325,6 @@ int main()
 #+RESULTS:
 #+begin_example
 Size first dimension : 5
-Size second dimension : 2
-#+end_example
-
-
-This code is 
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
-#include <iostream>
-#include <vector>
-int main()
-{
-    std::vector <            // I want a vector 
-        std::vector<double>  // each element of the vector is a vector
-        > variableName 
-   (5, std::vector<double>(2));
-   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
-   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
-}
-#+END_SRC
-
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
-#include <iostream>
-#include <vector>
-int main()
-{
-    std::vector <            
-        std::vector<double>  
-        > variableName       
-        (3, 
-         std::vector<double>(2)
-            );
-   std::cout  << "Size first dimension : " << variableName.size() << std::endl;
-   std::cout  << "Size second dimension : " << variableName[0].size() << std::endl;
-}
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-Size first dimension : 3
 Size second dimension : 2
 #+end_example
 
