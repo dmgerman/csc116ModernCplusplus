@@ -534,8 +534,8 @@ Once we have <=, we can implement any other operation in terms of it
 #+BEGIN_SRC C++ :results verbatim
 #include <iostream>
 
-bool string_less_or_equal(const std::string st1,
-                      const std::string st2) {
+bool string_less_or_equal(const std::string &st1,
+                      const std::string &st2) {
     if (st1.size() ==0)
         return true;
     if (st2.size() ==0)
@@ -549,23 +549,23 @@ bool string_less_or_equal(const std::string st1,
     }
 }
 
-bool string_equal(const std::string st1, const std::string st2) {
+bool string_equal(const std::string &st1, const std::string &st2) {
     return string_less_or_equal(st1, st2) && string_less_or_equal(st2, st1);
 }
 
-bool string_not_equal(const std::string st1, const std::string st2) {
+bool string_not_equal(const std::string &st1, const std::string &st2) {
     return ! string_equal(st1,st2);
 }
 
-bool string_less_than(const std::string st1, const std::string st2) {
+bool string_less_than(const std::string &st1, const std::string &st2) {
     return string_less_or_equal(st1, st2) && ! string_equal(st1,st2);
 }
 
-bool string_bigger_than(const std::string st1, const std::string st2) {
+bool string_bigger_than(const std::string &st1, const std::string &st2) {
     return string_less_or_equal(st2, st1) && ! string_equal(st1, st2);
 }
 
-bool string_bigger_or_equal(const std::string st1, const std::string st2) {
+bool string_bigger_or_equal(const std::string &st1, const std::string &st2) {
     return string_less_or_equal(st2, st1);
 }
 
@@ -592,3 +592,33 @@ int main()
 0
 0
 #+end_example
+
+#+BEGIN_SRC C++ :results verbatim :output both
+#include <iostream>
+
+bool string_less_or_equal(const &std::string st1,
+                         const &std::string st2) {
+
+    if (st1.size() ==0)
+        return true;
+    if (st2.size() ==0)
+        return false;
+    if (st1.front() == st2.front()) {
+        // compare the remaining strings
+        return string_less_or_equal(st1.substr(1), st2.substr(1));
+    } else {
+        // compare the front characters
+        return st1.front() < st2.front();
+    }
+}
+
+
+int main()
+{
+    std::cout << string_less_or_equal("daniel", "daniela") << std::endl;
+    std::cout << string_less_or_equal("daniel", "daniel") << std::endl;
+    std::cout << string_less_or_equal("daniela", "daniel") << std::endl;
+    return 0;
+}
+
+#+END_SRC
