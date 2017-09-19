@@ -617,6 +617,9 @@ int main()
     std::cout << string_less_or_equal("", "daniela") << std::endl;
     std::cout << string_less_or_equal("daniel", "") << std::endl;
     std::cout << string_less_or_equal("", "") << std::endl;
+    
+    std::cout << string_less_or_equal("aba", "aca") << std::endl;
+    std::cout << string_less_or_equal("aca", "aba") << std::endl;
 
     std::cout << string_less_or_equal("daniel", "daniela") << std::endl;
     std::cout << string_less_or_equal("daniel", "daniel") << std::endl;
@@ -631,6 +634,8 @@ int main()
 1
 0
 1
+1
+0
 1
 1
 0
