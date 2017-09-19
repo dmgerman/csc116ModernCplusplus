@@ -596,7 +596,7 @@ int main()
 Here is a more efficient way to do it.  Mmm, it looks even more readable.
 
 - So we compare strings up to the point they have the same number of characters
-  - the moment one of these characters is different, we decide if it is less than the other
+  - the moment one of these characters is different, we return with the result
 
 - if we consume all common characters, the less_or_equal depends on which has less characters
 
