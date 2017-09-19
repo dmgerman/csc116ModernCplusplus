@@ -593,8 +593,12 @@ int main()
 0
 #+end_example
 
-Here is a more efficient way to do it, but much less readable
+Here is a more efficient way to do it.  Mmm, it looks even more readable.
 
+- So we compare strings up to the point they have the same number of characters
+  - the moment one of these characters is different, we decide if it is less than the other
+
+- if we consume all common characters, the less_or_equal depends on which has less characters
 
 #+BEGIN_SRC C++ :results verbatim :output both
 #include <iostream>
@@ -603,10 +607,9 @@ bool string_less_or_equal(const std::string &st1,
                           const std::string &st2) {
 
     for(size_t i= 0; i< st1.size() && i < st2.size(); i++) {
-        if (st1.at(i) > st2.at(i))
-            return false;
-        else if (st1.at(i) < st2.at(i))
-            return true;
+        if (st1.at(i) != st2.at(i)) {
+            return st1.at(i) < st2.at(i);
+        }
     }
     return (st1.size() <= st2.size() );
 }
