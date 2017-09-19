@@ -593,28 +593,31 @@ int main()
 0
 #+end_example
 
+Here is a more efficient way to do it, but much less readable
+
+
 #+BEGIN_SRC C++ :results verbatim :output both
 #include <iostream>
 
-bool string_less_or_equal(const &std::string st1,
-                         const &std::string st2) {
+bool string_less_or_equal(const std::string &st1,
+                          const std::string &st2) {
 
-    if (st1.size() ==0)
-        return true;
-    if (st2.size() ==0)
-        return false;
-    if (st1.front() == st2.front()) {
-        // compare the remaining strings
-        return string_less_or_equal(st1.substr(1), st2.substr(1));
-    } else {
-        // compare the front characters
-        return st1.front() < st2.front();
+    for(size_t i= 0; i< st1.size() && i < st2.size(); i++) {
+        if (st1.at(i) > st2.at(i))
+            return false;
+        else if (st1.at(i) < st2.at(i))
+            return true;
     }
+    return (st1.size() <= st2.size() );
 }
 
 
 int main()
 {
+    std::cout << string_less_or_equal("", "daniela") << std::endl;
+    std::cout << string_less_or_equal("daniel", "") << std::endl;
+    std::cout << string_less_or_equal("", "") << std::endl;
+
     std::cout << string_less_or_equal("daniel", "daniela") << std::endl;
     std::cout << string_less_or_equal("daniel", "daniel") << std::endl;
     std::cout << string_less_or_equal("daniela", "daniel") << std::endl;
@@ -622,3 +625,13 @@ int main()
 }
 
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+1
+0
+1
+1
+1
+0
+#+end_example
