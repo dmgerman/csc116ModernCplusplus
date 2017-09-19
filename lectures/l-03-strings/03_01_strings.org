@@ -506,7 +506,7 @@ bool string_less_or_equal(const std::string st1,
         // compare the remaining strings
         return string_less_or_equal(st1.substr(1), st2.substr(1));
     } else {
-        // compare the front string
+        // compare the front characters
         return st1.front() < st2.front();
     }
 }
