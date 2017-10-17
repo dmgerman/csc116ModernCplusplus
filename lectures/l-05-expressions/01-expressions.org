@@ -21,7 +21,6 @@
 |----------+-------------------------------+---------+--------------------------------|
 | +        | redundant way to say positive | +3      |                                |
 | -        | unary minus                   | -3      |                                |
-| *        | pointer reference             | *p      |                                |
 | *        | pointer de-reference          | *pVar   | pVar is a pointer to an object |
 
 * Binary
@@ -48,8 +47,8 @@
 |             | <<       | left shift                  | 32 << 1                      |                                |
 |             | >>       | right shift                 | 32 >> 1                      |                                |
 |             | &        | bitwise AND                 | 32 & 28                      |                                |
-|             | ^        | birwise XOR                 | 10 ^ 10                      |                                |
-|             |          | bitwise OR                  |                              |                                |
+|             | ^        | bitwise XOR                 | 10 ^ 10                      |                                |
+|             |           | bitwise OR                  |                              |                                |
 |-------------+----------+-----------------------------+------------------------------+--------------------------------|
 | Assignments | =        | assignment                  | x = 3                        |                                |
 |             | +=       | increment                   | x += 3                       |                                |
@@ -120,9 +119,9 @@ int main()
 31072
 #+end_example
 
-* Type conversions
+* Automatic Type conversions
 
-They can be frequently tricky
+They can be tricky
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -163,6 +162,7 @@ int main()
 
 ** Unsigned numbers cannot take negative numbers
 
+- by the way, make sure you understand the semantics of --i and i--
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
@@ -170,9 +170,7 @@ int main()
 {
    unsigned int i {0};
 
-   i--;
-
-   std::cout << i << std::endl;
+   std::cout << --i << std::endl;
 
    return 0;
 }
@@ -187,10 +185,11 @@ int main()
 
 ** keep an eye for integer divisions 
 
-The result of integer division is an integer
+- The result of integer division is an integer. 
+- The following is a common bug.
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both -Wconversion -Wno-int-conversion -Wfloat-conversion
 #include <iostream>
 int main()
 {
@@ -207,7 +206,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-1.5
+1
 #+end_example
 
 * comparing floating point numbers should be done with care!!
@@ -251,8 +250,8 @@ int main()
    float b {1.1};
    float c {a + b};
    
-///   float EPSILON {std::numeric_limits<float>::epsilon()};
-   float EPSILON { 0.0000001};
+   float EPSILON {std::numeric_limits<float>::epsilon()};
+//   float EPSILON { 0.0000001};
 
    if ( std::abs(c - 2.6 ) < EPSILON ) {           // Comment this line for correct result 
       std::cout << "it is true " << a << " + " << b << " == 2.6" << std::endl;       

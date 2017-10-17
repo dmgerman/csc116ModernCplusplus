@@ -53,14 +53,13 @@ int main()
        i = 10;  /// maybe read from user
 
        std::cout << myVec.at(i) << std::endl;
+
+       std::cout << "hello" << std::endl;
        
    } catch (std::exception err){
       std::cout << "in handler: " << err.what() << std::endl;
    }
-      
    std::cout <<"Continuing " << std::endl;
-
-
    return 0;
 }
 

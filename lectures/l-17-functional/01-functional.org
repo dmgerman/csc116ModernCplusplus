@@ -17,7 +17,7 @@
 - In C, this is via function pointers
 - In C++ new features are provided
 
-In the following example, we can define the same function in two different ways:
+In the following example, we can define the same function in three different ways (f, f2 and g--they all do the same)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -89,12 +89,6 @@ auto functionName = [] (parameterList) -> returnType { body; };
 
 - When [], they simply act like any global function declared in a program
 
-* lambdas are closures
-
-- In general, these types of functions are called lambdas
-- they are closures: capable of "carrying" part of the environment where they are created (using []
-  - more on that later 
-  
 * Why do we want to do this?
 
 - We can store functions in variables

@@ -34,7 +34,7 @@ int function(double p1, char p2)
 
 // invocation
 // arguments:  2.3, 'c'
-function(2.3, 'c')
+function(2.3, 'c');
 #+END_SRC
 
 * Void 
@@ -126,11 +126,11 @@ int i;
 
 void f() 
 {
-   static int i {};
+   static int i {0};
    i++;
    std::cout << "Value of i " << i << std::endl;
    { 
-      static int j {};
+      static int j {0};
       j++;
       std::cout << "Value of j " << j << std::endl;
    } 
@@ -138,7 +138,6 @@ void f()
 
 int main()
 {
-   static int i {5};
    f();
    f();
    f();
@@ -216,7 +215,7 @@ informs the compiler that the function exists, but it is defined somewhere else
 
 ** Without the declaration
 
-the compiler complains
+the compiler complains if the function is used without a declaration
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
 #include <iostream>
@@ -251,8 +250,10 @@ int main()
 
 #+END_SRC  
 
+#+BEGIN_EXAMPLE
 /tmp/test.o: In function `main':
 C-src-11244MpG.cpp:(.text+0x5): undefined reference to `f()'
+#+END_EXAMPLE
 
 * Separate compilation
 
@@ -270,7 +271,8 @@ An argument can be passed by
 
 ** By value
 
-A copy of the argument is made (becomes the parameter)
+- A copy of the argument is made (becomes the parameter)
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
 #include <iostream>
@@ -352,6 +354,7 @@ std::vector<std::string> Parse_Line(std::string line)
 {
     std::string current {};
     std::vector<std::string> result {};
+    // assume that we return at least one string
     for (auto c: line) {
        if (c == ',') {
            result.push_back(current);

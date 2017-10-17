@@ -62,6 +62,7 @@ In the babies assignment, we used a vector of baby_type as our main data structu
 
 #+BEGIN_SRC C++
 struct baby_type {
+public:
     std::string name;
     std::vector<int> yearsCount;
     int total;
@@ -144,7 +145,9 @@ protected: // we'll talk about this later
 
 ** Functions can be defined outside the class
 
-** #+BEGIN_SRC C++
+- but must be declared inside the class
+
+#+BEGIN_SRC C++
 class baby_class {
 private:
     std::string name;
@@ -168,9 +171,6 @@ int baby_class::getYearCount(int year) {
 
 #+END_SRC
 
-
-
-
 * Constructors
 
 - Any object must be initialized before it can be used
@@ -186,10 +186,14 @@ public:
 }
 #+END_SRC
 
+The following example uses a field that is declared static
+- static fields are shared by all instances of the class 
+- for any other field, each instance has its own value
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class baby_class {
-   static int count;
+   static int count; // static fields are shared by all instances of a class
 public:
    baby_class() {
        std::cout << "creating an object " << count++ << std::endl;

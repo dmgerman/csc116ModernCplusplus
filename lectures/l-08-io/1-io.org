@@ -94,6 +94,34 @@ options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
 options(width=160)
 #+end_example
 
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <string>
+int main(int argc, char* argv[])
+{
+   std::ifstream in;
+   in.open("/home/dmg/.Rprofile");
+   if (in) { // we can also use if(in.is_open())
+      std::string line;
+      while (std::getline(in, line)) {
+         std::cout << line << std::endl;
+      }
+   }
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1. in a good state
+2. in a good state
+options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
+options(width=160)
+#+end_example
+
+
 * Close
 
 - The stream destructor closes the file
@@ -341,53 +369,11 @@ int main () {
 #+end_example
 
 
+** locale
 
-** money
+this example is for demonstration purposes (not in the exam)
 
-this example is more for demonstration purposes
-
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-#include <iomanip>
- 
-int main()
-{
-    double mon = 123.45; // or std::string mon = "123.45";
-    std::cout.imbue(std::locale("en_CA.utf8"));
-    std::cout << std::showbase
-              << "en_CA: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-
-    std::cout.imbue(std::locale("en_US.utf8"));
-    std::cout << std::showbase
-              << "en_US: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-
-    std::cout.imbue(std::locale("en_GB.utf8"));
-    std::cout << std::showbase
-              << "en_GB: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-
-    std::cout.imbue(std::locale("ru_RU.utf8"));
-    std::cout << "ru_RU: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-
-    std::cout.imbue(std::locale("ja_JP.utf8"));
-    std::cout << "ja_JP: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-
-    std::cout.imbue(std::locale("hi_IN.utf8"));
-    std::cout << "hi_IN: " << std::put_money(mon) << " or " << std::put_money(mon, true) << '\n';
-}
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-en_CA: $1.23 or CAD 1.23
-en_US: $1.23 or USD  1.23
-en_GB: £1.23 or GBP 1.23
-ru_RU: 1.23 ₽ or 1.23 RUB 
-ja_JP: ￥123 or JPY  123
-hi_IN: ₹ 1.23 or INR  1.23
-#+end_example
-
-** time
+we can take advantage of the locale to output information in the local language
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -400,24 +386,15 @@ int main()
     std::tm tm = *std::localtime(&t);
     std::cout.imbue(std::locale("en_CA.utf8"));
     std::cout << "en_CA: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
-    std::cout.imbue(std::locale("fr_CA.utf8"));
-    std::cout << "fr_CA: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
     std::cout.imbue(std::locale("ja_JP.utf8"));
     std::cout << "ja_JP: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
-    std::cout.imbue(std::locale("zh_CN.utf8"));
-    std::cout << "zh_CN: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
-    std::cout.imbue(std::locale("hi_IN.utf8"));
-    std::cout << "hi_IN: " << std::put_time(&tm, "%A %B %c %Z") << '\n';
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-en_CA: Wednesday October Wed 19 Oct 2016 01:02:27 AM PDT PDT
-fr_CA: mercredi octobre mer 19 oct 2016 01:02:27 PDT PDT
-ja_JP: 水曜日 10月 2016年10月19日 01時02分27秒 PDT
-zh_CN: 星期三 十月 2016年10月19日 星期三 01时02分27秒 PDT
-hi_IN: बुधवार  अक्टूबर बुधवार  19 अक्टूबर 2016 01:02:27 पूर्वाह्न PDT PDT
+en_CA: Tuesday October Tue 17 Oct 2017 09:47:55 AM PDT PDT
+ja_JP: 火曜日 10月 2017年10月17日 09時47分55秒 PDT
 #+end_example
 
 

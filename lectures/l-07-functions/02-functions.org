@@ -246,10 +246,12 @@ double operate (double a, double b)
   return (a/b);
 }
 
+
 int main ()
 {
   std::cout << operate (5,2) << std::endl;
   std::cout << operate (5.0,2.0) << std::endl;
+  std::cout << operate (5,2.3) << std::endl;
   return 0;
 }
 #+END_SRC

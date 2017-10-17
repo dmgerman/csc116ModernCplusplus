@@ -736,10 +736,13 @@ public:
 // a static value must be initialized outside the class
 int baby_class::count = 0;
 
+int a = 10;
+
 int main()
 {
    baby_class b1;
    baby_class b2;
+   std::cout << "The value of a is " << a << std::endl;
    { 
        baby_class b3;
        // to call the method without the object reference we must use class_name::
@@ -755,6 +758,7 @@ int main()
 #+begin_example
 creating an object. Objects after 1
 creating an object. Objects after 2
+The value of a is 10
 creating an object. Objects after 3
 Number of instances 3
 destroying object. Objects after this destructor: 2
