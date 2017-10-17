@@ -531,7 +531,7 @@ int main()
 
 Once we have <=, we can implement any other operation in terms of it
 
-#+BEGIN_SRC C++ :results verbatim
+#+BEGIN_SRC C++ :results verbatim :output both
 #include <iostream>
 
 bool string_less_or_equal(const std::string &st1,
