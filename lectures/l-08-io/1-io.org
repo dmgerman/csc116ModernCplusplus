@@ -422,7 +422,18 @@ out.open("file", ofstream:out);
 
 * Reading binary data
 
-this file was created with windows end-of-line-characters
+For this section we will use this file. It was created with windows end-of-line-characters
+
+#+BEGIN_SRC sh :results output
+cat groceries.txt
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+butter	potatoes
+rice
+#+end_example
+
 
 #+BEGIN_SRC sh :results output
 hexdump groceries.txt
@@ -430,7 +441,7 @@ hexdump groceries.txt
 
 #+RESULTS:
 #+begin_example
-0000000 7562 7474 7265 7020 746f 7461 656f 0d73
+0000000 7562 7474 7265 7009 746f 7461 656f 0d73
 0000010 720a 6369 0d65 000a                    
 0000017
 #+end_example
@@ -447,7 +458,7 @@ cat  groceries.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1
 3#    0x74 = 116 dec = 0164 oct = t
 4#    0x65 = 101 dec = 0145 oct = e
 5#    0x72 = 114 dec = 0162 oct = r
-6#    0x20 = 032 dec = 0040 oct =  
+6#    0x09 = 009 dec = 0011 oct = ht
 7#    0x70 = 112 dec = 0160 oct = p
 8#    0x6F = 111 dec = 0157 oct = o
 9#    0x74 = 116 dec = 0164 oct = t
@@ -503,23 +514,23 @@ int main()
 #+RESULTS:
 #+begin_example
 0   File position before   0 after   1 skipped   1 [ 98] [b]
-1   File position before   1 after   3 skipped   2 [117] [u]
-2   File position before   3 after   4 skipped   1 [116] [t]
-3   File position before   4 after   5 skipped   1 [116] [t]
-4   File position before   5 after   6 skipped   1 [101] [e]
-5   File position before   6 after   7 skipped   1 [114] [r]
-6   File position before   7 after   9 skipped   2 [112] [p]
-7   File position before   9 after  10 skipped   1 [111] [o]
-8   File position before  10 after  11 skipped   1 [116] [t]
-9   File position before  11 after  12 skipped   1 [ 97] [a]
-10  File position before  12 after  13 skipped   1 [116] [t]
-11  File position before  13 after  14 skipped   1 [111] [o]
-12  File position before  14 after  15 skipped   1 [101] [e]
-13  File position before  15 after  16 skipped   1 [115] [s]
-14  File position before  16 after  19 skipped   3 [114] [r]
-15  File position before  19 after  20 skipped   1 [105] [i]
-16  File position before  20 after  21 skipped   1 [ 99] [c]
-17  File position before  21 after  22 skipped   1 [101] [e]
+1   File position before   1 after   2 skipped   1 [117] [u]
+2   File position before   2 after   3 skipped   1 [116] [t]
+3   File position before   3 after   4 skipped   1 [116] [t]
+4   File position before   4 after   5 skipped   1 [101] [e]
+5   File position before   5 after   6 skipped   1 [114] [r]
+6   File position before   6 after   8 skipped   2 [112] [p]
+7   File position before   8 after   9 skipped   1 [111] [o]
+8   File position before   9 after  10 skipped   1 [116] [t]
+9   File position before  10 after  11 skipped   1 [ 97] [a]
+10  File position before  11 after  12 skipped   1 [116] [t]
+11  File position before  12 after  13 skipped   1 [111] [o]
+12  File position before  13 after  14 skipped   1 [101] [e]
+13  File position before  14 after  15 skipped   1 [115] [s]
+14  File position before  15 after  18 skipped   3 [114] [r]
+15  File position before  18 after  19 skipped   1 [105] [i]
+16  File position before  19 after  20 skipped   1 [ 99] [c]
+17  File position before  20 after  21 skipped   1 [101] [e]
 #+end_example
 
 We use the manipulator std::noskipws to disable skipping whitespace
@@ -558,30 +569,29 @@ int main()
 #+RESULTS:
 #+begin_example
 0   File position before   0 after   1 skipped   1 [ 98] [b]
-1   File position before   1 after   2 skipped   1 [  9] [	]
-2   File position before   2 after   3 skipped   1 [117] [u]
+1   File position before   1 after   2 skipped   1 [117] [u]
+2   File position before   2 after   3 skipped   1 [116] [t]
 3   File position before   3 after   4 skipped   1 [116] [t]
-4   File position before   4 after   5 skipped   1 [116] [t]
-5   File position before   5 after   6 skipped   1 [101] [e]
-6   File position before   6 after   7 skipped   1 [114] [r]
-7   File position before   7 after   8 skipped   1 [ 32] [ ]
-8   File position before   8 after   9 skipped   1 [112] [p]
-9   File position before   9 after  10 skipped   1 [111] [o]
-10  File position before  10 after  11 skipped   1 [116] [t]
-11  File position before  11 after  12 skipped   1 [ 97] [a]
-12  File position before  12 after  13 skipped   1 [116] [t]
-13  File position before  13 after  14 skipped   1 [111] [o]
-14  File position before  14 after  15 skipped   1 [101] [e]
-15  File position before  15 after  16 skipped   1 [115] [s]
-16  File position before  16 after  17 skipped   1 [ 13] []
-17  File position before  17 after  18 skipped   1 [ 10] [
+4   File position before   4 after   5 skipped   1 [101] [e]
+5   File position before   5 after   6 skipped   1 [114] [r]
+6   File position before   6 after   7 skipped   1 [  9] [	]
+7   File position before   7 after   8 skipped   1 [112] [p]
+8   File position before   8 after   9 skipped   1 [111] [o]
+9   File position before   9 after  10 skipped   1 [116] [t]
+10  File position before  10 after  11 skipped   1 [ 97] [a]
+11  File position before  11 after  12 skipped   1 [116] [t]
+12  File position before  12 after  13 skipped   1 [111] [o]
+13  File position before  13 after  14 skipped   1 [101] [e]
+14  File position before  14 after  15 skipped   1 [115] [s]
+15  File position before  15 after  16 skipped   1 [ 13] []
+16  File position before  16 after  17 skipped   1 [ 10] [
 ]
-18  File position before  18 after  19 skipped   1 [114] [r]
-19  File position before  19 after  20 skipped   1 [105] [i]
-20  File position before  20 after  21 skipped   1 [ 99] [c]
-21  File position before  21 after  22 skipped   1 [101] [e]
-22  File position before  22 after  23 skipped   1 [ 13] []
-23  File position before  23 after  24 skipped   1 [ 10] [
+17  File position before  17 after  18 skipped   1 [114] [r]
+18  File position before  18 after  19 skipped   1 [105] [i]
+19  File position before  19 after  20 skipped   1 [ 99] [c]
+20  File position before  20 after  21 skipped   1 [101] [e]
+21  File position before  21 after  22 skipped   1 [ 13] []
+22  File position before  22 after  23 skipped   1 [ 10] [
 ]
 #+end_example
 
@@ -621,32 +631,31 @@ int main()
 #+RESULTS:
 #+begin_example
 0   File position   0 [ 98] [b]
-1   File position   1 [  9] [	]
-2   File position   2 [117] [u]
+1   File position   1 [117] [u]
+2   File position   2 [116] [t]
 3   File position   3 [116] [t]
-4   File position   4 [116] [t]
-5   File position   5 [101] [e]
-6   File position   6 [114] [r]
-7   File position   7 [ 32] [ ]
-8   File position   8 [112] [p]
-9   File position   9 [111] [o]
-10  File position  10 [116] [t]
-11  File position  11 [ 97] [a]
-12  File position  12 [116] [t]
-13  File position  13 [111] [o]
-14  File position  14 [101] [e]
-15  File position  15 [115] [s]
-16  File position  16 [ 13] []
-17  File position  17 [ 10] [
+4   File position   4 [101] [e]
+5   File position   5 [114] [r]
+6   File position   6 [  9] [	]
+7   File position   7 [112] [p]
+8   File position   8 [111] [o]
+9   File position   9 [116] [t]
+10  File position  10 [ 97] [a]
+11  File position  11 [116] [t]
+12  File position  12 [111] [o]
+13  File position  13 [101] [e]
+14  File position  14 [115] [s]
+15  File position  15 [ 13] []
+16  File position  16 [ 10] [
 ]
-18  File position  18 [114] [r]
-19  File position  19 [105] [i]
-20  File position  20 [ 99] [c]
-21  File position  21 [101] [e]
-22  File position  22 [ 13] []
+17  File position  17 [114] [r]
+18  File position  18 [105] [i]
+19  File position  19 [ 99] [c]
+20  File position  20 [101] [e]
+21  File position  21 [ 13] []
+22  File position  22 [ 10] [
+]
 23  File position  23 [ 10] [
-]
-24  File position  24 [ 10] [
 ]
 #+end_example
 
@@ -715,39 +724,38 @@ int main()
 
 #+RESULTS:
 #+begin_example
-b	utter potatoes
+butter	potatoes
 rice
 
 0   File position   0 [ 98] [b]
-1   File position   1 [  9] [	]
-2   File position   2 [117] [u]
+1   File position   1 [117] [u]
+2   File position   2 [116] [t]
 3   File position   3 [116] [t]
-4   File position   4 [116] [t]
-5   File position   5 [101] [e]
-6   File position   6 [114] [r]
-7   File position   7 [ 32] [ ]
-8   File position   8 [112] [p]
-9   File position   9 [111] [o]
-10  File position  10 [116] [t]
-11  File position  11 [ 97] [a]
-12  File position  12 [116] [t]
-13  File position  13 [111] [o]
-14  File position  14 [101] [e]
-15  File position  15 [115] [s]
-16  File position  16 [ 13] []
-17  File position  17 [ 10] [
+4   File position   4 [101] [e]
+5   File position   5 [114] [r]
+6   File position   6 [  9] [	]
+7   File position   7 [112] [p]
+8   File position   8 [111] [o]
+9   File position   9 [116] [t]
+10  File position  10 [ 97] [a]
+11  File position  11 [116] [t]
+12  File position  12 [111] [o]
+13  File position  13 [101] [e]
+14  File position  14 [115] [s]
+15  File position  15 [ 13] []
+16  File position  16 [ 10] [
 ]
-18  File position  18 [114] [r]
-19  File position  19 [105] [i]
-20  File position  20 [ 99] [c]
-21  File position  21 [101] [e]
-22  File position  22 [ 13] []
-23  File position  23 [ 10] [
+17  File position  17 [114] [r]
+18  File position  18 [105] [i]
+19  File position  19 [ 99] [c]
+20  File position  20 [101] [e]
+21  File position  21 [ 13] []
+22  File position  22 [ 10] [
 ]
 #+end_example
 
 
-** Binary mode is only useful for output and in windows
+** Binary mode is only useful for output and in only in windows
 
 - Under Windows, default output mode replaces \n with \r
 - If we don't want this conversion, we use binary mode

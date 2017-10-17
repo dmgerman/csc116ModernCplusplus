@@ -153,7 +153,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-b	utter potatoes
+butter	potatoes
 rice
 -------------------------
 This is the end of the world as
