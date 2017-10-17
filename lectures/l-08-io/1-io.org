@@ -115,8 +115,6 @@ int main(int argc, char* argv[])
 
 #+RESULTS:
 #+begin_example
-1. in a good state
-2. in a good state
 options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
 options(width=160)
 #+end_example
@@ -192,7 +190,7 @@ Fill with a character rather than space
 #include <iomanip>      // std::setfill, std::setw
 
 int main () {
-  std::cout << std::setfill ('x') ;
+  std::cout << std::setfill ('_') ;
   std::cout<<"Example: [" << std::setw(10)<< 77 << "]" << std::endl;
 
   return 0;
@@ -201,7 +199,7 @@ int main () {
 
 #+RESULTS:
 #+begin_example
-Example: [xxxxxxxx77]
+Example: [________77]
 #+end_example
 
 

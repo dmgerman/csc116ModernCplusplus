@@ -58,8 +58,11 @@ int main()
 }
 #+END_SRC
 
-#+RESULTS:
-==test.cpp:10: test.cpp:10: int main(): Assertion `10 < 1' failed.
+#+BEGIN_EXAMPLE
+C-bin-16339uyS: /tmp/babel-16339dvC/C-src-16339hoM.cpp:13: void f(): Assertion `10 < 1' failed.
+#+END_EXAMPLE
+
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
