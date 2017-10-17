@@ -16,8 +16,10 @@ In some of the examples below I use the following function to print the vector.
 You need it to include it instead of in the examples below.
 
 #+BEGIN_SRC C++
-#include "mycode.hpp
+#include "mycode.hpp"
 #+END_SRC
+
+this file is called "mycode.hpp" or cut-and-paste before main in each example below that includes "mycode.hpp"
 
 #+BEGIN_SRC C++
 template <typename T> 
@@ -190,17 +192,23 @@ int main()
    }
    std::cout << std::endl;
    
+   for(std::vector<int>::iterator it = numbers.begin(); it< numbers.end(); it++) {
+      std::cout << *it << " ";
+   }
+   std::cout << std::endl;
+   // easier to use auto
    for(auto it = numbers.begin(); it< numbers.end(); it++) {
       std::cout << *it << " ";
    }
    std::cout << std::endl;
-    return 0;
+   return 0;
 }
 
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
+1 2 3 4 5 
 1 2 3 4 5 
 1 2 3 4 5
 #+end_example
@@ -222,6 +230,8 @@ int main()
    for(auto it = numbers.begin(); it< numbers.end(); it++) {
       // turn the iterator into a reference
       auto &el  = *it;
+
+
       std::cout << el << " ";
    }
    std::cout << std::endl;
@@ -353,13 +363,51 @@ int main()
 a n i e
 #+end_example
 
+* sort requires iterators
+
+#+BEGIN_SRC C++ :exports both :results verbatim
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include "/tmp/mycode.hpp"
+
+int main()
+{
+   std::vector<std::string> names {"Xin", "Peter", "Daniel",  "Pedro"};
+
+   print_vector("Before:", names);
+
+   std::sort(names.begin(), names.end());
+
+   print_vector("After:", names);
+
+   std::sort(names.rbegin(), names.rend());
+
+   print_vector("Reversed:", names);
+
+   std::cout << std::endl;
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before: size: 4 values: [Xin Peter Daniel Pedro ]
+After: size: 4 values: [Daniel Pedro Peter Xin ]
+Reversed: size: 4 values: [Xin Peter Pedro Daniel ]
+#+end_example
+
+
 * C style arrays
 
 - They are not objects!
 - They have no methods: at(), size(), resize(), clear(), etc.
 - You don't need them in C++
 
-- but you can use a "modern" for-loop without an index
+- but you can use a "modern" for-loop on a C-array
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>

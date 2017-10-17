@@ -202,6 +202,7 @@ Size: 2
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
 #include <iostream>
 #include <vector>
+#include <string>
 
 int main()
 {
@@ -253,6 +254,7 @@ void print_matrix(const std::vector<std::vector<int>> &vec) {
 
 int main()
 {
+   auto whatever {0,1};
    std::vector<
        std::vector<int>
      > vec (2, std::vector<int>(3,0));
@@ -267,15 +269,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Number Rows: 2
-Row: (size: 3) 0 0 0 
-Row: (size: 3) 0 0 0 
-Number Rows: 3
-Row: (size: 0) 
-Row: (size: 4) 0 0 9 7 
-Row: (size: 2) -3 9
-#+end_example
 
 * Declaring a two dimensional vector
 
