@@ -1,2 +1,5 @@
-potatoes
-carrot
+potatoes apples
+
+carrot      mangos
+
+oranges

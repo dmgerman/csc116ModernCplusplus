@@ -418,6 +418,62 @@ out.open("file", ofstream:out);
 #+END_SRC
 
 
+* Reading using <<
+
+For this part we will use the following file:
+
+#+BEGIN_SRC sh :results output
+cat groceries3.txt
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+potatoes apples
+
+carrot      mangos
+
+oranges
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+int main()
+{
+   std::string st {};
+   int i {};
+   std::ifstream myfile ("groceries3.txt");
+   //std::ifstream myfile ("groceriesUnix.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+   std::streamoff pos;
+
+   while (pos = myfile.tellg(), //store location
+          myfile >> st) {        // read character
+      auto posAfter =  myfile.tellg();
+      std::cout << std::setw(3) << std::left << i++ << std::right 
+                << " File position before " << std::setw(3) << pos
+                << " after " << std::setw(3) << posAfter 
+                << " skipped " << std::setw(3) << int(posAfter - pos) - st.size()
+                << " [" << st + "]" <<std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0   File position before   0 after   8 skipped   0 [potatoes]
+1   File position before   8 after  15 skipped   1 [apples]
+2   File position before  15 after  23 skipped   2 [carrot]
+3   File position before  23 after  35 skipped   6 [mangos]
+4   File position before  35 after  44 skipped   2 [oranges]
+#+end_example
+
+
+
 * Reading binary data
 
 For this section we will use this file. It was created with windows end-of-line-characters
@@ -492,7 +548,6 @@ int main()
    if(!myfile) throw std::runtime_error("unable to open input file");
    std::streamoff pos;
 
-   //myfile.unsetf(std::ios::skipws);
    while (pos = myfile.tellg(), //store location
           myfile >> c) {        // read character
       auto posAfter =  myfile.tellg();
@@ -544,7 +599,8 @@ int main()
    std::ifstream myfile ("groceries.txt");
    //std::ifstream myfile ("groceries3.txt");
    if(!myfile) throw std::runtime_error("unable to open input file");
-   std::streamoff pos; // to save position within file
+
+   std::streamoff pos {}; // to save position within file
 
    myfile >> std::noskipws; // do not skip whitespace
    
@@ -594,6 +650,8 @@ int main()
 #+end_example
 
 ** But we can also read using read() which reads bytes directly from files
+
+- this program reads one character at a time
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -660,6 +718,7 @@ int main()
 
 ** We can also read it all at once
 
+- it is way faster
 - use seekg to seek to the end of file
 - use tellg to know the offset of the end of file
 - this is the size of the file in bytes
