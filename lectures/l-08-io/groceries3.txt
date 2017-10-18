@@ -1,4 +1,5 @@
-potatoes apples
+   20potatoes
+   10apples
 
 carrot      mangos
 

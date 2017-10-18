@@ -418,7 +418,14 @@ out.open("file", ofstream:out);
 #+END_SRC
 
 
-* Reading using <<
+* Reading using >>
+
+- "Extract formatted output" operator
+- Using >> "parses" the input
+- its behaviour depends on the type of what you read
+- For example:
+  - reading a std::string, skips spaces
+  - reading a number skips non-numeric characters
 
 For this part we will use the following file:
 
@@ -428,12 +435,15 @@ cat groceries3.txt
 
 #+RESULTS:
 #+begin_example
-potatoes apples
+   20potatoes
+   10apples
 
 carrot      mangos
 
 oranges
 #+end_example
+
+This program only reads the first number
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -449,13 +459,13 @@ int main()
    std::streamoff pos;
 
    while (pos = myfile.tellg(), //store location
-          myfile >> st) {        // read character
+          myfile >> st) {        // read 
       auto posAfter =  myfile.tellg();
       std::cout << std::setw(3) << std::left << i++ << std::right 
                 << " File position before " << std::setw(3) << pos
                 << " after " << std::setw(3) << posAfter 
                 << " skipped " << std::setw(3) << int(posAfter - pos) - st.size()
-                << " [" << st + "]" <<std::endl;
+                << " [" << st << "]" <<std::endl;
    }
 
    return 0;
@@ -465,13 +475,114 @@ int main()
 
 #+RESULTS:
 #+begin_example
-0   File position before   0 after   8 skipped   0 [potatoes]
-1   File position before   8 after  15 skipped   1 [apples]
-2   File position before  15 after  23 skipped   2 [carrot]
-3   File position before  23 after  35 skipped   6 [mangos]
-4   File position before  35 after  44 skipped   2 [oranges]
+0   File position before   0 after  13 skipped   3 [20potatoes]
+1   File position before  13 after  25 skipped   4 [10apples]
+2   File position before  25 after  33 skipped   2 [carrot]
+3   File position before  33 after  45 skipped   6 [mangos]
+4   File position before  45 after  54 skipped   2 [oranges]
 #+end_example
 
+But this one reads ints
+
+- it will skip whitespace
+  - read only numeric characters
+  - and will convert them to the desired number
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+int main()
+{
+   int value;
+   int i {};
+   std::ifstream myfile ("groceries3.txt");
+   //std::ifstream myfile ("groceriesUnix.txt");
+   if(!myfile) throw std::runtime_error("unable to open input file");
+   std::streamoff pos;
+
+   while (pos = myfile.tellg(), //store location
+          myfile >> value) {        // read character
+      auto posAfter =  myfile.tellg();
+      std::cout << std::setw(3) << std::left << i++ << std::right 
+                << " File position before " << std::setw(3) << pos
+                << " after " << std::setw(3) << posAfter 
+                << " value [" << value << "]" <<std::endl;
+   }
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+0   File position before   0 after   5 value [20]
+#+end_example
+
+in general:
+
+- reading with >> skips whitespace
+- it will only read the characters that belong to the type until whitespace or eof()
+  - strings: any char
+  - char: any char
+  - integral type (int, long, etc): any digit and sign
+  - floating point: same as integral type plus . and e 
+- be careful when  combine << and getline
+  - >> does not consume the end of line
+  - the getline that follows will be the whitespace after the previous read
+
+- Example
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <functional>
+int main()
+{
+    std::string st0 {};
+    std::string st1{};
+    std::string st2{};
+
+    auto print = [&] () { 
+        std::cout << "st0: [" << st0 << "]" << std::endl;
+        std::cout << "st1: [" << st1 << "]" << std::endl;
+        std::cout << "st2: [" << st2 << "]" << std::endl;
+    };
+
+
+    std::ifstream myfile ("groceries3.txt");
+    if(!myfile) throw std::runtime_error("unable to open input file");
+
+    myfile >> st0; // read an int
+    getline(myfile, st1);
+    getline(myfile, st2);
+    print();
+
+    std::cout << "Again:-----------------" << std::endl;
+    myfile.seekg (0, myfile.beg);
+    getline(myfile, st0);
+    getline(myfile, st1);
+    getline(myfile, st2);
+    print();
+
+    return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+st0: [20potatoes]
+st1: []
+st2: [   10apples]
+Again:-----------------
+st0: [   20potatoes]
+st1: [   10apples]
+st2: []
+#+end_example
 
 
 * Reading binary data
