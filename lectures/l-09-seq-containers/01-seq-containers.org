@@ -152,6 +152,7 @@ for (auto it= begin; it!=c.end;it++) {
 
 ** Examples
 
+In vectors, we can do iterator "arithmetic" (add, subtract from an iterator)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -184,18 +185,57 @@ Last +1 : 0
 Last +1000 : 0
 #+end_example
 
-We can use the iterator to print to traverse the array
+- But for a list, we cannot do iterator arithmetic
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <list>
+
+int main()
+{
+   std::list<int> list{1,2,3,4,5}; // initialize to specific values
+   
+   std::cout << "First : " << *list.begin() << std::endl;
+   auto it = list.begin();
+   it++;
+   std::cout << "Second : " << *it << std::endl;
+   it++;
+   std::cout << "Third : " << *it << std::endl;
+// the rest of the operations will not work
+//   
+//   std::cout << "Third : " << *(list.begin()+2) << std::endl;
+//   std::cout << "Last : " << *(list.end()-1) << std::endl;
+//   std::cout << "Last +1 : " << *(list.end()) << std::endl;
+//   std::cout << "Last +1000 : " << *(list.end()+999) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+First : 1
+Second : 2
+Third : 3
+#+end_example
+
+- We can use the iterator to print to traverse the collection
+- This works for _any_ collection
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
+#include <list>
 
 int main()
 {
    std::vector<int> vec1{1,2,3,4,5}; // initialize to specific values
    // this works because all elements are guaranteed to be contiguous
-   for (auto it = vec1.begin(); it != vec1.end(); it++) {
-       std::cout << "Position : " << it - vec1.begin()
+    
+   int pos = 0;
+   for (auto it = vec1.begin(); it != vec1.end(); it++, pos++) {
+       std::cout << "Position : " << pos 
                  << " Values : " << *it << std::endl;
    }
 
@@ -213,16 +253,21 @@ Position : 3 Values : 4
 Position : 4 Values : 5
 #+end_example
 
+*** Deque
+
+this is a circular queue, we can push in the front or in the back 
+
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <deque>
 
 int main()
 {
-   std::deque<int> q{1,2,3,4,5}; // initialize to specific values
+   std::deque<int> q{1,2}; // initialize to specific values
    // this works because all elements are guaranteed to be contiguous
    q.push_front(0);
    q.push_front(-1);
+   q.push_back(100);
    for (auto it = q.begin(); it!= q.end(); it++) {
        std::cout << "Position : " << it - q.begin()
                  << " Values : " << *it << std::endl;
@@ -239,9 +284,7 @@ Position : 0 Values : -1
 Position : 1 Values : 0
 Position : 2 Values : 1
 Position : 3 Values : 2
-Position : 4 Values : 3
-Position : 5 Values : 4
-Position : 6 Values : 5
+Position : 4 Values : 100
 #+end_example
 
 
@@ -250,12 +293,15 @@ List:
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
-
+#include <algorithm>
 int main()
 {
-   std::list<int> li{1,2,3,4,5}; // initialize to specific values
+   std::list<int> li{1,2,3}; // initialize to specific values
    
-
+   li.push_back(10);
+   auto it = std::find(li.begin(), li.end(), 2); 
+   if (it != li.end())
+      li.insert(it, 30);
    for (auto it = li.begin(); it != li.end(); it++) {
        // it - li(begin() does not compile
        //  list iterators do not define the - operator
@@ -270,13 +316,13 @@ int main()
 #+RESULTS:
 #+begin_example
 Values : 1
+Values : 30
 Values : 2
 Values : 3
-Values : 4
-Values : 5
+Values : 10
 #+end_example
 
-** Type
+** Type of iterator
 
 containertype<type_element>::iterator 
 
@@ -288,7 +334,7 @@ Easier to use auto
 
 int main()
 {
-   std::list<int> li{1,2,3,4,5}; // initialize to specific values
+   std::list<int> li{1,2,3}; // initialize to specific values
    
    std::list<int>::iterator it;
 
@@ -310,8 +356,6 @@ int main()
 Values : 1
 Values : 2
 Values : 3
-Values : 4
-Values : 5
 #+end_example
 
 ** reverse iterators
@@ -423,6 +467,12 @@ int main()
 #+END_SRC
 
 #+RESULTS:
+#+begin_example
+1
+5
+5
+1
+#+end_example
 
 
 * Construction
@@ -535,13 +585,13 @@ Container: 1: 2: 3:
 - constructor(begin, end);
 - end points to the element  NOT copied
 
-
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <list>
 
-void print(std::vector<char> &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
+template <typename T>
+void print(T &v) { std::cout << "Container: "; for(auto el: v) std::cout << el << ": " ; std::cout << std::endl;}
 
 int main()
 {
@@ -586,7 +636,7 @@ int main()
    std::list<char> li(vec.begin()+2, vec.begin()+3); 
    // copy all list to dqueue
    std::deque<char> q(vec.begin(), vec.end()); 
-   // but you are responsible for making sure you pass the right end iterator
+   // but you are responsible for making sure you pass the correct end iterator
    std::vector<char> vec2(vec.begin(), vec.begin()+20); 
 
 
@@ -716,7 +766,7 @@ Assuming c is a container
 | c.back()  | Last element                         |
 | c.front() | first element. Equivalent to c.at(0) |
 
-These does not work for list and forward_list
+The following operations do not work for list and forward_list
 
 | c[n]    | Access n-th element of the (0-based) |
 | c.at(n) | Same as c[n] but with boundary checks |
@@ -770,4 +820,6 @@ Assuming c is a container
 
 | c.resize(n)   | resize to given number. if n < c.size(), it truncates the container |
 | c.resize(n,v) | any elements added have value v                                     |
+
+* Finding elements
 

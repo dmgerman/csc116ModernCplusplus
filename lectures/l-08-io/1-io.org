@@ -411,14 +411,15 @@ ja_JP: 火曜日 10月 2017年10月17日 09時47分55秒 PDT
 ** how to use
    
 #+BEGIN_SRC C++ 
-ofstream out("file");
-ofstream out("file", ofstream:out); //implicit
-ofstream out("file", ofstream:out | ofstream::trunc); //implicit
-out.open("file", ofstream:out);
+std::ofstream out("file");
+std::ofstream out("file", std::ofstream:out); //implicit
+std::ofstream out("file", std::ofstream:out | std::ofstream::trunc); 
+
+out.open("file",std::ofstream:out);
 #+END_SRC
 
 
-* Reading using >>
+* Reading using >> (for text files)
 
 - "Extract formatted output" operator
 - Using >> "parses" the input
@@ -443,7 +444,9 @@ carrot      mangos
 oranges
 #+end_example
 
-This program only reads the first number
+Example:
+
+- Note how the whitespace is skipped
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -528,7 +531,7 @@ in general:
   - char: any char
   - integral type (int, long, etc): any digit and sign
   - floating point: same as integral type plus . and e 
-- be careful when  combine << and getline
+- be careful when  combine >> and getline
   - >> does not consume the end of line
   - the getline that follows will be the whitespace after the previous read
 
@@ -545,8 +548,9 @@ int main()
     std::string st0 {};
     std::string st1{};
     std::string st2{};
-
+    int i{};
     auto print = [&] () { 
+        std::cout << "i: [" << i << "]" << std::endl;
         std::cout << "st0: [" << st0 << "]" << std::endl;
         std::cout << "st1: [" << st1 << "]" << std::endl;
         std::cout << "st2: [" << st2 << "]" << std::endl;
@@ -556,11 +560,11 @@ int main()
     std::ifstream myfile ("groceries3.txt");
     if(!myfile) throw std::runtime_error("unable to open input file");
 
-    myfile >> st0; // read an int
+    myfile >> i;
     getline(myfile, st1);
     getline(myfile, st2);
     print();
-
+    i = 0;
     std::cout << "Again:-----------------" << std::endl;
     myfile.seekg (0, myfile.beg);
     getline(myfile, st0);
@@ -575,10 +579,12 @@ int main()
 
 #+RESULTS:
 #+begin_example
-st0: [20potatoes]
-st1: []
+i: [20]
+st0: []
+st1: [potatoes]
 st2: [   10apples]
 Again:-----------------
+i: [0]
 st0: [   20potatoes]
 st1: [   10apples]
 st2: []
