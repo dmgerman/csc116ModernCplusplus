@@ -131,7 +131,7 @@ Value 9 was NOT found
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
-#include <algorithm>
+#include <numeric>
 #include <vector>
 #include <list>
 #include <deque>
@@ -153,14 +153,14 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Sum 15
-Sum2 25
+Sum: 15
+Sum2: 25
 #+end_example
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
-#include <algorithm>
+#include <numeric>
 #include <vector>
 #include <list>
 #include <deque>
@@ -193,11 +193,36 @@ Sum2: begin01234
 Sum3: 43210
 #+end_example
 
+Note how accumulate works by adding the ascii value of strings  (strings are collections):
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <numeric>
+#include <string>
+
+int main()
+{
+   std::string coll{"da"};
+
+   auto sum = std::accumulate(coll.begin(), coll.end(), 0);
+   std::cout << "Sum: " << sum  << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Sum: 197
+#+end_example
+
 *** One use of accumulate requires that the operators + and = are defined for the class
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
-#include <algorithm>
+#include <numeric>
 #include <vector>
 #include <list>
 #include <deque>
@@ -270,7 +295,6 @@ Result: true
 Result2: false
 Result3: true
 #+end_example
-
 
 elements in collection should define the equal operator
 
@@ -480,13 +504,14 @@ min: [and] max: [this]
 
 * Some modifying algorithms
 
-| fill   | set values in a collection |
-| fill_n | fill n elements only       |
-| back_inserter | a special type of autoincremented iterator|
-| copy | copy from one collection to another |
-| replace |  replace values in a collection |
-| replace | values with copies from another collection|
-| erase   | erases elements from a collection|
+| fill          | set values in a collection                 |
+| fill_n        | fill n elements only                       |
+| back_inserter | a special type of autoincremented iterator |
+| copy          | copy from one collection to another        |
+| replace       | replace values in a collection             |
+| replace       | values with copies from another collection |
+| erase         | erases elements from a collection          |
+|               |                                            |
 
 
 ** fill
@@ -579,6 +604,10 @@ int main()
 #+END_SRC
 
 #+RESULTS:
+#+begin_example
+Container: -1: -1: -1: 3: 4: 5: 6: 7: 8: 9: 
+Container: -1: -1: 5: 5: 5: 5: 6: 7: 8: 9:
+#+end_example
 
 ** algorithms do not check boundaries!!!!
 
