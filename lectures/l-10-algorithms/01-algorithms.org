@@ -457,6 +457,7 @@ int main()
 
 - Return min and max of a container sequence
 - they return iterators
+  - this way we can check if they return a valid value  
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -467,7 +468,20 @@ int main()
 #include <iomanip>
 int main()
 {
-   std::vector<int> col1{0,1,2,3,4,5,1,2,3,1};
+ 
+   std::vector<int> emptyCol {};
+   {
+      auto min = std::min_element(emptyCol.begin(), emptyCol.end());
+      auto max = std::max_element(emptyCol.begin(), emptyCol.end());
+      if (min == emptyCol.end()) {
+          std::cout << "The collection is empty, no minimum" << std::endl;
+      }
+      if (max == emptyCol.end()) {
+          std::cout << "The collection is empty, no maximum" << std::endl;
+      }
+   }
+   // the rest of the code assumes that the mimimum exists
+  std::vector<int> col1{0,1,2,3,4,5,1,2,3,1};
 
    {
       auto min = std::min_element(col1.begin(), col1.end());
@@ -494,6 +508,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
+The collection is empty, no minimum
+The collection is empty, no maximum
 min  0 max5
 min: [0] max: [5]
 min: [and] max: [this]
