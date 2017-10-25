@@ -185,7 +185,7 @@ int main()
 
    name[1] = "one";    // using []
    name.insert(std::pair<int,std::string>(2,"two")); // type casting
-   name.insert(std::make_pair(3,"three"));           // making a pair
+   name.insert(std::make_pair(3,"three"));           // making a pair explicitly
    name.insert({4,"four"});                          // constructor
 
    for(auto pair: name) {
@@ -207,12 +207,13 @@ Key [4] Value [four]
 
 ** Looking for elements
 
-
+- Use count
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <map>
 #include <string>
+#include <functional>
 
 int main()
 {
@@ -221,9 +222,16 @@ int main()
                                    { "Japan", "Tokyo"}
                                  };
 
-   if (capitals.count("Alberta") == 0) {
-       std::cout << "Alberta was not found" << std::endl;
-   }
+   std::function<void (std::string)> look_up = [&] (const std::string &st) { 
+       if (capitals.count(st) == 0) {
+           std::cout << "Capital of " << st << " was not found" << std::endl;
+       } else  {
+           std::cout << "Capital of " <<  st << " was found: " << capitals[st] << std::endl;
+       }
+   };
+
+   look_up("France");
+   look_up("Canada");
 
    return 0;
 }
@@ -232,12 +240,54 @@ int main()
 
 #+RESULTS:
 #+begin_example
-alberta was not found
+Capital of France was not found
+Capital of Canada was found: Ottawa
 #+end_example
+
+- use find: note that it returns an iterator to a pair
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <map>
+#include <string>
+#include <functional>
+
+int main()
+{
+   std::map<std::string, std::string> capitals { { "Canada", "Ottawa"},
+                                   { "Ghana", "Accra"},
+                                   { "Japan", "Tokyo"}
+                                 };
+
+   std::function<void (std::string)> look_up = [&] (const std::string &st) { 
+       auto it = capitals.find(st);
+       if (it == capitals.end()) {
+           std::cout << "Capital of " << st << " was not found" << std::endl;
+       } else  {
+           std::cout << "Capital of " <<  st << " was found: " << it->second << std::endl;
+       }
+   };
+
+   look_up("France");
+   look_up("Canada");
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Capital of France was not found
+Capital of Canada was found: Ottawa
+#+end_example
+
 
 ** Accessing an element using [] inserts an element
 
+- Be careful
 - It is initialized to the default value
+
    
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -271,6 +321,8 @@ Key [zero] Value [0]
 #+end_example
 
 ** Erase element
+
+- use erase to remove one element from the map
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>

@@ -53,9 +53,9 @@ All except array provide fast flexible memory management
     - if in list: need to traverse size()/2 elements
     - if not in list: need to traverse all elements
 
-- *fast* to add or remove elements 
+- *fast* to add (or remove) elements 
   - if we know the position of the predecessor/successor
-    - allocate memory
+    - allocate (or free) memory 
     - update points of previous/next
   - constant time
 
@@ -91,8 +91,8 @@ int myArray[10];
 
 ** When not to use vector
 
-- Need to insert many times in the middle
-- Need to insert many times in the front
+- Need to insert/delete many times in the middle
+- Need to insert/delete many times in the front
   - that is why it does not have push_front()
 
 ** When to use dequeu
@@ -185,7 +185,11 @@ Last +1 : 0
 Last +1000 : 0
 #+end_example
 
-- But for a list, we cannot do iterator arithmetic
+** But for a list, we cannot do iterator arithmetic
+
+This is a big NO
+
+- you cannot add/subtract from an iterator to a list
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -322,11 +326,53 @@ Values : 3
 Values : 10
 #+end_example
 
+* Using find
+
+- This method works with all containers
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <list>
+#include <algorithm>
+int main()
+{
+   std::list<int> li{1,2,3}; // initialize to specific values
+   
+   li.push_back(10);
+   auto it = std::find(li.begin(), li.end(), 2); 
+   if (it != li.end()) {
+       std::cout << "Found 2" << std::endl;
+   } else {
+       std::cout << "2 Not found" << std::endl;
+   }
+   it = std::find(li.begin(), li.end(), 10); 
+   if (it != li.end()) {
+       std::cout << "Found 10" << std::endl;
+   } else {
+       std::cout << "Not found" << std::endl;
+   }
+      
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Found 2
+Found 10
+#+end_example
+
+
 ** Type of iterator
 
-containertype<type_element>::iterator 
+- the type of an iterator is 
 
-Easier to use auto
+#+BEGIN_EXAMPLE
+containertype<type_element>::iterator 
+#+END_EXAMPLE
+
+but it is easier to use auto
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -362,7 +408,7 @@ Values : 3
 
 they go *backwards*
 
-- regin()
+- rbegin()
 - rend()
 
 - notice the use of + to move backwards
@@ -479,7 +525,8 @@ int main()
 
 ** Array is different
 
-Its constructor syntax is different than the rest of the containers
+- Its constructor syntax is different than the rest of the containers
+- We must specify its size
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -516,7 +563,6 @@ Container: 1: 2: 0: 0: 0: 0: 0: 0: 0: 0:
 #+end_example
 
 ** the rest can be initialized as we have seen before
-
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -633,10 +679,12 @@ int main()
 {
    std::vector<char> vec {'a','b','c','d','e'};
    //copies from 2nd element, just before 4th element
+
    std::list<char> li(vec.begin()+2, vec.begin()+3); 
    // copy all list to dqueue
    std::deque<char> q(vec.begin(), vec.end()); 
    // but you are responsible for making sure you pass the correct end iterator
+   // this will copy beyond the end of the source container
    std::vector<char> vec2(vec.begin(), vec.begin()+20); 
 
 
@@ -653,16 +701,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Vector:
-Container: a: b: c: d: e: 
-List:
-Container: c: 
-DQueue:
-Container: a: b: c: d: e: 
-Vector2:
-Container: a: b: c: d: e:  :  :  :  :  :  :  :  :  :  :  :  :  :  :  :
-#+end_example
 
 
 * Common operations
@@ -747,16 +785,23 @@ int main()
    
    auto it = d.begin();
    for(int i=0;i<5;i++) {
+       // inserts before the element pointed by the iterator
        it = d.insert(it, i);
    } 
    print("dequeue", d);
+   d.pop_front();
+   print("dequeue after pop front", d);
+   d.pop_back();
+   print("dequeue after pop", d);
    return 0;
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-dequeue: 4: 3: 2: 1: 0:
+dequeue: 4: 3: 2: 1: 0: 
+dequeue after pop front: 3: 2: 1: 0: 
+dequeue after pop: 3: 2: 1:
 #+end_example
 
 * Accessing elements
@@ -766,7 +811,7 @@ Assuming c is a container
 | c.back()  | Last element                         |
 | c.front() | first element. Equivalent to c.at(0) |
 
-The following operations do not work for list and forward_list
+- The following operations *do not work* for list and forward_list
 
 | c[n]    | Access n-th element of the (0-based) |
 | c.at(n) | Same as c[n] but with boundary checks |
@@ -819,7 +864,7 @@ Assuming c is a container
 Assuming c is a container
 
 | c.resize(n)   | resize to given number. if n < c.size(), it truncates the container |
-| c.resize(n,v) | any elements added have value v                                     |
+| c.resize(n,v) | aany elements added have value v                                    |
 
-* Finding elements
+
 

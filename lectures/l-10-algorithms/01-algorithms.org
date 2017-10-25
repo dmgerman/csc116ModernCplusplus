@@ -18,11 +18,11 @@
 - They solve very common programming problems
 
 
-* Example: find
+* example: find
 
 - works for any sequential collection
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+begin_src c++ :main no :flags -std=c++14 -wall --pedantic -werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -38,35 +38,43 @@ int main()
 
    for(int i=0;i<10;i++) {
       auto result = std::find(coll.cbegin(), coll.cend(), i);
-      std::cout << "Value " << i << " " ;
+      std::cout << "value " << i << " " ;
       if (result != coll.cend()) {
           std::cout << "was found " << *result  << std::endl;
       } else {
-          std::cout << "was NOT found " << std::endl;
+          std::cout << "was not found " << std::endl;
       }
    }
 
    return 0;
 }
 
-#+END_SRC
+#+end_src
 
-#+RESULTS:
+#+results:
 #+begin_example
-Value 0 was NOT found 
-Value 1 was NOT found 
-Value 2 was found 2
-Value 3 was NOT found 
-Value 4 was found 4
-Value 5 was found 5
-Value 6 was NOT found 
-Value 7 was NOT found 
-Value 8 was NOT found 
-Value 9 was NOT found
+value 0 was not found 
+value 1 was not found 
+value 2 was found 2
+value 3 was not found 
+value 4 was found 4
+value 5 was found 5
+value 6 was not found 
+value 7 was not found 
+value 8 was not found 
+value 9 was not found
 #+end_example
 
-* Some non-modifying algorithms
+* some non-modifying algorithms
 
+| find           | find a value in a collection                                      |
+| accumulate     | starting with a value, "accummulate" all values in the collection |
+| compare        | compare  two collections                                          |
+| is_sorted      | return true if the collection is sorted                           |
+| count          | count the number of occurances of a value                         |
+| min_element    | minimum in a collection                                           |
+| max_element    | maximum in a collection                                           |
+| minmax_element | both minimum and maximum in a collection                          |
 
 ** find
 
@@ -185,7 +193,7 @@ Sum2: begin01234
 Sum3: 43210
 #+end_example
 
-*** Accumulate requires that the operators + and = are defined for the class
+*** One use of accumulate requires that the operators + and = are defined for the class
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -309,7 +317,7 @@ Result2: false
 Result3: true
 #+end_example
 
-we can compare two types of collections
+we can compare different types of collections (e.g. a list and a vector)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -471,6 +479,15 @@ min: [and] max: [this]
 
 
 * Some modifying algorithms
+
+| fill   | set values in a collection |
+| fill_n | fill n elements only       |
+| back_inserter | a special type of autoincremented iterator|
+| copy | copy from one collection to another |
+| replace |  replace values in a collection |
+| replace | values with copies from another collection|
+| erase   | erases elements from a collection|
+
 
 ** fill
 
@@ -788,7 +805,47 @@ Container: 1: 2: 3: 1: 2: 3: 1: 2: 3:
 Container: 1: 9: 3: 1: 9: 3: 1: 9: 3:
 #+end_example
 
+** erase
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <list>
+template <class T>
+void print(std::string m, T &v) 
+{ 
+   std::cout << m ;
+   for(auto el: v) 
+      std::cout << el << ": " ; 
+   std::cout << std::endl;
+}
+
+int main()
+{
+   std::vector<int> col1 {1,2,3,1,2,3,1,2,3};
+   
+   col1.erase(col1.begin() + 2, col1.end());
+   print("after erase: ",col1);
+   
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+after erase: 1: 2:
+#+end_example
+
+
+
 * algorithms that reorder elements
+
+| sort | reorder elements |
+| unique | if sorted, put unique values at the front | 
+| random_shuffle | randomly reorder elements in a collection |
+| reverse | reverse elements of a collection |
 
 ** sort
 
@@ -1007,6 +1064,11 @@ Reversing 1/2:    2: 1: 0: 3: 4: 5:
 
 - set_union, set_difference, set_intersection
 - the functions assume that the collections are sorted
+- they combine two collections into a third one
+
+| set_union        | union of two collections             |
+| set_difference   | difference between two collections   |
+| set_intersection | intersection between two collections |
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
