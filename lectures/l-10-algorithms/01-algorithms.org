@@ -842,10 +842,10 @@ after erase: 1: 2:
 
 * algorithms that reorder elements
 
-| sort | reorder elements |
-| unique | if sorted, put unique values at the front | 
+| sort           | reorder elements                          |
+| unique         | if sorted, put unique values at the front |
 | random_shuffle | randomly reorder elements in a collection |
-| reverse | reverse elements of a collection |
+| reverse        | reverse elements of a collection          |
 
 ** sort
 
