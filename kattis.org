@@ -70,3 +70,11 @@ and in reverse order with:
 std::sort(vec.rbegin(), vec.rend());
 #+END_SRC
 
+
+* Exam 2
+
+| Using sets                                                  | [[https://open.kattis.com/problems/everywhere][I've been everywhere]] |
+| strings, reversing                                          | [[https://open.kattis.com/problems/filip][Filip]]                |
+| Practice maps (although it can be implemented in many ways) | [[https://open.kattis.com/problems/bela][Bela]]                 |
+| Practice your lists (although a vector would do)            | [[https://open.kattis.com/problems/ptice][ptice]]                |
+| Deal with input, and basic logic                            | [[https://open.kattis.com/problems/cups][cups]]                 |

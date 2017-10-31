@@ -65,10 +65,29 @@ class <derived_class>: <access_control> <base_class> {
 };
 #+END_SRC
 
+For the purpose of this course, we will only discuss public access control for the inheritance
+
+#+BEGIN_SRC C++
+class <derived_class>: public <base_class> {
+   // new methods and constructors to derived class
+};
+#+END_SRC
+
+
 * Access control
 
-Access control  of a derived class determines whether it has access to its
-parent methods/attributes
+The access control of the attributes and methods of a class determine if the subclass has access to them.
+
+#+BEGIN_SRC C++
+class Name {
+   private:
+   ...
+   protected:
+   ...
+   public:
+   ...
+}
+#+END_SRC
 
 | Access          | public | protected | private |
 |-----------------+--------+-----------+---------|
@@ -97,7 +116,7 @@ class A  {
 };
 
 // Derived class
-class B: public A {
+class B: private A {
    public:
       void Greeting() {
           std::cout << "Hello. I am "
@@ -109,7 +128,7 @@ class B: public A {
 int main(void) {
    
    B b;
-   b.setName("Bob");
+//   b.setName("Bob");
 
    b.Greeting();
 
@@ -120,10 +139,10 @@ int main(void) {
 
 #+RESULTS:
 #+begin_example
-Hello. I am Bob
+Hello. I am
 #+end_example
 
-But if we define name as protected:
+But if we define name as protected, the subclass can access it.
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
@@ -144,7 +163,7 @@ class B: public A {
    public:
       void Greeting() {
           std::cout << "Hello. I am "
-                    << name  // this would not compile. method is inaccessible
+                    << name  
                     << std::endl; }
 };
 
@@ -168,6 +187,8 @@ Hello. I am Bob
 * Another example:
 
 - Overriding some methods of the base class
+- Note how b.getName overrides A.name in main
+- But not in Greeting!!!!
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -217,7 +238,7 @@ Hello. I am Bob
 
 ** Virtual
 
-- If we want to replace the getName() of the base class we must use *virtual*
+- If we want to replace getName() of the base class with the subclass version we must use *virtual*
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
