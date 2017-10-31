@@ -78,3 +78,5 @@ std::sort(vec.rbegin(), vec.rend());
 | Practice maps (although it can be implemented in many ways) | [[https://open.kattis.com/problems/bela][Bela]]                 |
 | Practice your lists (although a vector would do)            | [[https://open.kattis.com/problems/ptice][ptice]]                |
 | Deal with input, and basic logic                            | [[https://open.kattis.com/problems/cups][cups]]                 |
+| practice your input (try using getline and stringstream)    | [[https://open.kattis.com/problems/acm][acm]]                  |
+
