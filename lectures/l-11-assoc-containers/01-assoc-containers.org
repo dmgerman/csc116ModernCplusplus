@@ -264,7 +264,8 @@ int main()
        if (it == capitals.end()) {
            std::cout << "Capital of " << st << " was not found" << std::endl;
        } else  {
-           std::cout << "Capital of " <<  st << " was found: " << it->second << std::endl;
+           std::cout << "Capital of " <<  st << " was found: " << 
+               it->second << std::endl;
        }
    };
 

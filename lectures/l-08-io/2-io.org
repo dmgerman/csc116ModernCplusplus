@@ -65,10 +65,10 @@ Reading from a string as if it was standard input
 #include <iomanip>
 int main()
 {
-   std::string st {"This is the end of the world as\n"
-           "we know it\n"
-           "and here it is\n"
-           "one more line"};
+   std::string st {"This is the end of the world as\nn
+we know it\n
+and here it is\n
+one more line"};
 
    std::cout << st << std::endl;
 
@@ -77,8 +77,9 @@ int main()
 
    std::istringstream input( st );
    // reading it
-   while (getline(input, st)) {
-      std::cout << st << std::endl;
+   std::string st2;
+   while (getline(input, st2)) {
+      std::cout << st2 << std::endl;
    }
    
 
