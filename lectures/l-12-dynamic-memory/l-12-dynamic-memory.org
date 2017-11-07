@@ -11,12 +11,12 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 #+BEGIN_SRC emacs-lisp
-(setq org-image-actual-width 500)
+(setq org-image-actual-width 800)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-500
+800
 #+end_example
 
 
@@ -467,7 +467,7 @@ int main ()
   std::shared_ptr<int> p3 (p1);
   std::shared_ptr<int> p4 (nullptr);
 
-  *p1 = 2;
+  *p1 = 10;
   std::cout << "value pointed by p1 " << *p1 << std::endl;
   std::cout << "value pointed by p2 " << *p2 << std::endl;
   std::cout << "value pointed by p3 " << *p3 << std::endl;
@@ -498,9 +498,9 @@ int main ()
 
 #+RESULTS:
 #+begin_example
-value pointed by p1 2
-value pointed by p2 2
-value pointed by p3 2
+value pointed by p1 10
+value pointed by p2 10
+value pointed by p3 10
 count p1 3
 count p2 3
 count p3 3
