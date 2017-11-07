@@ -236,7 +236,7 @@ Hello. I am Bob
 - However Greeting() didn't change.
 - It used the getName() of the base class A
 
-** Virtual
+** Dynamic dispatch (virtual)
 
 - If we want to replace getName() of the base class with the subclass version we must use *virtual*
 
@@ -253,7 +253,7 @@ class A  {
       void setName(std::string _name) { name = _name;};
       void Greeting() {
           std::cout << "Hello. I am "
-                    << getName()
+                    << getName()   // dynamic dispatch!
                     << std::endl; }
 };
 
@@ -285,6 +285,8 @@ Hello. I am littleBob
 * Constructors
 
 A derived class can reuse the constructors of the parent class:
+
+- use: className(<parms>)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -319,7 +321,7 @@ int main(void) {
    
    b.Greeting();
 
-   B c("Johnny","little");
+   B c("Johnny", "little");
    c.Greeting();
    return 0;
 }

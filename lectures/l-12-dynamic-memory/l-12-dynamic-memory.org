@@ -157,14 +157,15 @@ Value: *pst: [abc]
 
 - Use constructor in the *new*
 - even for basic datatypes
+- uses the constructor of the type being created
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 int main()
 {
-   int *pi = new int();
-   std::string *pst = new std::string();
+   int *pi = new int(3);
+   std::string *pst = new std::string("abc");
    
    std::cout << "Value *pi: " << *pi << std::endl;
 
@@ -179,8 +180,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Value *pi: 0
-Value *pst: []
+Value *pi: 3
+Value *pst: [abc]
 #+end_example
 
 * new can infer the type from a variable
@@ -199,10 +200,9 @@ int main()
 {
    double d {3.5};
 
+   // p will point to d
    auto *p = new auto(d);
    
-   *p = 4;
-
    std::cout << "Value *p: " << *p << std::endl;
 
    delete p;
@@ -213,7 +213,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Value *p: 4
+Value *p: 3.5
 #+end_example
 
 * What happens if there is no more memory?
