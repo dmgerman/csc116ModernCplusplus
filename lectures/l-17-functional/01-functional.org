@@ -42,7 +42,7 @@ int main()
 {
    f("abc");
    g("abc");
-
+   f2("abc");
    return 0;
 }
 
@@ -52,9 +52,11 @@ int main()
 #+begin_example
 abc
 abc
+10abc
 #+end_example
 
 But we usually simplify the type of the function using auto:
+(auto return type cannot be used in recursive functions)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -87,7 +89,7 @@ auto functionName = [] (parameterList) -> returnType { body; };
 
 * []
 
-- When [], they simply act like any global function declared in a program
+- We will discuss [] later, for the time being, ignore
 
 * Why do we want to do this?
 
