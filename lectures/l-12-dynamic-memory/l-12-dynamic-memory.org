@@ -11,16 +11,17 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 #+BEGIN_SRC emacs-lisp
-(setq org-image-actual-width 800)
+(setq org-image-actual-width 500)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-800
+500
 #+end_example
 
+* Dynamic memory management
 
-* So far in this course:
+** So far in this course:
 
 - Objects are allocated when they are created
   (by their constructors)
@@ -342,7 +343,7 @@ value pointed by p2 20
 value pointed by p3 20
 #+end_example
 
-* It is not possible to assign to a shared_pointer
+* It is not possible to assign a raw paointer to a shared_pointer
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -372,8 +373,10 @@ int main()
 
 * std::make_shared
 
-- To assign to a shared_pointer we must use *std::make_shared*
-- it allocates memory for the pointer
+- To assign to a shared_pointer we must use:
+    - *std::make_shared*
+    - or assign one share pointers to another (more on that later)
+- make_shared allocates memory for the pointer
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -523,7 +526,6 @@ std::shared_ptr<int> p3 (p1);
 
 #+RESULTS:
 
-
 #+BEGIN_SRC C++
 p1.reset(std::make_shared<int>(20));
 #+END_SRC
@@ -582,13 +584,13 @@ std::swap(p1,p2);
 equivalent to
 
 #+BEGIN_SRC C++
-p1.std::swap(p2);
+p1.swap(p2);
 #+END_SRC
 
 or 
 
 #+BEGIN_SRC C++
-p2.std::swap(p1);
+p2.swap(p1);
 #+END_SRC
 
 
@@ -611,7 +613,7 @@ int main ()
   std::shared_ptr<int> p1 = std::make_shared<int>();
 
   if (p0) {
-    std::cout << "p0 has been allocated "  << std::endl;
+    std::cout << "p0 has been allocated. Pointing to address" << p0.get() << std::endl;
   } else {
     std::cout << "p0 ha NOT been allocated. Pointing to address " << p0.get() << std::endl;
   }  
@@ -627,18 +629,17 @@ int main ()
 #+RESULTS:
 #+begin_example
 p0 ha NOT been allocated. Pointing to address 0
-p1 has been allocated. Pointing to address0x21adc30
+p1 has been allocated. Pointing to address0x5624f92ffe80
 #+end_example
 
 * std::unique_ptr
 
-- A std::shared_ptr can share the object it points to
-- Only one std::unique_ptr can point to an object
+- A std::shared_ptr can share the memory it points to
+- Only one std::unique_ptr can point to a given section of memory
 
 ** initialization: make_unique
 
 - *make_unique* is the equivalent to *make_shared*
-- instead, use new
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -686,12 +687,13 @@ p3 has been allocated. Pointing to address 0x8e9c40
 - In general, they can be as any other pointer
 - but they have some restrictions
   - one cannot copy a smart pointer using =
-    - assign = operator does not exist
+    - operator= does not exist for unique_ptr
   - instead, use p.release()
 
 ** Copying a pointer: constructor
 
-One way is to copy it at constructor time
+- One way is to copy it at constructor time
+- it will allocate memory again
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -710,12 +712,8 @@ int main()
    // a direct assignment is illegal
    // p2 = p1; 
    // instead use 
-   std::cout << "--moving pointer to another one " << std::endl;
-   std::unique_ptr<int> p2(p1.release());
-
-   if (!p1) {
-      std::cout << "p1 has NOT been allocated. Pointing to address " << p1.get() << std::endl;
-   } 
+   std::cout << "--copying the pointer to another one " << std::endl;
+   std::unique_ptr<int> p2(p1.get());
 
    if (p2) {
       std::cout << "p2 has been allocated. Pointing to address " << p2.get() << std::endl;
@@ -730,11 +728,10 @@ int main()
 
 #+RESULTS:
 #+begin_example
-p1 has been allocated. Pointing to address 0x10cfc20
+p1 has been allocated. Pointing to address 0x5557f1859e70
    value [42]
---moving pointer to another one 
-p1 has NOT been allocated. Pointing to address 0
-p2 has been allocated. Pointing to address 0x10cfc20
+--copying the pointer to another one 
+p2 has been allocated. Pointing to address 0x5557f1859e70
    value [42]
 #+end_example
 

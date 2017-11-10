@@ -929,7 +929,7 @@ rice
 #+end_example
 
 
-** Binary mode is only useful for output and in only in windows
+** Binary mode is only useful _in_ windows for output
 
 - Under Windows, default output mode replaces \n with \r and \n
   - If we don't want this conversion, we use binary mode
