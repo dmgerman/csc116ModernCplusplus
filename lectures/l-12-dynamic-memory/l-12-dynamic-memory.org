@@ -449,7 +449,7 @@ value pointed by p2 10
 * Memory allocated using a smart pointer keeps a counter to the number of smart pointers that point to it
 
 
-| p.unique()    | returns true if pointer has only one instance      |
+| p.unique()    | returns true if pointer has only one instance            |
 | p.use_count() | returns the number of smart pointers sharing the address |
 
 Example: three smart pointers pointing to an integer (value 10)
@@ -516,25 +516,9 @@ count p2 0
 count p3 0
 #+end_example
 
-* reset can also allocate a new pointer
-
-#+BEGIN_SRC C++
-std::shared_ptr<int> p1 = std::make_shared<int>(10);
-std::shared_ptr<int> p2 (p1);
-std::shared_ptr<int> p3 (p1);
-#+END_SRC
-
-#+RESULTS:
-
-#+BEGIN_SRC C++
-p1.reset(std::make_shared<int>(20));
-#+END_SRC
-
-
-Before: [[./before.png]]  After:   [[./before3.png]]
-
 * Assignment of pointers updates the count of references
 
+We can assign one shared pointer to another, and it affects the counters of both memory locations
 
 #+BEGIN_SRC C++
 p2 = p1;
