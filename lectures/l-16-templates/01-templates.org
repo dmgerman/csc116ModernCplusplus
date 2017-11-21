@@ -279,7 +279,7 @@ The error is long:
 /tmp/babel-23722t_X/C-src-23722ztb.cpp:15:32: error: no match for ‘operator<<’ (operand types are ‘std::basic_ostream<char>’ and ‘std::vector<int>’)
         std::cout << i++ << ": "<< it << std::endl;
                                 ^
-#+END_SRC
+#+END_EXAMPLE
 
 It shows that the type used (in this case std::vector<std::vector<int>> does not support the operation << 
 
