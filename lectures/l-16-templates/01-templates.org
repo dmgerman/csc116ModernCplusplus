@@ -66,7 +66,7 @@ int compare(const T &v1, const T &v2)
 #+END_SRC
 
 
-* How use
+* How to use
 
 - Simply call the function with the corresponding parameters. 
 - C++ will instantiate a corresponding function based on the available templates

@@ -385,7 +385,7 @@ int main()
 #include <vector>
 int main()
 {
-   std::shared_ptr<int> p1;
+   std::shared_ptr<auto> p1;
    
    // allocate memory for p1, set it to value 10
    p1 = std::make_shared<int>(10);
@@ -822,4 +822,4 @@ p1 has NOT been allocated. Pointing to address 0
 - There is no reason to allocate memory directly using *new*
 - You should *never* release memory using *delete*
 - In fact, unless you are writing libraries, you should never have to allocate memory directly
-  - done by the standard library containers: vector, list, string, map, set, etc.
+  - gdone by the standard library containers: vector, list, string, map, set, etc.
