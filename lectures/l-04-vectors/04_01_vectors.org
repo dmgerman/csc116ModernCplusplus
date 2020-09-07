@@ -10,8 +10,19 @@
 #+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
+
+
 * Vectors
 
+- Vectors are the workhorse of the standard library
+- For most cases, they replace arrays 
+  - try to *never* use arrays
+- they grow and shrink automatically
+  - no need of memory management
+- implement safe access to elements
+  - if you try to read a non-existent element, it will generate an exception
+
+* Example
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -20,12 +31,15 @@
 int main()
 {
    std::vector<int> vec {1, 2, 3, 4, 5};
+
+   std::cout << vec.at(3) << std::endl;
    
    for(auto v: vec) {
       std::cout << v << " " ;
    } 
    std::cout << std::endl;
 
+   // this is the maximum size of a vector
    std::cout << vec.max_size() << std::endl;
 }
 
@@ -33,9 +47,12 @@ int main()
 
 #+RESULTS:
 #+begin_example
+4
 1 2 3 4 5 
 4611686018427387903
 #+end_example
+
+* adding elements dynamically
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -43,11 +60,11 @@ int main()
 
 int main()
 {
-   std::vector<int> vec {};
+   std::vector<int> vec {}; // empty vector
    
    std::cout << "Size: " << vec.size() << std::endl;
 
-   vec.push_back(1);
+   vec.push_back(1); // add at the end
    vec.push_back(2);
    vec.push_back(3);
 
@@ -69,6 +86,8 @@ Size: 3
 #+end_example
 
 ** Initialize the size with a default value
+
+- Elements are always initialized
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -99,7 +118,7 @@ Size: 5
 
 int main()
 {
-   std::vector<int> vec (3,-10);
+   std::vector<int> vec (3,-10); // to a specific value
    
    std::cout << "Size: " << vec.size() << std::endl;
    for(auto v: vec) {
@@ -116,44 +135,6 @@ Size: 3
 -10 -10 -10
 #+end_example
 
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-#include <vector>
-
-void print_vector(const std::vector<int> &vec)
-{
-   std::cout << "Size: " << vec.size() << std::endl;
-
-   for(auto v: vec) {
-      std::cout << v << " " ;
-   } 
-   std::cout << std::endl;
-}
-
-int main()
-{
-   std::vector<int> vec (2);
-   
-   print_vector(vec);
-
-   vec.push_back(5);
-
-   print_vector(vec);
-
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-Size: 2
-0 0 
-Size: 3
-0 0 5
-#+end_example
-
-
 ** Vectors of vectors
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
@@ -163,8 +144,10 @@ Size: 3
 int main()
 
 {
+   // create a vector of (vectors of int)
+   //  i.e. 2 rows  of 3 columns (each column contains an int)
    std::vector<
-       std::vector<int>
+       std::vector<int>  
      > vec (2, std::vector<int>(3,0));
 
    vec[1][2] = 9;
@@ -172,6 +155,7 @@ int main()
    std::cout << "Size: " << vec.size() << std::endl;
 
    for(auto subvec: vec) {
+      std::cout << "size of this subvec: " << subvec.size() << std::endl;
       for(auto el: subvec) {
          std::cout << el << " " ;
       } 
@@ -192,90 +176,16 @@ int main()
 #+RESULTS:
 #+begin_example
 Size: 2
+size of this subvec: 3
 0 7 0 
+size of this subvec: 3
 0 0 9 
 --------------
 0 7 0 
 0 0 9
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
-#include <iostream>
-#include <vector>
-#include <string>
-
-int main()
-{
-   std::vector<
-       std::vector<std::string>
-     > vec (2, std::vector<std::string>(3,"default"));
-
-   vec.at(1).at(2) = "[at 1,2]";
-   vec.at(1).at(0) = "[at 1,0]";
-   vec.at(0).at(1) = "[at 0,1]";
-   std::cout << "Size: " << vec.size() << std::endl;
-
-   for(auto subvec: vec) {
-      for(auto el: subvec) {
-         std::cout << el << " " ;
-      } 
-      std::cout << std::endl;
-   } 
-
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-Size: 2
-default [at 0,1] default 
-[at 1,0] default [at 1,2]
-#+end_example
-
-
-
-** Not all the subvectors  have to be of the same length!
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
-#include <iostream>
-#include <vector>
-
-void print_matrix(const std::vector<std::vector<int>> &vec) {
-   std::cout << "Number Rows: " << vec.size() << std::endl;
-   for(auto row: vec) {
-      std::cout << "Row: (size: " << row.size() << ") ";
-      for(auto el: row) {
-         std::cout << el << " " ;
-      } 
-      std::cout << std::endl;
-   } 
-}
-
-int main()
-{
-   auto whatever {0,1};
-   std::vector<
-       std::vector<int>
-     > vec (2, std::vector<int>(3,0));
-   print_matrix(vec);
-   vec.at(0).clear(); // erase one line
-   vec.at(1).at(2) = 9;
-   vec.at(1).push_back(7);
-   vec.push_back({-3, 9}); // push a row at once
-   print_matrix(vec);
-}
-
-#+END_SRC
-
-#+RESULTS:
-
-* Declaring a two dimensional vector
-
-Say we want a vector of two dimensions:
-
-In the following case have a vector of two dimensions but
-with first dimension equal 5 and second dimension 2
+* Vectors of vectors... declaring it
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
 #include <iostream>
@@ -320,4 +230,128 @@ int main()
 Size first dimension : 5
 Size second dimension : 2
 #+end_example
+
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+#include <string>
+
+int main()
+{
+   std::vector<
+       std::vector<std::string>
+     > vec (2, std::vector<std::string>(3,"default"));
+
+   vec.at(1).at(2) = "[at 1,2]";
+   vec.at(1).at(0) = "[at 1,0]";
+   vec.at(0).at(1) = "[at 0,1]";
+   std::cout << "Size: " << vec.size() << std::endl;
+
+   for(auto subvec: vec) {
+      for(auto el: subvec) {
+         std::cout << el << " " ;
+      } 
+      std::cout << std::endl;
+   } 
+
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Size: 2
+default [at 0,1] default 
+[at 1,0] default [at 1,2]
+#+end_example
+
+
+* Let us introduce type aliases
+
+- Frequently we want to introduce our own types. 
+- Similar to ~typedef~ in C
+
+
+#+begin_src C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+
+using Matrix = std::vector<
+       std::vector<std::string>
+     > ;
+
+void print_matrix(const Matrix vec) {
+   std::cout << "Number Rows: " << vec.size() << std::endl;
+   for(auto row: vec) {
+      std::cout << "Row: (size: " << row.size() << ") ";
+      for(auto el: row) {
+         std::cout << "[" << el << "] " ;
+      } 
+      std::cout << std::endl;
+   } 
+}
+
+int main(void)
+{
+   Matrix vec (2, std::vector<std::string>(3));;
+   vec.at(1).at(2) = "This";
+   print_matrix(vec);
+   return 0;
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Number Rows: 2
+Row: (size: 3) [] [] [] 
+Row: (size: 3) [] [] [This]
+#+end_example
+
+** Not all the subvectors  have to be of the same length!
+
+#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#include <iostream>
+#include <vector>
+
+using Matrix_int = std::vector<
+       std::vector<int>
+     > ;
+
+void print_matrix(const Matrix_int vec) {
+   std::cout << "Number Rows: " << vec.size() << std::endl;
+   for(auto row: vec) {
+      std::cout << "Row: (size: " << row.size() << ") ";
+      for(auto el: row) {
+         std::cout << "[" << el << "] " ;
+      } 
+      std::cout << std::endl;
+   } 
+}
+
+int main()
+{
+   Matrix_int vec (2, std::vector<int>(3,0));
+   print_matrix(vec);
+   vec.at(0).clear(); // erase one line
+   vec.at(1).at(2) = 9;
+   vec.at(1).push_back(7);
+   vec.push_back({-3, 9}); // push a row at once
+   print_matrix(vec);
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Number Rows: 2
+Row: (size: 3) [0] [0] [0] 
+Row: (size: 3) [0] [0] [0] 
+Number Rows: 3
+Row: (size: 0) 
+Row: (size: 4) [0] [0] [9] [7] 
+Row: (size: 2) [-3] [9]
+#+end_example
+
 

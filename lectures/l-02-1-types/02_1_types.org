@@ -13,17 +13,17 @@
 ** Table of Contents                                                    :TOC:
 - [[#data-types][Data types]]
 - [[#fundamental-types-same-as-in-c][Fundamental types: same as in C]]
-  - [[#but-i-am-too-lazy][But I am too lazy...]]
-  - [[#but-i-am-really-really-lazy][But I am really, really lazy]]
-  - [[#unsigned-modifier][Unsigned modifier]]
-  - [[#long-modifier][Long modifier]]
-  - [[#and-you-can-apply-them-both-size-and-sign-modifiers][and you can apply them both: size and sign modifiers:]]
-  - [[#16-bits][16 bits]]
+     - [[#but-i-am-too-lazy][But I am too lazy...]]
+     - [[#but-i-am-really-really-lazy][But I am really, really lazy]]
+     - [[#unsigned-modifier][Unsigned modifier]]
+     - [[#long-modifier][Long modifier]]
+     - [[#and-you-can-apply-them-both-size-and-sign-modifiers][and you can apply them both: size and sign modifiers:]]
+     - [[#16-bits][16 bits]]
 - [[#narrowing-conversions][Narrowing conversions]]
 - [[#do-i-care-about-all-of-this-for-the-exam][Do I care about all of this for the exam?]]
 - [[#type-conversions][Type conversions]]
-  - [[#forcing-the-type-of-a-constant][Forcing the type of a constant]]
-  - [[#corollary][Corollary:]]
+     - [[#forcing-the-type-of-a-constant][Forcing the type of a constant]]
+     - [[#corollary][Corollary:]]
 
 * Data types
 
@@ -33,14 +33,13 @@
 
 * Fundamental types: same as in C
 
+- char
 - int
 - double
 - float
 - bool
-- char
-  (and some char friends)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both :exports both
 #include <iostream>
 int main()
 {
@@ -76,7 +75,7 @@ A
 false
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both :exports both
 #include <iostream>
 int main()
 {
@@ -103,8 +102,7 @@ Finding the limit: std::numeric_limits<type>
 - digits
 - has infinity
 
-
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -133,7 +131,7 @@ Type has infinity: true
 
 so I use decltype to avoid typing the name of the type over and over again.
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -164,7 +162,7 @@ Type has infinity: false
 
 So let us do it with a function and some preprocessor magic, which you can ignore for now
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -229,7 +227,7 @@ Details for variable myDouble
 
 ** Unsigned modifier
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -300,7 +298,7 @@ Details for variable myUnsignedInt
 
 But signed is not valid for real numbers: float, double
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -345,7 +343,7 @@ int main ()
 - long long ing
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -404,7 +402,7 @@ Details for variable myLongLong
 
 ** and you can apply them both: size and sign modifiers:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -461,7 +459,7 @@ Details for variable myLongLong
 - But short int is not
 - so we use char16_t
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
 #include <limits>       // std::numeric_limits
 
@@ -502,7 +500,7 @@ Details for variable c16
 
 * Narrowing conversions
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output :exports both :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both :exports both
 #include <iostream>
 int main()
 {
@@ -547,7 +545,7 @@ Be careful, very careful:
 
 Between primitive types, conversions can lose/change information.
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -588,7 +586,7 @@ i: -3   d: -3.14149   ui: 4294967293   si: -3
 
 another example:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Wextra -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Wextra -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -612,11 +610,11 @@ int main()
 Use the compiler, Luke! Pass the options to the compiler:
 
 #+BEGIN_SRC sh
-g++ -std=c++14 -Wall --pedantic -Wextra -Wsign-conversion -Wfloat-conversion -Werror -o file file.cpp
+g++ -std=c++17 -Wall --pedantic -Wextra -Wsign-conversion -Wfloat-conversion -Werror -o file file.cpp
 #+END_SRC
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Wextra -Wsign-conversion -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Wextra -Wsign-conversion -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -631,7 +629,7 @@ int main()
 
 #+RESULTS:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Wextra -Wsign-conversion -Wfloat-conversion -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Wextra -Wsign-conversion -Wfloat-conversion -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -650,7 +648,7 @@ int main()
 
 What about strings? what are the composed of?
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <limits>       // std::numeric_limits
@@ -693,7 +691,7 @@ Details for variable st.at(0)
 - Use suffixes for long and unsigned
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {

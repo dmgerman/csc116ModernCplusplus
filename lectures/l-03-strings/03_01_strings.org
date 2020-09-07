@@ -12,20 +12,22 @@
 
 * Prelude: chars
 
-- chars can be operated just like ints
+- chars are like ints
+- guaranted to be of size 1
   - a char can be used an a signed int of size 1 byte
+- but they have a special interpretation
 
 #+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
 {
-   char c { 'A'};
-   char d { 66 };
+   char c { 'd'};
+   char d { 109 };
    std::cout << c << std::endl 
              << d << std::endl
              << int(c) << std::endl;
-   c = 0x20;
+   c = d - 6;
    std::cout << "[" << c << "]" << std::endl;
 
    return 0;
@@ -35,10 +37,10 @@ int main()
 
 #+RESULTS:
 #+begin_example
-A
-B
-65
-[ ]
+d
+m
+100
+[g]
 #+end_example
 
 - Note that a '1' is not the same as numeric 1
@@ -104,10 +106,12 @@ In C++ we have two types of strings:
 
 - C type: char[] and char*
 
+
 #+BEGIN_SRC C++
 char filename[] = "myFile.txt";
 char *filename = "myFile.txt";
 #+END_SRC
+
 
 - std::string
 
@@ -120,8 +124,11 @@ std::string emptyString2 {};
 
 #+END_SRC
 
-- For this course, never, ever, declare a char[] or char*
+- For this course, *never, ever*, declare a char[] or char*
 - Always use std::string
+
+* some functions
+
 - .size() returns the length of the string
 - .empty() returns true is if the string is ""
 
@@ -155,6 +162,7 @@ It is really Empty
 
 * We can traverse an array as a sequence of characters:
 
+- ~.at(i)~ to access element at position i
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -163,17 +171,19 @@ It is really Empty
 int main()
 {
     std::string filename {"vic"};
+    // note the type size_t
+    /// it is an unsigned int
     for(size_t i=0;i<filename.size();i++) {
         std::cout << "position " << i << " value " 
                   << filename.at(i) << std::endl;
     }
-    std::cout << "1. " << filename << std::endl;
+    std::cout << "a. " << filename << std::endl;
 
     for(char c : filename) {
-        std::cout << "2. Char " << c << std::endl;   
+        std::cout << "b. Char " << c << std::endl;   
         c++;
     }
-    std::cout << "3. " << filename << std::endl;
+    std::cout << "c. " << filename << std::endl;
 
     return 0;
 }
@@ -185,11 +195,11 @@ int main()
 position 0 value v
 position 1 value i
 position 2 value c
-1. vic
-2. Char v
-2. Char i
-2. Char c
-3. vic
+a. vic
+b. Char v
+b. Char i
+b. Char c
+c. vic
 #+end_example
 
 
@@ -232,6 +242,8 @@ int main()
 
 * We can add characters to a string
 
+- += to append to a string
+- + to concatenate two strings
 
 #+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
 #include <iostream>
@@ -260,7 +272,7 @@ int main()
 
 * Be careful:
 
-A bare sequence between quotes "as in this" is a char array. *Not a std::string!!*
+A bare sequence between quotes ~"as in this"~ is a char array. *Not a std::string!!*
 
 - The compiler, most of the time, will convert it to std::string as needed
 - But sometimes it does cannot: this program will fail
@@ -389,16 +401,11 @@ int main()
     std::string he = "Daniel";
     std::string she = "Daniela";
 
-    auto test = [&](std::string first, std::string second) {
-         std::cout << "'" << first << "' and '" << second << "' are " 
-           << ((first == second)? "the same" : "different")
-           << std::endl;
-    };
-
-    test(me, you);
-    test(me, he);
+    std::cout << (he == you) << std::endl;
+    std::cout << (he == me) << std::endl;
 
     std::cout << std::boolalpha; // to print booleans nicely
+    std::cout << (he == me) << std::endl;
     std::cout << (he > she) << std::endl;
     std::cout << (he >= she) << std::endl;
     std::cout << (he < she) << std::endl;
@@ -412,8 +419,9 @@ int main()
 
 #+RESULTS:
 #+begin_example
-'Daniel' and 'Bob' are different
-'Daniel' and 'Daniel' are the same
+0
+1
+true
 false
 false
 true
@@ -459,7 +467,7 @@ Line:
 Line: Daffy Duck!
 #+end_example
 
-** Or you can read one "token" at a time
+*** Or you can read one "token" at a time
 
 - this reads a "token" (word separated by "whitespace")
 - note how it skips whitespace before reading the token
@@ -499,14 +507,15 @@ to determine if one is "<=" than the other
 bool string_less_or_equal(const std::string st1,
                       const std::string st2) {
     if (st1.size() ==0)
-        return true;
+        return true; // both empty => same
     if (st2.size() ==0)
-        return false;
+        return false; // one empty => different
+    // compare the first char
     if (st1.front() == st2.front()) {
-        // compare the remaining strings
+        // same first char: compare the remaining strings
         return string_less_or_equal(st1.substr(1), st2.substr(1));
     } else {
-        // compare the front characters
+        // different first char: compare them
         return st1.front() < st2.front();
     }
 }
