@@ -94,14 +94,6 @@ b 32 98
 
 * Strings
 
-** Reference
- http://www.cplusplus.com/reference/string/string/
-
-** Tutorial
- https://www.tutorialspoint.com/cplusplus/cpp_strings.htm
-
-** Caveats
-
 In C++ we have two types of strings:
 
 - C type: char[] and char*
@@ -126,6 +118,15 @@ std::string emptyString2 {};
 
 - For this course, *never, ever*, declare a char[] or char*
 - Always use std::string
+
+
+* References
+
+** Reference
+ http://www.cplusplus.com/reference/string/string/
+
+** Tutorial
+ https://www.tutorialspoint.com/cplusplus/cpp_strings.htm
 
 * some functions
 
@@ -293,6 +294,8 @@ int main()
 
 #+END_SRC
 
+#+RESULTS:
+
 #+BEGIN_EXAMPLE
 /tmp/babel-2558967A/C-src-25589UJI.cpp: In function ‘int main()’:
 /tmp/babel-2558967A/C-src-25589UJI.cpp:15:32: error: invalid operands of types ‘const char [14]’ and ‘const char [4]’ to binary ‘operator+’
@@ -318,7 +321,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Your name isbob
+Your name is bob
 #+end_example
 
 * Other string operations
@@ -495,6 +498,7 @@ Token: Daffy
 Token: Duck!
 #+end_example
 
+* summary
 * extra: string comparison
 
 to understand how strings are compared, 
