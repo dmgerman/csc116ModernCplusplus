@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -190,7 +190,7 @@ The following example uses a field that is declared static
 - static fields are shared by all instances of the class 
 - for any other field, each instance has its own value
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class baby_class {
    static int count; // static fields are shared by all instances of a class
@@ -238,7 +238,7 @@ public:
 #+END_SRC
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class baby_class {
 public:

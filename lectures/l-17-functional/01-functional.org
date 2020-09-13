@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -19,7 +19,7 @@
 
 In the following example, we can define the same function in three different ways (f, f2 and g--they all do the same)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <functional>
@@ -58,7 +58,7 @@ abc
 But we usually simplify the type of the function using auto:
 (auto return type cannot be used in recursive functions)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <functional>
@@ -95,7 +95,7 @@ auto functionName = [] (parameterList) -> returnType { body; };
 
 - We can store functions in variables
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <functional>
@@ -123,7 +123,7 @@ abc
 * Another example
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <functional>
@@ -175,7 +175,7 @@ int main()
 
 * We can also pass them as parameters
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <functional>
@@ -209,7 +209,7 @@ int main()
 
 - called anonymous functions
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <functional>
@@ -243,7 +243,7 @@ int main()
   2. end iterator
   3. lambda
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 
@@ -290,7 +290,7 @@ int main()
 - This is a simpler example. Note how the function/lambda must have one parameter only
 - The type of the parameter must be the type of the collection
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 
@@ -325,7 +325,7 @@ int main()
 - allow the modification of the captured variables
 - this program counts the number of elements in the vector:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 
@@ -356,7 +356,7 @@ Elements in v : 5
 
 - We can also modify the vector if the lambda receives the parameter by-reference, instead of by-value
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 int main()
@@ -391,7 +391,7 @@ int main()
 
 ** We can also use functions instead of anonymous lambdas
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 
@@ -433,7 +433,7 @@ int main()
 - Count how many elements of a collection satisfy a given condition
 - lambda returns true if the element is to be counted in the total
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 int main()
@@ -466,7 +466,7 @@ Positive elements: 2
 
 Returns true if all the elements satisfy a given condition
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 int main()
@@ -500,7 +500,7 @@ All are positive elements: 1
 
 - without a lambda
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -535,7 +535,7 @@ int main()
 - also useful when parameters do not support < operator
 - the lambda returns true if first parameter less than second
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -572,7 +572,7 @@ int main() {
 
 Sort by length of the string
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -606,7 +606,7 @@ int main() {
 
 ** Another example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -659,7 +659,7 @@ Spock
    3. begin iterator of result collection
    4. lambda
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -707,7 +707,7 @@ int main() {
   3. initial value (must be same type as elements in collection)
   4. a function to combine the elements to generate the next element
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -741,7 +741,7 @@ alphabetagammadelta
 #+end_example
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
 #include <algorithm> 
 #include <string>
@@ -778,7 +778,7 @@ alpha -> beta -> gamma -> delta
 
 The code above is equivalent to:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <string>
@@ -830,7 +830,7 @@ auto functionName = [capture list] (parameterList) -> returnType { body; };
   - [&] captures used variables by reference 
   - [a,&b] captures specific variable by value (a) or reference (b)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 
@@ -866,7 +866,7 @@ int main()
 We can use local values in the lambda that we pass to the algorithm
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 int main()
@@ -892,7 +892,7 @@ Values above x: 1
 
 We can also pass by reference, in that case we can modify the value:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 int main()
@@ -923,7 +923,7 @@ The sum of all elements is 0
 
 * This is just a silly example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <map>
@@ -963,7 +963,7 @@ int main()
 - Count number of repeated lines in input file, 
 - output them in lexicographical order 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <fstream>

@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 * Types of sequential containers
@@ -154,7 +154,7 @@ for (auto it= begin; it!=c.end;it++) {
 
 In vectors, we can do iterator "arithmetic" (add, subtract from an iterator)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -191,7 +191,7 @@ This is a big NO
 
 - you cannot add/subtract from an iterator to a list
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
 
@@ -227,7 +227,7 @@ Third : 3
 - We can use the iterator to print to traverse the collection
 - This works for _any_ collection
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <list>
@@ -261,7 +261,7 @@ Position : 4 Values : 5
 
 this is a circular queue, we can push in the front or in the back 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <deque>
 
@@ -294,7 +294,7 @@ Position : 4 Values : 100
 
 List:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
 #include <algorithm>
@@ -330,7 +330,7 @@ Values : 10
 
 - This method works with all containers
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
 #include <algorithm>
@@ -374,7 +374,7 @@ containertype<type_element>::iterator
 
 but it is easier to use auto
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
 
@@ -414,7 +414,7 @@ they go *backwards*
 - notice the use of + to move backwards
 - use of - to move forward!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -445,7 +445,7 @@ rend : 0
 
 * We can modify elements directly using iterators
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -486,7 +486,7 @@ containertype<type_element>::const_iterator
 - crend()
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -528,7 +528,7 @@ int main()
 - Its constructor syntax is different than the rest of the containers
 - We must specify its size
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <array>
 
@@ -564,7 +564,7 @@ Container: 1: 2: 0: 0: 0: 0: 0: 0: 0: 0:
 
 ** the rest can be initialized as we have seen before
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <list>
@@ -593,7 +593,7 @@ Container: 1: 2: 3:
 #+end_example
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <list>
 #include <list>
@@ -631,7 +631,7 @@ Container: 1: 2: 3:
 - constructor(begin, end);
 - end points to the element  NOT copied
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <list>
@@ -660,7 +660,7 @@ Container: c: d:
 
 *** We can use iterators to copy from one type of container to another!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include <list>
@@ -715,7 +715,7 @@ the following operations all create the object to be inserted (it is a copy of t
 | insert(it1, itb, ite) | inserts  before it1 copies of the values in the range [itb,ite) | iterator    |
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -768,7 +768,7 @@ list3: w: -: x: y: z: 0: b: c: d: e: 9:
 
 Taking advantage that insert returns an iterator
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -818,7 +818,7 @@ Assuming c is a container
 
 All of them return references:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()

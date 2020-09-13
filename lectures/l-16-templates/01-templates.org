@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -24,7 +24,7 @@ We need to write a function to compare two strings.
 
 Return 0 if both strings the same, -1 if first > second, 2 if second > first
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 int compare(const std::string &v1, const std::string &v2)
 {
     if (v1 < v2) return -1;
@@ -35,7 +35,7 @@ int compare(const std::string &v1, const std::string &v2)
 
 Now we need to write one for doubles:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 int compare(const std::double &v1, const std::string &v2)
 {
     if (v1 < v2) return -1;
@@ -55,7 +55,7 @@ A template allows us to write it one, instantiate it many times
 - Each parameter is a type
 - The generic function follows
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 template <typename T>
 int compare(const T &v1, const T &v2)
 {
@@ -71,7 +71,7 @@ int compare(const T &v1, const T &v2)
 - Simply call the function with the corresponding parameters. 
 - C++ will instantiate a corresponding function based on the available templates
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -104,7 +104,7 @@ int main()
 
 * Another example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <complex>
 
@@ -138,7 +138,7 @@ int main()
 - We have used versions of this before
 - Allows to print any collection 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -240,7 +240,7 @@ Compilation errors come in two flavours:
 - Usually the problem is that some features of the type required by the template are not present
 - Example:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -301,7 +301,7 @@ void print_collection(std::string msg, std::vector<std::vector<int>> &l)
 Another example:
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -357,7 +357,7 @@ void print_collection(std::string msg, int &l)
 
 We can also create classes templates:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 
@@ -403,7 +403,7 @@ templateName<instanceType> variable;
 - In that case, every method should be preceeded with *template <typename ...>*
 - See below:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 
@@ -452,7 +452,7 @@ Value of var2: abc
 
 - Classes can have methods that are templates
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class B
 {  
@@ -489,7 +489,7 @@ string:5
 * And we can make member templates inside class templates
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 
@@ -534,7 +534,7 @@ int main()
 #+END_SRC
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 

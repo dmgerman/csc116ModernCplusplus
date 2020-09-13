@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -51,7 +51,7 @@
 
 We cannot copy objects of type IO:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 ofstream out1, out2;
 out 1 = out2; // error 
 #+END_SRC
@@ -70,7 +70,7 @@ Methods to detect error conditions:
 
 * Open
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -94,7 +94,7 @@ options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
 options(width=160)
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -136,7 +136,7 @@ options(width=160)
 
 - set width of output, aligned to the right
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iomanip>  
 int main()
@@ -156,7 +156,7 @@ Example: [       abc]
 
 ** left/right justified
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // modify adjustfield using manipulators
 #include <iostream>     // std::cout, std::internal, std::left, std::right
 #include <iomanip>  
@@ -184,7 +184,7 @@ int main () {
 
 Fill with a character rather than space
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // setfill example
 #include <iostream>     // std::cout, std::endl
 #include <iomanip>      // std::setfill, std::setw
@@ -207,7 +207,7 @@ Example: [________77]
 
 - Output numbers in different bases:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iomanip>  
 int main()
@@ -233,7 +233,7 @@ octal:       [401]
 
  In C++ we print hex numbers with prefix 0x and octal with 0
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>     // std::cout, std::showbase, std::noshowbase
 
 int main () {
@@ -263,7 +263,7 @@ Octal: 024
 
 Print boolean values with true/false
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>     // std::cout, std::showbase, std::noshowbase
 
 int main () {
@@ -287,7 +287,7 @@ true false
 
 number of digits of precission 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // setprecision example
 #include <iostream>     // std::cout, std::fixed
 #include <iomanip>      // std::setprecision
@@ -312,7 +312,7 @@ int main () {
 
 ** fixed/scientific
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // setprecision example
 #include <iostream>     // std::cout, std::fixed
 #include <iomanip>      // std::setprecision
@@ -344,7 +344,7 @@ int main () {
 
 ** force period
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // modify showpoint flag
 #include <iostream>     // std::cout, std::showpoint, std::noshowpoint
 
@@ -373,7 +373,7 @@ this example is for demonstration purposes (not in the exam)
 
 we can take advantage of the locale to output information in the local language
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -448,7 +448,7 @@ Example:
 
 - Note how the whitespace is skipped
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -491,7 +491,7 @@ But this one reads ints
   - read only numeric characters
   - and will convert them to the desired number
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -538,7 +538,7 @@ in general:
 - Example
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -652,7 +652,7 @@ cat  groceries.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1
 
 - skips whitespace!!!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -705,7 +705,7 @@ int main()
 
 We use the manipulator std::noskipws to disable skipping whitespace
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -770,7 +770,7 @@ int main()
 
 - this program reads one character at a time
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -842,7 +842,7 @@ int main()
 - use a vector to read the file from the current position until end of file
 - but you are responsible to make sure the vector has been resized to the number of bytes you are going to read
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -938,7 +938,7 @@ rice
 If you run windows, try the following code. Your output will be different than mine
 then look at the number of bytes used by each file. One is 4 bytes, the other 5 bytes
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <fstream>
 int main()

@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -24,7 +24,7 @@
 
 * Example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -54,7 +54,7 @@ int main()
 
 * adding elements dynamically
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -89,7 +89,7 @@ Size: 3
 
 - Elements are always initialized
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -112,7 +112,7 @@ Size: 5
 0 0 0 0 0
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -137,7 +137,7 @@ Size: 3
 
 ** Vectors of vectors
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -187,7 +187,7 @@ size of this subvec: 3
 
 * Vectors of vectors... declaring it
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 #include <vector>
 int main()
@@ -209,7 +209,7 @@ Size second dimension : 2
 
 Let us break down the declaration:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 #include <vector>
 int main()
@@ -233,7 +233,7 @@ Size second dimension : 2
 
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic :results output :exports both
 #include <iostream>
 #include <vector>
 #include <string>
@@ -274,7 +274,7 @@ default [at 0,1] default
 - Similar to ~typedef~ in C
 
 
-#+begin_src C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#+begin_src C++ :main no :flags -std=c++17 -Wall --pedantic :results output :exports both
 #include <iostream>
 #include <vector>
 
@@ -311,7 +311,7 @@ Row: (size: 3) [] [] [This]
 
 ** Not all the subvectors  have to be of the same length!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic :results output :exports both
 #include <iostream>
 #include <vector>
 

@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++   :xournal /tmp/rip.cpp          :results output :exports both :flags -std=c++14 -Wall --pedantic -Werror 
+#+PROPERTY: header-args:C++   :xournal /tmp/rip.cpp          :results output :exports both :flags -std=c++17 -Wall --pedantic -Werror 
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
 ** Table of Contents                                                    :TOC:
@@ -24,7 +24,7 @@
 
 But it can be done anywhere in the code
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both :xournal /tmp/rip.cpp
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both :xournal /tmp/rip.cpp
 #include <iostream>
 int main()
 {
@@ -81,7 +81,7 @@ int main()
   - until it reaches the global environment
 - if not found, output error (variable not found)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -113,7 +113,7 @@ int main()
 
 - We cannot define two variables with the same name in the same environment
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -148,7 +148,7 @@ int main()
 - even if they have no braces 
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int i {-100};
 
@@ -183,7 +183,7 @@ int main()
 - Invocation!
 - I repeat: each invocation of a function creates an environment
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int i=-100;
 
@@ -217,7 +217,7 @@ int main()
 - see what happens with recursion
 - each execution of my_function creates a different environment
   
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int i=-100;
 

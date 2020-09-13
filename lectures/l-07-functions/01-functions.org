@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -15,7 +15,7 @@
 * Functions
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 // parts of a function:
@@ -42,7 +42,7 @@ function(2.3, 'c');
 - As a parameter: it takes no parameters
 - As a return value: value returns no value
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int f(void)  // explicit void
@@ -86,7 +86,7 @@ Variales are by default automatic:
 - They are created when the scope starts
 - Destroyed when the scope end
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 void f() 
 {
@@ -119,7 +119,7 @@ Value of i 1
 
 
   
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int i;
@@ -157,7 +157,7 @@ Value of i 3
 Value of j 3
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int main()
@@ -183,7 +183,7 @@ Value of j 1
 Value of j 1
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int main()
@@ -217,7 +217,7 @@ informs the compiler that the function exists, but it is defined somewhere else
 
 the compiler complains if the function is used without a declaration
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int main()
@@ -236,7 +236,7 @@ test.cpp:8:6: error: ‘f’ was not declared in this scope
 
 Compiler is ok, linker might complain if it does not find the function
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 
 int f(void);
@@ -274,7 +274,7 @@ An argument can be passed by
 - A copy of the argument is made (becomes the parameter)
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 #include <vector>
 
@@ -311,7 +311,7 @@ Size of vector after 10
 - The parameter is a reference to the argument
 - The reference exists only during the execution of the function
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 #include <vector>
 
@@ -345,7 +345,7 @@ Size of vector after 0
 
 ** Break a string into substrings
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output
 #include <iostream>
 #include <string>
 #include <vector>

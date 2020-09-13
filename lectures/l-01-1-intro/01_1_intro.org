@@ -8,7 +8,7 @@
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
 #+PROPERTY: header-args:R               :results output  :colnames yes
-#+PROPERTY: header-args:C++             :results output  :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output  :flags -std=c++17 -Wall --pedantic -Werror
 
 * Table of contents                                                     :TOC:
 - [[#what-is-c][What is c++]]
@@ -69,7 +69,7 @@
 
 - count frequency of elements in an "array" (a vector)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 :results output
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output
 #include <iostream>
 #include <map>
 #include <vector>
@@ -192,7 +192,7 @@ Hello daniel german 0 times
 
 * Type safety
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic -Werror
 #include <iostream>
 
 int main()
@@ -211,7 +211,7 @@ Value of i is 3
 
 This program generates a compilation error
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror -pedantic-errors
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic -Werror -pedantic-errors
 #include <iostream>
 
 int main()
@@ -232,7 +232,7 @@ int main()
 
 But this one compiles and runs:
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic -Werror -pedantic-errors
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic -Werror -pedantic-errors
 #include <iostream>
 
 int main()
@@ -255,7 +255,7 @@ Value of i is 3
 - Do not use arrays in C++
 - Instead, use a vector
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -284,7 +284,7 @@ int main()
 
 The following program has a bug, can you identify it?
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -314,7 +314,7 @@ int main()
 - For the purpose of this course, never use [] to access elements of an array
 - Instead, use .at()
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -342,7 +342,7 @@ terminate called after throwing an instance of 'std::out_of_range'
 - use .size()
 
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -372,7 +372,7 @@ int main()
 - after all, control  variables of for loops are a big source of bugs
 
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -400,7 +400,7 @@ The sum is 15
 - see how strings are defined
 - note semantics of + when dealing with strings
 
-#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++14 -Wall --pedantic 
+#+BEGIN_SRC C++ :exports both :results output  :flags -std=c++17 -Wall --pedantic 
 #include <iostream>
 #include <vector>
 
@@ -429,7 +429,7 @@ The sum is 12345
 - Adding the elements of an array is something that needs to be done frequently
 - use std::accumulate
 
-#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++17 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -462,7 +462,7 @@ the sum of the vector is 21
 - Note how the initialization converts an int to a complex. 
 - But we can also initialize complex numbers
 
-#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++17 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -486,7 +486,7 @@ the sum of the vector is (21,-1)
 
 ** We can also accumulate strings:
 
-#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++17 :results output -Wall -pedantic
 #include <iostream>
 #include <vector>
 #include <numeric>
@@ -515,7 +515,7 @@ the sum of the vector is 23456
 - But we know that incrementing indices to vectors is error prone
 - This will look like black magic now, but by the end of the term it should make sense
 
-#+BEGIN_SRC C++ :exports both :main no :flags -std=c++14 :results output -Wall -pedantic
+#+BEGIN_SRC C++ :exports both :main no :flags -std=c++17 :results output -Wall -pedantic
 #include <iostream>
 #include <string>
 #include <vector>

@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results verbatim :exports both :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results verbatim :exports both :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output :exports both  :colnames yes
 
 ** Table of Contents                                                    :TOC:
@@ -206,7 +206,7 @@ In after: -1
 - in C++ parameters are new variables (copy-by-value)
 - they are independent of the variables passed as parameters in the call
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 void my_function(int i)
@@ -241,7 +241,7 @@ After -5
 - they are "like" a pointer, but safer
 - A reference is variable that points to another one
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 void my_function(int &r)
@@ -274,7 +274,7 @@ After -1
 - Note how the scope of the for loop creates local variables (copies)
 - References can be used to modify the original value 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -307,7 +307,7 @@ After: abc
 After2: bcd
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <vector>
@@ -354,7 +354,7 @@ int main()
 
 ** Another example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 
@@ -397,7 +397,7 @@ Value 16
 
 * We can also declare variables that are references to variables
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iomanip>
 
@@ -438,7 +438,7 @@ i: 20 j: 10 r: 20
 
 It can be used to indicate that a variable should never change: it is *immutable*
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
@@ -469,7 +469,7 @@ int main()
 - prefix name with k
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 const int kDaysInAWeek = 7;
 
 int main()
@@ -484,7 +484,7 @@ int main()
 - indicate that you can't modify a parameter
 - in general, this is a good idea
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 void print_value(const int value)
@@ -513,7 +513,7 @@ int main()
 
 - once you define a reference const, you can't change the value it refers to
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
@@ -539,7 +539,7 @@ int main()
 - this is for a parameter, indicates that even we got a reference, it is immutable
 - signals to the person using the function that the parameter is not going to be changed
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 

@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -22,7 +22,7 @@
 
 - works for any sequential collection
 
-#+begin_src c++ :main no :flags -std=c++14 -wall --pedantic -werror :results output :exports both
+#+begin_src c++ :main no :flags -std=c++17 -wall --pedantic -werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -82,7 +82,7 @@ value 9 was not found
   - e.g. .begin(), .end(); .cbeing()+1, .end()-2; rbegin(), rend()
 - if not found, find returns the second iterator
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -129,7 +129,7 @@ Value 9 was NOT found
 - adds all elements in the collection, starting with a given value
 - returns the sum of all of them
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <numeric>
 #include <vector>
@@ -158,7 +158,7 @@ Sum2: 25
 #+end_example
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <numeric>
 #include <vector>
@@ -196,7 +196,7 @@ Sum3: 43210
 Note how accumulate works by adding the ascii value of strings  (strings are collections):
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <numeric>
 #include <string>
@@ -220,7 +220,7 @@ Sum: 197
 
 *** One use of accumulate requires that the operators + and = are defined for the class
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <numeric>
 #include <vector>
@@ -262,7 +262,7 @@ Compare two containers
 - third is beginning of second container range
 - second container range should have at least the same number of elements as in the first pair of iterators
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -298,7 +298,7 @@ Result3: true
 
 elements in collection should define the equal operator
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -343,7 +343,7 @@ Result3: true
 
 we can compare different types of collections (e.g. a list and a vector)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -383,7 +383,7 @@ Result3: true
 
 Returns true if range is sorted
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -419,7 +419,7 @@ sorted col2: false
 
 - count number of occurrences of value
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -459,7 +459,7 @@ int main()
 - they return iterators
   - this way we can check if they return a valid value  
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -535,7 +535,7 @@ min: [and] max: [this]
 - set the values of a collection
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -584,7 +584,7 @@ Container: 5: 5: 5: 5: 5: -1: -1: -1: -1: -1:
 - it assumes that size is valid
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -634,7 +634,7 @@ Container: -1: -1: 5: 5: 5: 5: 6: 7: 8: 9:
 - C++ has a special type of iterator that can add elements to a collection
 - it auto-increments when used to assign a value
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iostream>
 #include <algorithm>
@@ -669,7 +669,7 @@ Container: 1: 2: 10: 20: 30:
 
 ** We can use it to append to the end
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iostream>
 #include <algorithm>
@@ -705,7 +705,7 @@ Container: 1: 2: 3: 3: 3: 3: 3: 3: 3: 3: 3: 3:
 - copies elements from one collection to another
 - destination should be set to the proper size
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -740,7 +740,7 @@ Container: 1: 2: 3:
 
 - we can also use back_inserter
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -777,7 +777,7 @@ Container: 4: 2: 0: 1: 2: 3:
 
 - replace a given value with another
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -814,7 +814,7 @@ Container: 1: 9: 3: 1: 9: 3: 1: 9: 3:
 - makes the copy replacing 
 - at the same time replaces certain values
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -852,7 +852,7 @@ Container: 1: 9: 3: 1: 9: 3: 1: 9: 3:
 
 ** erase
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -897,7 +897,7 @@ after erase: 1: 2:
 - sorts the elements of a collection
 - does not work for lists (they don't have random access)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -937,7 +937,7 @@ Container: 3: 3: 3: 2: 2: 2: 1: 1: 1:
 - if vector is sorted
   - reorders  the elements of a container, place the unique ones at the front
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -981,7 +981,7 @@ unique after sort: -1: 1: 2: 3: 4: 2: 3: 3: 4:
 - it returns an iterator
 - we can use it to remove duplicates
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -1021,7 +1021,7 @@ after erase: 1: 2: 3:
 
 ** random_shuffle
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -1064,7 +1064,7 @@ After random_shuffle: 2: 3: 4: 5: 1:
 - reverse elements
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -1116,7 +1116,7 @@ Reversing 1/2:    2: 1: 0: 3: 4: 5:
 | set_intersection | intersection between two collections |
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <algorithm>
 #include <vector>

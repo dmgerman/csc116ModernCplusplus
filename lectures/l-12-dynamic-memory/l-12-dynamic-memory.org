@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 #+BEGIN_SRC emacs-lisp
@@ -117,7 +117,7 @@ Two operations:
   - no need to worry about how many bytes to allocate
 - *delete* releases that memory
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 
@@ -160,7 +160,7 @@ Value: *pst: [abc]
 - even for basic datatypes
 - uses the constructor of the type being created
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 int main()
@@ -194,7 +194,7 @@ new auto(var); // allocates memory to point an
 
 Example:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 int main()
@@ -222,7 +222,7 @@ Value *p: 3.5
 - if not enough memory, *new* throws an exception
 - Fails with an exception: 'std::bad_alloc'
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -260,7 +260,7 @@ new (nothrow) <type>;
 - Null pointer in C++ is *nullptr*
 - Equivalent to NULL in C
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <new>  
 #include <iostream>
 int main()
@@ -317,7 +317,7 @@ std::shared_ptr<std::vector<double>> p3; // points to a vector of double
 - it can be initialized to a pointer (nullptr or with new)
 - default constructor initializes the shared_pointer to nullptr
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 
@@ -345,7 +345,7 @@ value pointed by p3 20
 
 * It is not possible to assign a raw paointer to a shared_pointer
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 int main()
@@ -378,7 +378,7 @@ int main()
     - or assign one share pointers to another (more on that later)
 - make_shared allocates memory for the pointer
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 #include <string>
@@ -413,7 +413,7 @@ value pointed by p2 abc
 - stops making the shared_ptr point to a given location
 - if last shared_ptr, then delete memory
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 #include <string>
@@ -457,7 +457,7 @@ Example: three smart pointers pointing to an integer (value 10)
 [[./before.png]]
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 
@@ -534,7 +534,7 @@ Before:  [[./before3.png]] After:    [[./before4.png]]
 - no need to ever call *delete*
 - it guarantees no wasted memory
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 
@@ -587,7 +587,7 @@ Before:  [[./before3.png]] After:    [[./before5.png]]
 | *p      | dereference the pointer                           |
 | p.get() | access memory address pointer points to           |
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 
@@ -625,7 +625,7 @@ p1 has been allocated. Pointing to address0x5624f92ffe80
 
 - *make_unique* is the equivalent to *make_shared*
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <memory>
@@ -679,7 +679,7 @@ p3 has been allocated. Pointing to address 0x8e9c40
 - One way is to copy it at constructor time
 - it will allocate memory again
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <memory>
@@ -727,7 +727,7 @@ p2 has been allocated. Pointing to address 0x5557f1859e70
 - the pointer is moved from the parameter to the unique_ptr making the call (the current pointer)
 - any previous memory the current pointer points to is released
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 #include <memory>
@@ -777,7 +777,7 @@ Before:  [[./unique.png]]     After: [[./unique2.png]]
 
 use p.reset(nullptr)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <memory>
 

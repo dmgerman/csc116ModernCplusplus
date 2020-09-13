@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 
@@ -70,7 +70,7 @@ Operations on classes (strings, vector) are a different topic. We'll cover it la
 
 We need to keep an eye on potential overflows
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -96,7 +96,7 @@ int main()
 
 * Underflows
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -123,7 +123,7 @@ int main()
 
 They can be tricky
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
@@ -139,7 +139,7 @@ int main()
 
 #+RESULTS:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -164,7 +164,7 @@ int main()
 
 - by the way, make sure you understand the semantics of --i and i--
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -189,7 +189,7 @@ int main()
 - The following is a common bug.
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both -Wconversion -Wno-int-conversion -Wfloat-conversion
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic  -Werror :results output :exports both -Wconversion -Wno-int-conversion -Wfloat-conversion
 #include <iostream>
 int main()
 {
@@ -213,7 +213,7 @@ int main()
 
 Very important!!!
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 int main()
 {
@@ -239,7 +239,7 @@ int main()
 it is false! (1.5 + 1.1) != 2.6
 #+end_example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic  -Werror :results output :exports both 
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic  -Werror :results output :exports both 
 #include <iostream>
 #include <cmath>
 #include <limits>

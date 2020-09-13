@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args:sql             :engine postgresql  :exports both :cmdline csc370
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 * Class vs Struct
@@ -21,7 +21,7 @@
 * Constructors
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class baby_class {
@@ -94,7 +94,7 @@ Right after block 3
 
 * Other constructors
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class Sales_Data {
@@ -145,7 +145,7 @@ book2 ab123->30.75
 
 If one provides a constructor we must also provide at the very least a default constructor
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 class Sales_Data {
 ...
    Sales_Data() = default; // explicitly use default constructor
@@ -210,7 +210,7 @@ A.revenue = B.revenue;
 
 *** Example:
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 using namespace std;
@@ -260,7 +260,7 @@ Must be declared with one parameter: a reference to another object
 
 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 using namespace std;
@@ -328,7 +328,7 @@ z = x + y
 
 ** small methods in a class benefit from being inlined
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class Sales_Data {
 private: 
@@ -355,7 +355,7 @@ public:
 - a const function is not allowed to modify the attributes of an object
  - unless the attribute is marked as mutable
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class Sales_Data {
 private: 
@@ -376,7 +376,7 @@ public:
 
 A const object can only call const methods
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class C {
     int count=0;
@@ -407,7 +407,7 @@ int main()
 - one use of this is to concatenate calls 
   - function returns a reference to itself
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class simple_class {
 private: 
@@ -445,7 +445,7 @@ b 5
 
 Calls to methods can be concatenated
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class simple_class {
 private: 
@@ -489,7 +489,7 @@ c 14
 - Type-checking provided by compiler 
 - Stronger for classes than for typedefs
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 class First {
@@ -526,7 +526,7 @@ int main()
 - Every class defines its own scope 
 - Methods defined outside a class must be prefixed with the name of the name of the class and ::
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class simple_class {
 private: 
@@ -550,7 +550,7 @@ simple_class& simple_class::add(int p) {
 - This means we can refer to methods not yet declared/defined
 - Example: getValue can be used before it is declared
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class simple_class {
 private: 
@@ -581,7 +581,7 @@ int main() {
 
 - A constructor can be used when defining another constructor
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class Sales_Data {
@@ -626,7 +626,7 @@ book2 ab123->30.75
   - if the expected parameter is of a given class type
   - and there is a constructor that converts the actual parameter to the type of the parameter
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class Sales_Data {
@@ -668,7 +668,7 @@ From inside f: This is converted into an object 2->0
 
 -if a constructor is declared explicit, no automatic conversion is allowed
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class Sales_Data {
@@ -717,7 +717,7 @@ From inside f: book0->0
 - it can be accessesed by any object of the class baby_class
 - it must be declared *outside* the class where it is initialized
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 class baby_class {
    static int count;
@@ -768,7 +768,7 @@ destroying object. Objects after this destructor: 0
 
 ** A more complex example
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 class Account {

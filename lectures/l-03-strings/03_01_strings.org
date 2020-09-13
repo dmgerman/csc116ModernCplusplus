@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 * Prelude: chars
@@ -17,7 +17,7 @@
   - a char can be used an a signed int of size 1 byte
 - but they have a special interpretation
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
@@ -45,7 +45,7 @@ m
 
 - Note that a '1' is not the same as numeric 1
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
@@ -67,7 +67,7 @@ int main()
 - We can use characters in numeric operations
 - it uses the "ASCII" value of the character
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 int main()
@@ -133,7 +133,7 @@ std::string emptyString2 {};
 - .size() returns the length of the string
 - .empty() returns true is if the string is ""
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic -Werror :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic -Werror :exports both
 #include <iostream>
 #include <string>
 
@@ -165,7 +165,7 @@ It is really Empty
 
 - ~.at(i)~ to access element at position i
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -210,7 +210,7 @@ c. vic
   - note that the proper type for the index is size_t, not int
 - use .at()
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -246,7 +246,7 @@ int main()
 - += to append to a string
 - + to concatenate two strings
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -278,7 +278,7 @@ A bare sequence between quotes ~"as in this"~ is a char array. *Not a std::strin
 - The compiler, most of the time, will convert it to std::string as needed
 - But sometimes it does cannot: this program will fail
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -304,7 +304,7 @@ int main()
 
 We need first to convert the char array to a std::string then we can add the other
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -354,7 +354,7 @@ Examples:
 | stoi | string to int    |
 | stod | string to double |
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -393,7 +393,7 @@ std::stod("3.14159") is 3.14159
 - Very easy: just use == like any basic type
 - We can use any typical comparison operation: >, <, >=, <=, ==, != 
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both
 #include <iostream>
 #include <string>
 
@@ -447,7 +447,7 @@ Daffy Duck!
 
 Note how the empty line is read
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both :cmdline < dmg.txt
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both :cmdline < dmg.txt
 #include <iostream>
 #include <string>
 
@@ -476,7 +476,7 @@ Line: Daffy Duck!
 - note how it skips whitespace before reading the token
   - we don't read the empty line
 
-#+BEGIN_SRC C++ :main no :results output :flags -std=c++14 -Wall --pedantic :exports both :cmdline < dmg.txt
+#+BEGIN_SRC C++ :main no :results output :flags -std=c++17 -Wall --pedantic :exports both :cmdline < dmg.txt
 #include <iostream>
 #include <string>
 

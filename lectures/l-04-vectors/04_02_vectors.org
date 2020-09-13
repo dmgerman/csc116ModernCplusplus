@@ -7,7 +7,7 @@
 #+CATEGORY: 
 #+PROPERTY: header-args: lang           :varname value
 #+PROPERTY: header-args:sqlite          :db /path/to/db  :colnames yes
-#+PROPERTY: header-args:C++             :results output :flags -std=c++14 -Wall --pedantic -Werror
+#+PROPERTY: header-args:C++             :results output :flags -std=c++17 -Wall --pedantic -Werror
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 * Warning
@@ -39,7 +39,7 @@ void print_vector(std::string prefix, const std::vector<T> &vec)
 
 * Vectors can be compared and assigned
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -84,7 +84,7 @@ But  vectors intVec1 and intVec2 are different now
 - They grow as one inserts elements
 - or then can be shrink with resize(n) or clear()
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // comparing size, length, capacity and max_size
 #include <iostream>
 #include <vector>
@@ -137,7 +137,7 @@ size: 0 capacity: 10 max_size: 4611686018427387903
 - adding elements is expensive
 - hence it is good idea to pre-allocate (reserve) a size
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // comparing size, length, capacity and max_size
 #include <iostream>
 #include <vector>
@@ -180,7 +180,7 @@ size: 5 capacity: 100 max_size: 4611686018427387903
 
 - A more general mechanism to access the elements of a container (std::vector, std::string, std::set, etc.).
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -219,7 +219,7 @@ int main()
 - But we can avoid those pointers are much as possible
 - By turning them into references
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -248,7 +248,7 @@ int main()
 
 * Use iterators to traverse parts of the vector
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -277,7 +277,7 @@ int main()
 Note that, even though the container is traversed backwards, the iterator ~it~ is
 increments (not decremented):
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 int main()
@@ -306,7 +306,7 @@ int main()
 
 - use method erase()
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <vector>
 #include "/tmp/mycode.hpp"
@@ -339,7 +339,7 @@ After erase to end:  size: 1 values: [10 ]
 
 * They also work for strings, because strings are collections
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
 int main()
@@ -409,7 +409,7 @@ Reversed: size: 4 values: [Xin Peter Pedro Daniel ]
 
 - but you can use a "modern" for-loop on a C-array
 
-#+BEGIN_SRC C++ :main no :flags -std=c++14 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 int main()
 {
