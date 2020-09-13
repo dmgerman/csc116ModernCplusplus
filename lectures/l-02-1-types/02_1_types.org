@@ -12,15 +12,18 @@
 
 ** Table of Contents                                                    :TOC:
 - [[#data-types][Data types]]
+- [[#for-more-information][For more information]]
 - [[#fundamental-types-same-as-in-c][Fundamental types: same as in C]]
      - [[#but-i-am-too-lazy][But I am too lazy...]]
      - [[#but-i-am-really-really-lazy][But I am really, really lazy]]
      - [[#unsigned-modifier][Unsigned modifier]]
-     - [[#long-modifier][Long modifier]]
+     - [[#size-modifier][size modifier]]
      - [[#and-you-can-apply-them-both-size-and-sign-modifiers][and you can apply them both: size and sign modifiers:]]
-     - [[#16-bits][16 bits]]
+-  [[#compilerarchitecture-dependencies][Compiler/architecture dependencies]]
+- [[#wide-chars][Wide chars]]
+- [[#16-bits][16 bits]]
 - [[#narrowing-conversions][Narrowing conversions]]
-- [[#do-i-care-about-all-of-this-for-the-exam][Do I care about all of this for the exam?]]
+- [[#do-i-care-about-all-of-this-for-the-examquizzes][Do I care about all of this for the exam/quizzes?]]
 - [[#type-conversions][Type conversions]]
      - [[#forcing-the-type-of-a-constant][Forcing the type of a constant]]
      - [[#corollary][Corollary:]]
@@ -30,6 +33,10 @@
 - Fundamental
 - Compound
 - Standard library (objects)
+
+* For more information
+
+https://en.cppreference.com/w/cpp/language/types
 
 * Fundamental types: same as in C
 
@@ -94,13 +101,16 @@ a
 a
 #+end_example
 
-Finding the limit: std::numeric_limits<type>
+This is a very simple way to find out the specifics of a given data type:
 
 - max()
 - min()
 - is_signed
 - digits
 - has infinity
+
+Note that the type is between *<>* (e.g. <int>)
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
@@ -129,7 +139,15 @@ Type has infinity: true
 
 ** But I am too lazy...
 
-so I use decltype to avoid typing the name of the type over and over again.
+I don't want to have to type the name of the type, over and over again.
+Let us make the code a bit more generic:
+
+- instead of the data type, we will use the /type of the variable/.
+  
+#+begin_src C++
+decltype(myVar) /// retrives the type of a given variable
+#+end_src
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
@@ -170,6 +188,7 @@ So let us do it with a function and some preprocessor magic, which you can ignor
 template <typename T>
 void print_type_info_and_name(T myVar, std::string name) 
 {
+  // first parameter is the type, and the second a string to print
   std::cout << std::boolalpha;
 
   std::cout << "Details for variable " << name << std::endl;
@@ -208,7 +227,7 @@ Details for variable myBoolean
    Type is signed: false. Non-sign bits for type: 1
    Type has infinity: false
 Details for variable myChar
-   Min and max value for type: ,
+   Min and max value for type: 
    Type is signed: true. Non-sign bits for type: 7
    Type has infinity: false
 Details for variable myInt
@@ -226,6 +245,9 @@ Details for variable myDouble
 #+end_example
 
 ** Unsigned modifier
+
+the integral types (int and char) can be unsigned
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
@@ -250,12 +272,13 @@ void print_type_info_and_name(T myVar, std::string name)
 
 int main () 
 {
-  char myChar {0};
-  signed char mySignedChar {0};
+  char          myChar {0};
+  signed char   mySignedChar {0};
   unsigned char myUnsignedChar {0};
-  int myInt {0};
-  signed mySignedInt {0};
-  unsigned myUnsignedInt {0};
+
+  int        myInt {0};
+  signed int mySignedInt {0};
+  unsigned   myUnsignedInt {0};
 
   print_type_info(myChar);
   print_type_info(mySignedChar);
@@ -270,18 +293,6 @@ int main ()
 
 #+RESULTS:
 #+begin_example
-Details for variable myChar
-   Min and max value for type: ,
-   Type is signed: true. Non-sign bits for type: 7
-   Type has infinity: false
-Details for variable mySignedChar
-   Min and max value for type: ,
-   Type is signed: true. Non-sign bits for type: 7
-   Type has infinity: false
-Details for variable myUnsignedChar
-   Min and max value for type: ,
-   Type is signed: false. Non-sign bits for type: 8
-   Type has infinity: false
 Details for variable myInt
    Min and max value for type: -2147483648,2147483647
    Type is signed: true. Non-sign bits for type: 31
@@ -296,7 +307,7 @@ Details for variable myUnsignedInt
    Type has infinity: false
 #+end_example
 
-But signed is not valid for real numbers: float, double
+But signed is not valid for real numbers: float, double, nor boolean
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
@@ -320,7 +331,7 @@ void print_type_info_and_name(T myVar, std::string name)
 
 int main () 
 {
-  int myFloat {0};
+  float myFloat {0};
   signed float mySignedFloat {0};
   unsigned float myUnsignedFloat {0}; // does not work
 
@@ -336,11 +347,13 @@ int main ()
 
 #+RESULTS:
 
-** Long modifier
+** size modifier
+
+The int and double type has several variants:
 
 - short int
 - long int, long double
-- long long ing
+- long long int, long long double
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
@@ -370,11 +383,15 @@ int main ()
   long int myLong {0};
   long long int myLongLong {0};
 
+  double myDouble {0};
+  long double myLongDouble {0};
 
   print_type_info(myVar);
   print_type_info(myShort);
   print_type_info(myLong);
   print_type_info(myLongLong);
+  print_type_info(myDouble);
+  print_type_info(myLongDouble);
 
   return 0;
 }
@@ -398,6 +415,14 @@ Details for variable myLongLong
    Min and max value for type: -9223372036854775808,9223372036854775807
    Type is signed: true. Non-sign bits in type: 63
    Type has infinity: false
+Details for variable myDouble
+   Min and max value for type: 2.22507e-308,1.79769e+308
+   Type is signed: true. Non-sign bits in type: 53
+   Type has infinity: true
+Details for variable myLongDouble
+   Min and max value for type: 3.3621e-4932,1.18973e+4932
+   Type is signed: true. Non-sign bits in type: 64
+   Type has infinity: true
 #+end_example
 
 ** and you can apply them both: size and sign modifiers:
@@ -453,11 +478,56 @@ Details for variable myLongLong
    Type has infinity: false
 #+end_example
 
-** 16 bits
+*  Compiler/architecture dependencies
+
+the standard says that:
+
+- char can be signed or unsigned (compiler/architecture dependent)
+  - arm: char is unsigned
+  - x86, x64: char is signed
+
+- the minimum sizes of integral types are compiler/architecture dependent:
+
+
+| Type          | Minimum size  |
+|---------------+---------------|
+| short         |   16          |
+| int           |   16          |
+| long int      |   32          |
+| long long int |   64          |
+
+
+* Wide chars
+
+- When using languages that have more than 256 characters, it is necessary to use wide characters:
+
+- We will not use wide characters in this term
+
+#+begin_src C++ :main no
+#include <iostream>
+int main(void)
+{
+   wchar_t  c {L'学'}; 
+   
+   std::cout << c << std::endl;
+
+   return 0;
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+23398
+#+end_example
+  
+  #+end_src
+
+* 16 bits
 
 - Char is guaranteed to be 8 bits
 - But short int is not
 - so we use char16_t
+  - note it is an unsigned type
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
@@ -481,7 +551,7 @@ void print_type_info_and_name(T myVar, std::string name)
 
 int main () 
 {
-  char16_t c16{0};
+  char16_t c16{0}; 
 
   print_type_info(c16);
 
@@ -500,16 +570,20 @@ Details for variable c16
 
 * Narrowing conversions
 
+- A narrowing conversion is one in which a value does not *fit* in destination variable
+- A major source of errors
+- they can be avoided using the {} initializer
+
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both :exports both
 #include <iostream>
 int main()
 {
-   int anInt {5};
-   short aShort {2000};
-   long aLong {20000000};
-   long long aLongLong {200000000000};
-   float aFloat {1000.3};
-   double aDouble {124.3};
+   int anInt {50000}; // ok, but 500000000000 would generate an error
+   short aShort {10000}; // ok, but 100000
+   unsigned long aLong {500000000000}; // ok, but -1 would generate an error
+   long long aLongLong {2000000000000000000};
+   float aFloat {1e10};  // 10e100 would generate an error
+   double aDouble {1e7000}; // see the result below..
 
 
    std::cout << anInt << std::endl;
@@ -525,15 +599,15 @@ int main()
 
 #+RESULTS:
 #+begin_example
-5
-2000
-20000000
-200000000000
-1000.3
-124.3
+50000
+10000
+500000000000
+2000000000000000000
+1e+10
+inf
 #+end_example
 
-* Do I care about all of this for the exam?
+* Do I care about all of this for the exam/quizzes?
 
 - Only that you know that these types exist, and 
 - the fundamental difference between signed, and unsigned.
@@ -543,7 +617,7 @@ int main()
 
 Be careful, very careful: 
 
-Between primitive types, conversions can lose/change information.
+Between primitive types, conversions be narrowing (lose/change information).
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -555,20 +629,12 @@ int main()
    short int si {};
 
    std::cout << "i: " << i << "   d: " << d << "   ui: " << ui << "   si: " << si << std::endl;
-   i = 10;
-   d = i;
-   ui = i;
-   si = i;
+
+   i = 10;    d = i;    ui = i;    si = i;
    std::cout << "i: " << i << "   d: " << d << "   ui: " << ui << "   si: " << si << std::endl;
-   i = -10000001;
-   d = i;
-   ui = i;
-   si = i;
+   i = -10000001;    d = i;     ui = i;    si = i;
    std::cout << "i: " << i << "   d: " << d << "   ui: " << ui << "   si: " << si << std::endl;
-   d = -3.141492654;
-   i = d;
-   ui = d;
-   si = d;
+   d = -3.141492654;    i = d;    ui = d;    si = d;
    std::cout << "i: " << i << "   d: " << d << "   ui: " << ui << "   si: " << si << std::endl;
 
   return 0;
@@ -607,7 +673,7 @@ int main()
 4294967244
 #+end_example
 
-Use the compiler, Luke! Pass the options to the compiler:
+Use the compiler, Luke! Pass the options to the compiler. Neither program below will compile
 
 #+BEGIN_SRC sh
 g++ -std=c++17 -Wall --pedantic -Wextra -Wsign-conversion -Wfloat-conversion -Werror -o file file.cpp
@@ -646,7 +712,7 @@ int main()
 
 #+RESULTS:
 
-What about strings? what are the composed of?
+What about strings? what are the composed of? *char*
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
