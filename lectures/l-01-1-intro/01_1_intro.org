@@ -10,10 +10,10 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 #+PROPERTY: header-args:C++             :results output  :flags -std=c++14 -Wall --pedantic -Werror
 
-** Table of contents                                                    :TOC:
+* Table of contents                                                     :TOC:
 - [[#what-is-c][What is c++]]
-  - [[#the-c-we-are-going-to-learn][The C++ we are going to learn]]
-  - [[#simpler-constructs-than-c][Simpler constructs than C]]
+- [[#the-c-we-are-going-to-learn][The C++ we are going to learn]]
+- [[#simpler-constructs-than-c][Simpler constructs than C]]
 - [[#learning-a-language][Learning a language]]
 - [[#c-example][C++ Example:]]
 - [[#simplest-program][Simplest program]]
@@ -21,14 +21,14 @@
 - [[#readwrite-fromto-standard-inputoutput][Read/write from/to standard input/output]]
 - [[#type-safety][Type safety]]
 - [[#vectors-not-arrays][Vectors not Arrays]]
-  - [[#they-are-safer-to-use][They are safer to use]]
-  - [[#use-at][Use .at()]]
-  - [[#why-hardcode-the-length][Why hardcode the length?]]
+     - [[#they-are-safer-to-use][They are safer to use]]
+     - [[#use-at][Use .at()]]
+     - [[#why-hardcode-the-length][Why hardcode the length?]]
 - [[#nah-these-for-loops-are-obsolete-use-an-iterator][Nah, these "for" loops are obsolete, use an iterator]]
 - [[#but-they-also-make-for-very-generic-code][But they also make for very generic code]]
 - [[#c-has-a-large-set-of-algorithms][C++ has a large set of "algorithms"]]
-  - [[#algorithms-are-generic][Algorithms are generic]]
-  - [[#we-can-also-accumulate-strings][We can also accumulate strings:]]
+     - [[#algorithms-are-generic][Algorithms are generic]]
+     - [[#we-can-also-accumulate-strings][We can also accumulate strings:]]
 - [[#but-wait-there-is-more-we-can-create-our-own-generic-algorithms][But wait, there is more: we can create our own generic algorithms]]
 - [[#conclusion][Conclusion]]
 
@@ -43,14 +43,14 @@
 - Generic programming
 - Much, much better than C
 
-** The C++ we are going to learn
+* The C++ we are going to learn
 
 - Modern C++
-- also known as C++ 14 
+- also known as C++ 17 
 - Do not waste your time learning older C++
 
 
-** Simpler constructs than C
+* Simpler constructs than C
 
 | std::vector<type>  |
 | std::string        |
@@ -162,14 +162,16 @@ daniel
 
 int main()
 {
-    std::string name;
-    int times;
+    int i;
+    std::string name {""};
+    int times {0};
     std::getline(std::cin, name); // read entire line, stripping end of line
     std::cin >> times;  // read next number
                         // skipping whitespace... 
  
     for(unsigned int i=0;i<times;i++) {
-       std::cout << "Hello " << name << " " << times << " times " << std::endl;
+       std::cout << "Hello " << name << " " << 
+             times << " times " << std::endl;
     }
 
     return 0;
@@ -434,6 +436,10 @@ The sum is 12345
 int main()
 {
     std::vector<int> numbers {1, 2, 3, 4, 5, 6};
+    int sum {0};
+    for (auto v : numbers) {
+         sum+=v;
+    }
 
     // add the values from first to last, with initial value of 0
     auto sum = std::accumulate(numbers.begin(), numbers.end(), 0);
