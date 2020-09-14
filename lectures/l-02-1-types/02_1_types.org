@@ -73,7 +73,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
-A
+e
 200
 5
 1000.3
@@ -295,6 +295,18 @@ int main ()
 
 #+RESULTS:
 #+begin_example
+Details for variable myChar
+   Min and max value for type: 
+   Type is signed: true. Non-sign bits for type: 7
+   Type has infinity: false
+Details for variable mySignedChar
+   Min and max value for type: 
+   Type is signed: true. Non-sign bits for type: 7
+   Type has infinity: false
+Details for variable myUnsignedChar
+   Min and max value for type: 
+   Type is signed: false. Non-sign bits for type: 8
+   Type has infinity: false
 Details for variable myInt
    Min and max value for type: -2147483648,2147483647
    Type is signed: true. Non-sign bits for type: 31
@@ -505,7 +517,7 @@ the standard says that:
 
 - We will not use wide characters in this term
 
-#+begin_src C++ :main no
+#+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>
 int main(void)
 {
@@ -781,5 +793,5 @@ int main()
 ** Corollary:
 
 - Never mix signed and unsigned types
-- Make sure your variable can handle the maximum values you plan to use
+- Make sure your variable can handle the range of values you plan to use
 
