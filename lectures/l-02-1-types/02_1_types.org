@@ -111,6 +111,8 @@ This is a very simple way to find out the specifics of a given data type:
 
 Note that the type is between *<>* (e.g. <int>)
 
+See  http://www.cplusplus.com/reference/limits/numeric_limits/
+
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 :results output :exports both
 #include <iostream>     // std::cout
