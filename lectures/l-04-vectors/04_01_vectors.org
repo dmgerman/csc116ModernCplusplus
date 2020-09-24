@@ -217,7 +217,7 @@ int main()
     std::vector <            // I want a vector 
         std::vector<double>  // each element of the vector is a vector
         > variableName       // name of the vector
-        (5, // how many elements in the frist dimension
+        (5, // how many elements in the first dimension
          std::vector<double>(2) // Each row in the vector
             );
    std::cout  << "Size first dimension : " << variableName.size() << std::endl;
@@ -279,8 +279,8 @@ default [at 0,1] default
 #include <vector>
 
 using Matrix = std::vector<
-       std::vector<std::string>
-     > ;
+                  std::vector<std::string>
+               > ;
 
 void print_matrix(const Matrix vec) {
    std::cout << "Number Rows: " << vec.size() << std::endl;

@@ -12,27 +12,27 @@
 
 ** Table of Contents                                                    :TOC:
 - [[#new-concept-functions-as-first-class-citizens][New concept: functions as first class citizens]]
-  - [[#first-some-new-syntax][First some new syntax]]
-  - [[#but-do-we-need-to-parameterize-j][But, do we need to parameterize j?]]
-  - [[#use-auto-except-when-you-need-recursion][use auto (except when you need recursion)]]
-  - [[#what-does-this-output][What does this output?]]
+     - [[#first-some-new-syntax][First some new syntax]]
+     - [[#but-do-we-need-to-parameterize-j][But, do we need to parameterize j?]]
+     - [[#use-auto-except-when-you-need-recursion][use auto (except when you need recursion)]]
+     - [[#what-does-this-output][What does this output?]]
 - [[#scope-again][Scope again]]
 - [[#references][References]]
 - [[#also-true-for-traversing-collections-for-auto][Also true for traversing collections (for auto)]]
-  - [[#another-example][Another example]]
+     - [[#another-example][Another example]]
 - [[#we-can-also-declare-variables-that-are-references-to-variables][We can also declare variables that are references to variables]]
 - [[#const][Const]]
 - [[#const-global-variables][const global variables]]
-  - [[#in-parameters-to-functions][In parameters to functions]]
-  - [[#extends-to-references][Extends to references]]
-  - [[#so-why-then-use-references-for-const-parameters][So why then use references for const parameters?]]
+     - [[#in-parameters-to-functions][In parameters to functions]]
+     - [[#extends-to-references][Extends to references]]
+     - [[#so-why-then-use-references-for-const-parameters][So why then use references for const parameters?]]
 
 * New concept: functions as first class citizens
 
-- In old C++ functions could not be written inside functions
+- In C and old C++ functions could not be written inside functions
 - Defeats the purpose of scoping
 
-#+BEGIN_SRC C++ :results verbatim :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 
 // we need to pass all parameters
@@ -63,13 +63,13 @@ int main()
 
 ** First some new syntax
 
-#+BEGIN_SRC C++ :results verbatim :export both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 
 // we need to pass all parameters
 //void my_function(int i, int j)
-std::function<void(int,int)> my_function = [&](int i, int j) {
+std::function<void(int,int)> my_function = [](int i, int j) {
    std::cout << i << " " << j << std::endl;
 };
 
@@ -89,17 +89,13 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
--5 1
-100 1
-#+end_example
 
 ** But, do we need to parameterize j?
 
 No, if we make j be part of the environment of my_function
 
 
-#+BEGIN_SRC C++ :results verbatim :export both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 
@@ -110,10 +106,11 @@ int main()
    int i {-5};
    int j {1};
    int k {100};
-
+   // note the [&], it tells the compiler that j is going to be 
+   // used by "reference"
+   // only use it when you are referencing variables outside its environment
    std::function<void(int)> my_function = [&](int n) {
       std::cout << n << " " << j << std::endl;
-      my_function(3);
    };
 
    my_function(i);
@@ -132,7 +129,7 @@ int main()
 
 ** use auto (except when you need recursion) 
 
-#+BEGIN_SRC C++ :export both :results verbatim
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 
@@ -167,13 +164,14 @@ int main()
 
 - apply the same scoping rules as before
 
-#+BEGIN_SRC C++ :exports both :results verbatim 
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <functional>
 int i {0};
 
-auto execute = [&](std::function<void()> action) {
+auto execute = [](std::function<void()> action) {
    int i {5};
+   i++;
    action();
 };
 int main()
@@ -187,6 +185,10 @@ int main()
    auto after = [&]() {
        std::cout << "In after: " << i << std::endl;
    };
+
+   auto before2 = before; // we can assign functions to other functions
+   before();
+   before2();
    
    execute(before);
    execute(after);
@@ -197,6 +199,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
+In before: 0
+In before: 0
 In before: 0
 In after: -1
 #+end_example
@@ -387,12 +391,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Value 6
-Value 6
-Value 6
-Value 16
-#+end_example
 
 
 * We can also declare variables that are references to variables

@@ -93,8 +93,8 @@ But  vectors intVec1 and intVec2 are different now
 void print_size(std::vector<int> &vec)
 {
   std::cout << "size: " << vec.size() << " ";
-  std::cout << "capacity: " << vec.capacity() << " ";
-  std::cout << "max_size: " << vec.max_size() << "\n";
+  std::cout << "  capacity: " << vec.capacity() << " ";
+  std::cout << "  max_size: " << vec.max_size() << "\n";
   
 }
 
@@ -103,6 +103,10 @@ int main ()
   std::vector<int> numbers {1, 2, 3, 4, 5,6,7,8,9,10};
 
   print_vector("\nBefore: ",numbers);
+  print_size(numbers);
+  numbers.push_back(1);
+  print_vector("\nAfter pushback: ",numbers);
+
   print_size(numbers);
 
   numbers.resize(3);
@@ -122,13 +126,16 @@ int main ()
 #+RESULTS:
 #+begin_example
 Before:  size: 10 values: [1 2 3 4 5 6 7 8 9 10 ]
-size: 10 capacity: 10 max_size: 4611686018427387903
+size: 10   capacity: 10   max_size: 2305843009213693951
+
+After pushback:  size: 11 values: [1 2 3 4 5 6 7 8 9 10 1 ]
+size: 11   capacity: 20   max_size: 2305843009213693951
 
 After resize:  size: 3 values: [1 2 3 ]
-size: 3 capacity: 10 max_size: 4611686018427387903
+size: 3   capacity: 20   max_size: 2305843009213693951
 
 After clear:  size: 0 values: []
-size: 0 capacity: 10 max_size: 4611686018427387903
+size: 0   capacity: 20   max_size: 2305843009213693951
 #+end_example
 
 
@@ -188,7 +195,7 @@ int main()
    std::vector<int> numbers { 1, 2, 3, 4, 5};
 
    for(auto &elem: numbers) {
-       std::cout << elem << " ";
+      std::cout << elem << " ";
    }
    std::cout << std::endl;
    
@@ -196,10 +203,29 @@ int main()
       std::cout << *it << " ";
    }
    std::cout << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+1 2 3 4 5 
+1 2 3 4 5
+#+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <vector>
+int main()
+{
+   std::vector<int> numbers { 1, 2, 3, 4, 5};
+
    // easier to use auto
    for(auto it = numbers.begin(); it< numbers.end(); it++) {
       std::cout << *it << " ";
-   }
+   } 
    std::cout << std::endl;
    return 0;
 }
@@ -209,8 +235,7 @@ int main()
 #+RESULTS:
 #+begin_example
 1 2 3 4 5 
-1 2 3 4 5 
-1 2 3 4 5
+5 4 3 2 1
 #+end_example
 
 * The iterators are pointers!
@@ -230,8 +255,6 @@ int main()
    for(auto it = numbers.begin(); it< numbers.end(); it++) {
       // turn the iterator into a reference
       auto &el  = *it;
-
-
       std::cout << el << " ";
    }
    std::cout << std::endl;
@@ -242,7 +265,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
-1 2 3 4 5
+1 2 3 4 5 
+5 4 3 2 1
 #+end_example
 
 
@@ -256,6 +280,7 @@ int main()
    std::vector<int> numbers { 1, 2, 3, 4, 5};
 
    // iteratores are useful to traverse portions of the the vector 
+   // by adding N you start at the N-th element (similar to at(N)
    for(auto it = numbers.begin()+1; it< numbers.end()-1; it++) {
       // turn the iterator into a reference
       auto &el  = *it;
@@ -312,7 +337,7 @@ int main()
 #include "/tmp/mycode.hpp"
 int main()
 {
-   std::vector<int> numbers { 10, 11, 12, 13, 14, 15};
+   std::vector<int> numbers { 1, 2, 3, 4, 5, 6};
 
    print_vector("Before: ", numbers);
 
@@ -331,9 +356,9 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Before:  size: 6 values: [10 11 12 13 14 15 ]
-After erase +2:  size: 5 values: [10 11 13 14 15 ]
-After erase to end:  size: 1 values: [10 ]
+Before:  size: 6 values: [1 2 3 4 5 6 ]
+After erase +2:  size: 5 values: [1 2 4 5 6 ]
+After erase to end:  size: 1 values: [1 ]
 #+end_example
 
 

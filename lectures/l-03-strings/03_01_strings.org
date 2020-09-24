@@ -128,8 +128,7 @@ std::string emptyString2 {};
 ** Tutorial
  https://www.tutorialspoint.com/cplusplus/cpp_strings.htm
 
-* some functions
-
+- some functions
 - .size() returns the length of the string
 - .empty() returns true is if the string is ""
 
@@ -254,8 +253,9 @@ int main()
 {
     std::string filename {"abc-"};
     // append a string to the end
-    filename += "ijk.";
-    std::string test = filename + 'a';
+    filename += "ijk.";  // concatenate array of char to a string
+
+     std::string test = filename + 'a'; // concatenate a char to a string
     std::cout << "1. " << filename << std::endl;
     // we can also append characters!
     filename += 'z';
@@ -312,7 +312,10 @@ int main()
 {
     std::string greeting {};
     // typecase the char array to a std::string
-    greeting = std::string("Your name is ") + "bob"; 
+    //greeting = std::string("Your name is ") + "bob"; 
+    greeting = "bob" + std::string("Your name is ") ;
+    // int(c) => integer          (int)c
+    // std::string(something) => std::string  (std::string)"abc" (error)
     std::cout << greeting << std::endl;
     return 0;
 }
@@ -320,9 +323,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-Your name is bob
-#+end_example
 
 * Other string operations
 
@@ -454,7 +454,7 @@ Note how the empty line is read
 int main()
 {
     std::string name {};
-    while (getline(std::cin, name)) {
+    while (std::getline(std::cin, name)) {
        std::cout << "Line: " << name << std::endl;
     }
     

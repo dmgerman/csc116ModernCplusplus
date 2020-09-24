@@ -12,13 +12,15 @@
 
 ** Table of Contents                                                    :TOC:
 - [[#declaring-variables-is-just-like-in-c][Declaring variables is just like in C]]
+- [[#scope][Scope]]
 - [[#scope-can-be-a-pain][Scope can be a pain]]
 - [[#what-is-an-environment][What is an environment?]]
 - [[#at-run-time][At run time]]
 - [[#how-does-the-compiler-find-a-variable][How does the compiler find a variable?]]
-  - [[#the-for-loop--creates-their-own-environment][The for loop  creates their own environment]]
-  - [[#a-function-invocation-creates-its-own-environment][A function invocation creates its own environment]]
+     - [[#the-for-loop--creates-its-own-environment][The for loop  creates its own environment]]
+     - [[#a-function-invocation-creates-its-own-environment][A function invocation creates its own environment]]
 - [[#functional-calls-environments-and-recursion][Functional calls, environments and recursion]]
+- [[#conclusion][Conclusion]]
 
 * Declaring variables is just like in C
 
@@ -47,6 +49,12 @@ int main()
 5
 #+end_example
 
+* Scope
+
+The scope of a variable is the area of the program where that variable exists.
+
+- at compilation time, and
+- at run time
 
 
 * Scope can be a pain
@@ -65,31 +73,35 @@ int main()
   - where global variables live
 
 - a block {} defines an environment
-  - within the current environment
+  - inside the current environment
 
 * At run time
 
 - a given environment is created when its block starts to execute
-- it is destroyed when the block ends
+- it is destroyed when the execution of the block ends
 
 * How does the compiler find a variable?
 
 - the compiler looks up a variable:
-  - in the current environment
-  - if not found, in its parent environment
-  - if not found, in its parent environment
-  - until it reaches the global environment
+     - in the current environment
+     - if not found, in its parent environment
+     - if not found, in its parent environment
+     - until it reaches the global environment
 - if not found, output error (variable not found)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
+int i {-1}; // global environment
+
 int main()
 {
-   int i {10};
+   std::cout << "0. " << i << std::endl;
 
-   std::cout << "1. " << i << std::endl;
+   int i {10}; // "shadows" the global i
+
+   std::cout << "1. " << i << std::endl; 
    
-   {
+   {  // this block creates a new environment
       std::cout << "2. " << i << std::endl;
       int i {5};
       std::cout << "3. " << i << std::endl;
@@ -105,6 +117,7 @@ int main()
 
 #+RESULTS:
 #+begin_example
+0. -1
 1. 10
 2. 10
 3. 5
@@ -120,33 +133,34 @@ int main()
    int i {10};
 
    {
-      int i {5};
+      int i {5}; // this is ok, we are in a different environment than i above
       std::cout << i << std::endl;
       i = 0;
    }
 
-   double i {0.1}; // this declaration is an error
+   double i {0.1}; // this declaration is an error, already an i in this environment
 
    return 0;
 }
 
 #+END_SRC
 
+#+RESULTS:
+
 #+BEGIN_EXAMPLE
-/tmp/babel-3872Bka/C-src-3872Yfl.cpp: In function ‘int main()’:
-/tmp/babel-3872Bka/C-src-3872Yfl.cpp:19:11: error: conflicting declaration ‘double i’
-    double i {0.1};
-           ^
-/tmp/babel-3872Bka/C-src-3872Yfl.cpp:11:8: note: previous declaration as ‘int i’
-    int i {10};
-        ^
+/tmp/babel-9A7CML/C-src-JA1uai.cpp:19:11: error: redefinition of 'i' with a different type: 'double' vs 'int'
+   double i {0.1}; // this declaration is an error
+          ^
+/tmp/babel-9A7CML/C-src-JA1uai.cpp:11:8: note: previous definition is here
+   int i {10};
+       ^
+1 error generated.
 #+END_EXAMPLE
 
 
-** The for loop  creates their own environment 
+** The for loop  creates its own environment 
 
-- even if they have no braces 
-
+- for variables declared in between ()
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -180,8 +194,9 @@ int main()
 
 ** A function invocation creates its own environment
 
-- Invocation!
+- Invocation! 
 - I repeat: each invocation of a function creates an environment
+  - this environment includes the parameters and their corresponding values
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -216,6 +231,7 @@ int main()
 
 - see what happens with recursion
 - each execution of my_function creates a different environment
+  - each execution has its own space for parameters, local variables, and any other environment
   
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -265,3 +281,9 @@ After: -4
 -5
 #+end_example
 
+* Conclusion
+
+- It is very important that you understand scope
+  - *Where can a variable be used*
+  - What is the lifetime of a variable
+  - 
