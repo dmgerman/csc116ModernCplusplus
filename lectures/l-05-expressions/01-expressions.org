@@ -260,10 +260,3 @@ int main()
    }
 
    return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-it is t
