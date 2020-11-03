@@ -113,9 +113,10 @@ public:
    Sales_Data(const std::string &s)
        {bookNo = s; };
 */
+/*
    Sales_Data(const std::string &s, int n, double p): 
                  bookNo(s), units_sold(n), revenue(p*n) {};
-
+*/
    std::string isbn()  { return bookNo; };
    double getRevenue() { return revenue; };
    void print(std::string m) { std::cout << m << isbn() << "->" << getRevenue() << std::endl;};
@@ -134,11 +135,6 @@ int main()
 #+END_SRC
 
 #+RESULTS:
-#+begin_example
-book0 ->0
-book1 ab123->0
-book2 ab123->30.75
-#+end_example
 
 
 ** default constructor
@@ -454,7 +450,7 @@ public:
    simple_class() = default;
 //  simple_class() {};
    simple_class(int i): value(i) {};
-   simple_class &add(int p) { 
+   simple_class add(int p) { 
      value += p;
      return *this;
    }
@@ -470,8 +466,8 @@ int main(void)
 
    simple_class c(3);
    int temp = c.add(5).add(1).add(5).getValue();
-   std::cout << "c " << temp << std::endl;
-
+   std::cout << "temp " << temp << std::endl;
+   std::cout << "c "    << c.getValue() << std::endl;
    return 0;
 
 }
@@ -480,6 +476,7 @@ int main(void)
 #+RESULTS:
 #+begin_example
 b 5
+temp 14
 c 14
 #+end_example
 

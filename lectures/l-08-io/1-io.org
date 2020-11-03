@@ -22,7 +22,7 @@
 
 * Input/output classes
 
-[[./iostream.gif]]
+s[[./iostream.gif]]
 
 
 
@@ -39,12 +39,14 @@
 
 - Subclasses derive many of their characteristics from their ancestor classes
 
-| subclasses    | base class | purpose             |
-|---------------+------------+---------------------|
-| ifstream      | istream    | input from a file   |
-| istringstream | istream    | input from a string |
-| ofstream      | ostream    | output to a file    |
-| ostringstream | ostream    | output to a string  |
+| subclasses    | base class                      | purpose                      |
+|---------------+---------------------------------+------------------------------|
+| ifstream      | istream                         | input from a file            |
+| istringstream | istream                         | input from a string          |
+| ofstream      | ostream                         | output to a file             |
+| ostringstream | ostream                         | output to a string           |
+| fstream       | ifstream and ofstream           | input and output to a file   |
+| stringstream  | istringstream and ostringstream | input and output to a string |
 
 
 * No copy or assignment for IO objects
@@ -92,6 +94,7 @@ int main(int argc, char* argv[])
 #+begin_example
 options(repos=structure(c(CRAN="http://cran.stat.sfu.ca")))
 options(width=160)
+options(digits=2)
 #+end_example
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
@@ -125,24 +128,25 @@ options(width=160)
 - The stream destructor closes the file
 - It can be explicitly closed with .close()
 
-
 * formatted output: Manipulators
 
 - We have been using << for a while
 - we can modify its behaviour
 - Use <iomanip>
 
-** std::setw
+* std::setw
 
 - set width of output, aligned to the right
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <iomanip>  
+#include <cmath>
 int main()
 {
    std::cout<<"Example: [" << std::setw(10)<< 77 << "]" << std::endl;
    std::cout<<"Example: [" << std::setw(10)<< "abc" << "]" << std::endl;
+   std::cout<<"Example: [" << std::setw(10)<< M_PI << "]" << std::endl;
    return 0;
 }
 
@@ -152,9 +156,10 @@ int main()
 #+begin_example
 Example: [        77]
 Example: [       abc]
+Example: [   3.14159]
 #+end_example
 
-** left/right justified
+* left/right justified
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // modify adjustfield using manipulators
@@ -163,24 +168,32 @@ Example: [       abc]
 
 int main () {
    int n = -77;
+   std::cout <<  n << "|" << std::endl;
+
    std::cout << std::setw(6); 
    std::cout << std::left << n << "|" << std::endl;
+
    std::cout <<  n << "|" << std::endl;
 
    std::cout << std::setw(6); 
    std::cout << std::right << n << "|" << std::endl;
+   std::cout <<  n << "|" << std::endl;
+
    return 0;
+
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
+-77|
 -77   |
 -77|
    -77|
+-77|
 #+end_example
 
-** setfill
+* setfill
 
 Fill with a character rather than space
 
@@ -203,9 +216,11 @@ Example: [________77]
 #+end_example
 
 
-** std::setbase
+* std::setbase
 
 - Output numbers in different bases:
+- only 10,16, and 8 supported
+  - any  other translates to decimal
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -229,7 +244,7 @@ octal:       [401]
 #+end_example
 
 
-** showbase, noshowbase
+* showbase, noshowbase
 
  In C++ we print hex numbers with prefix 0x and octal with 0
 
@@ -259,7 +274,7 @@ Octal: 024
 24
 #+end_example
 
-** boolalpha/nobooalpha
+* boolalpha/nobooalpha
 
 Print boolean values with true/false
 
@@ -283,7 +298,7 @@ true false
 1 0
 #+end_example
 
-** setprecision
+* setprecision
 
 number of digits of precission 
 
@@ -300,6 +315,8 @@ int main () {
   std::cout << a <<  " "  << b << " " << c << std::endl;
   std::cout << std::setprecision(3);
   std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << std::setprecision(20);
+  std::cout << a <<  " "  << b << " " << c << std::endl;
   return 0;
 }
 #+END_SRC
@@ -308,9 +325,10 @@ int main () {
 #+begin_example
 3.14159 2006 1e-10
 3.14 2.01e+03 1e-10
+3.141592653589793116 2006 1.0000000000000000364e-10
 #+end_example
 
-** fixed/scientific
+* fixed/scientific
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // setprecision example
@@ -342,7 +360,7 @@ int main () {
 #+end_example
 
 
-** force period
+* force period
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 // modify showpoint flag
@@ -367,7 +385,7 @@ int main () {
 #+end_example
 
 
-** locale
+* locale
 
 this example is for demonstration purposes (not in the exam)
 
@@ -391,8 +409,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
-en_CA: Tuesday October Tue 17 Oct 2017 09:47:55 AM PDT PDT
-ja_JP: 火曜日 10月 2017年10月17日 09時47分55秒 PDT
+en_CA: Monday November Mon 02 Nov 2020 04:07:17 PM PST
+ja_JP: 月曜日 11月 2020年11月02日 16時07分17秒 PST
 #+end_example
 
 
@@ -408,8 +426,10 @@ ja_JP: 火曜日 10月 2017年10月17日 09時47分55秒 PDT
 - if needed, open with app to write at end of file
 - many more rules...
 
-** how to use
+* how to use
    
+At constructor time or at open time
+
 #+BEGIN_SRC C++ 
 std::ofstream out("file");
 std::ofstream out("file", std::ofstream:out); //implicit
@@ -430,7 +450,7 @@ out.open("file",std::ofstream:out);
 
 For this part we will use the following file:
 
-#+BEGIN_SRC sh :results output
+#+BEGIN_SRC sh :results output :exports both
 cat groceries3.txt
 #+END_SRC
 
@@ -526,7 +546,8 @@ int main()
 in general:
 
 - reading with >> skips whitespace
-- it will only read the characters that belong to the type until whitespace or eof()
+- it will only read the characters that belong to the type we want to read
+  until whitespace or eof()
   - strings: any char
   - char: any char
   - integral type (int, long, etc): any digit and sign
@@ -617,7 +638,7 @@ hexdump groceries.txt
 0000017
 #+end_example
 
-#+BEGIN_SRC sh :results output
+#+BEGIN_SRC sh :results output :exports  both
 cat  groceries.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1 " = %03i dec"' -e '/1 " = 0%03o oct"' -e '/1 " = %_u\n"'
 #+END_SRC
 
@@ -648,7 +669,7 @@ cat  groceries.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1
 22#    0x0A = 010 dec = 0012 oct = lf
 #+end_example
 
-** Read the file one character at a time (using >>)
+* Read the file one character at a time (using >>)
 
 - skips whitespace!!!
 
@@ -766,7 +787,7 @@ int main()
 ]
 #+end_example
 
-** But we can also read using read() which reads bytes directly from files
+* But we can also read using read() which reads bytes directly from files
 
 - this program reads one character at a time
 
@@ -833,7 +854,7 @@ int main()
 #+end_example
 
 
-** We can also read it all at once
+* We can also read it all at once
 
 - it is way faster
 - use seekg to seek to the end of file
@@ -929,7 +950,7 @@ rice
 #+end_example
 
 
-** Binary mode is only useful _in_ windows for output
+* Binary mode is only useful _in_ windows for output
 
 - Under Windows, default output mode replaces \n with \r and \n
   - If we don't want this conversion, we use binary mode
@@ -960,7 +981,7 @@ int main()
 Done
 #+end_example
 
-#+BEGIN_SRC sh :results output
+#+BEGIN_SRC sh :results output :exports both
 cat  output.txt | hexdump -v  -e '/1  "%_ad#    "' -e '/1    "0x%02X"' -e '/1 " = %03i dec"' -e '/1 " = 0%03o oct"' -e '/1 " = %_u\n"'
 #+END_SRC
 
