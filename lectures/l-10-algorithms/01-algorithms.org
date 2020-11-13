@@ -193,7 +193,7 @@ Sum2: begin01234
 Sum3: 43210
 #+end_example
 
-Note how accumulate works by adding the ascii value of strings  (strings are collections):
+Note how accumulate works by adding the ascii value of each character in a string  (strings are collections):
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
@@ -218,7 +218,7 @@ int main()
 Sum: 197
 #+end_example
 
-*** One use of accumulate requires that the operators + is defined in the class
+*** One use of accumulate requires that the operator + defined for the class
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -231,14 +231,14 @@ class A {
   int i;
 public:
   A(int _i) :i(_i){};
-  A&operator=(A b) {i=b.i; return *this;};
+//  A&operator=(A b) {i=b.i; return *this;};
   int operator+(A b) const {return i+b.i;};
   int get() { return i;};
 };
 
 int main()
 {
-   std::vector<A> coll{{1},{2},{3},{4},{5}};
+   std::vector<A> coll{{1},{2},{3},{4},{5},{6}};
 
    auto sum = std::accumulate(coll.begin(), coll.end(), A {0});
    std::cout << "Sum: " << sum.get()  << std::endl;
@@ -250,12 +250,12 @@ int main()
 
 #+RESULTS:
 #+begin_example
-Sum: 15
+Sum: 21
 #+end_example
 
 ** equal
 
-Compare two containers
+Compare two containers. Return true if they are the same
 
 - pass 3 iterators
 - first 2 delimit the first container
@@ -341,7 +341,7 @@ Result2: false
 Result3: true
 #+end_example
 
-we can compare different types of collections (e.g. a list and a vector)
+We can compare different types of collections (e.g. a list and a vector)
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -484,6 +484,7 @@ int main()
   std::vector<int> col1{0,1,2,3,4,5,1,2,3,1};
 
    {
+      //min_element and max_element return pointers
       auto min = std::min_element(col1.begin(), col1.end());
       auto max = std::max_element(col1.begin(), col1.end());
       std::cout << "min  " << *min << " max" << *max << std::endl;
@@ -527,7 +528,6 @@ min: [and] max: [this]
 | replace       | replace values in a collection             |
 | replace       | values with copies from another collection |
 | erase         | erases elements from a collection          |
-|               |                                            |
 
 
 ** fill
@@ -605,12 +605,14 @@ int main()
 {
    std::vector<int> col1{0,1,2,3,4};
 
+   // replace 3 values with -1
    std::fill_n(col1.begin(), 3,-1);
    
    print(col1);
 
-   // only replace elements that already exist, it does not appent
-   std::fill_n(col1.begin()+2, 10, 0);
+   // replace from 3rd value (include) 4 values with 5
+   std::fill_n(col1.begin()+2, 4, 5);
+
    print(col1);
 
    return 0;

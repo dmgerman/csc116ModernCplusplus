@@ -1,4 +1,4 @@
-#+STARTUP: showall
+,#+STARTUP: showall
 #+STARTUP: lognotestate
 #+TAGS:
 #+SEQ_TODO: TODO STARTED DONE DEFERRED CANCELLED | WAITING DELEGATED APPT
@@ -12,12 +12,12 @@
 
 
 #+BEGIN_SRC emacs-lisp
-(setq org-image-actual-width 1500)
+(setq org-image-actual-width 750)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-1500
+750
 #+end_example
 
 * Input/output classes
@@ -312,20 +312,21 @@ int main () {
   double a =M_PI;
   double b = 2006;
   double c = 1.0e-10;
-  std::cout << a <<  " "  << b << " " << c << std::endl;
+  double d = 4.0/6;
+  std::cout << a <<  " "  << b << " " << c << " " << d << std::endl;
   std::cout << std::setprecision(3);
   std::cout << a <<  " "  << b << " " << c << std::endl;
   std::cout << std::setprecision(20);
-  std::cout << a <<  " "  << b << " " << c << std::endl;
+  std::cout << a <<  " "  << b << " " << c << " " << d << std::endl;
   return 0;
 }
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-3.14159 2006 1e-10
+3.14159 2006 1e-10 0.666667
 3.14 2.01e+03 1e-10
-3.141592653589793116 2006 1.0000000000000000364e-10
+3.141592653589793116 2006 1.0000000000000000364e-10 0.66666666666666662966
 #+end_example
 
 * fixed/scientific
@@ -432,10 +433,10 @@ At constructor time or at open time
 
 #+BEGIN_SRC C++ 
 std::ofstream out("file");
-std::ofstream out("file", std::ofstream:out); //implicit
-std::ofstream out("file", std::ofstream:out | std::ofstream::trunc); 
+std::ofstream out("file", std::ofstream::out); //implicit
+std::ofstream out("file", std::ofstream::out | std::ofstream::trunc); 
 
-out.open("file",std::ofstream:out);
+out.open("file",std::ofstream::out);
 #+END_SRC
 
 
@@ -477,9 +478,11 @@ int main()
    std::string st {};
    int i {};
    std::ifstream myfile ("groceries3.txt");
+   // std::ifstream myfile ;
+   // myfile.open("groceries3.txt");
    //std::ifstream myfile ("groceriesUnix.txt");
    if(!myfile) throw std::runtime_error("unable to open input file");
-   std::streamoff pos;
+   std::streamoff pos; // why don't we use int? long? long long?
 
    while (pos = myfile.tellg(), //store location
           myfile >> st) {        // read 

@@ -65,10 +65,10 @@ Reading from a string as if it was standard input
 #include <iomanip>
 int main()
 {
-   std::string st {"This is the end of the world as\nn
-we know it\n
-and here it is\n
-one more line"};
+   std::string st {"This is the end of the world as\n"
+       "we know it\n\n\n"
+       "and here it is\n"
+       "one more line"};
 
    std::cout << st << std::endl;
 
@@ -78,10 +78,12 @@ one more line"};
    std::istringstream input( st );
    // reading it
    std::string st2;
+   std::string s3 {""};
    while (getline(input, st2)) {
-      std::cout << st2 << std::endl;
+      std::cout << "Line: [" << st2 << "]" << std::endl;
+      s3+= st2;
    }
-   
+   std::cout << "s3[" << s3 << "]" << std::endl;
 
    return 0;
 }
@@ -92,14 +94,75 @@ one more line"};
 #+begin_example
 This is the end of the world as
 we know it
+
+
 and here it is
 one more line
 -------------------------
-This is the end of the world as
-we know it
-and here it is
-one more line
+Line: [This is the end of the world as]
+Line: [we know it]
+Line: []
+Line: []
+Line: [and here it is]
+Line: [one more line]
+s3[This is the end of the world aswe know itand here it isone more line]
 #+end_example
+
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+int main()
+{
+   std::string st {"This a\n"
+       "   12e23\n"
+       "asdfdsaf\n"};
+
+   std::cout << st << std::endl;
+
+
+   std::cout << "-------------------------" << std::endl;
+
+   std::istringstream input( st );
+   // reading it
+   std::string a;
+   std::string b;
+   std::string c;
+   std::string d;
+   float i;
+
+//   input >> a >> b >> c >> i >> d;
+   input >> a >> b >> i >> c >> d;
+   std::cout << "State " << input.good() << std::endl;
+   std::cout << "a: [" << a << "]" << std::endl;
+   std::cout << "b: [" << b << "]" << std::endl;
+   std::cout << "c: [" << c << "]" << std::endl;
+   std::cout << "d: [" << d << "]" << std::endl;
+   std::cout << "i: [" << i << "]" << std::endl;
+
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+This a
+   12e23
+asdfdsaf
+
+-------------------------
+State 0
+a: [This]
+b: [a]
+c: [asdfdsaf]
+d: []
+i: [1.2e+24]
+#+end_example
+
+
+
 
 * Inheritance
 
@@ -238,8 +301,7 @@ int main()
 
    // first write to it
 
-   input << 
-       "This is the end of the world as\n"
+   input << "This is the end of the world as\n"
        "we know it\n"
        "and here it is\n"
        "one more line";
