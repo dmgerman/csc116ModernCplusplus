@@ -141,3 +141,18 @@ digraph {
 #+end_src
 
 [[./unique2.png]]
+
+#+begin_src dot :file unique3.png :cmdline -Tpng :exports none :results silent
+digraph { 
+         graph [fontname = "Helvetica"]
+         rankdir=LR;
+         node [shape = rectangle,style=filled];
+         
+         2 [style=nonfilled,label="42"];
+
+         p1 -> 2; 
+         p2 -> 2;
+} 
+#+end_src
+
+[[./unique3.png]]
