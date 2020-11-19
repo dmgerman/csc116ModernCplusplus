@@ -187,7 +187,7 @@ List
 * When to use a function template
 
 - When we require a function that can take more than one type of parameters
-- We do not want to typecast the parameters to into another one
+- We do not want to typecast the parameters into another type
 
 * When can we use a function template
 
@@ -273,12 +273,13 @@ int main()
 
 The error is long:
 
+
+
 #+BEGIN_EXAMPLE
-/tmp/babel-23722t_X/C-src-23722ztb.cpp: In instantiation of ‘void print_collection(std::__cxx11::string, T&) [with T = std::vector<std::vector<int> >; std::__cxx11::string = std::__cxx11::basic_string<char>]’:
-/tmp/babel-23722t_X/C-src-23722ztb.cpp:23:42:   required from here
-/tmp/babel-23722t_X/C-src-23722ztb.cpp:15:32: error: no match for ‘operator<<’ (operand types are ‘std::basic_ostream<char>’ and ‘std::vector<int>’)
-        std::cout << i++ << ": "<< it << std::endl;
-                                ^
+/tmp/babel-9BvIwe/C-src-0bV3Xk.cpp:19:32: error: invalid operands to binary expression ('basic_ostream<char, std::char_traits<char> >' and 'std::vector<int, std::allocator<int> >')
+       std::cout << i++ << ": "<< it << std::endl;
+       ~~~~~~~~~~~~~~~~~~~~~~~~^  ~~
+... and many more
 #+END_EXAMPLE
 
 It shows that the type used (in this case std::vector<std::vector<int>> does not support the operation << 
@@ -291,7 +292,8 @@ void print_collection(std::string msg, std::vector<std::vector<int>> &l)
     std::cout << msg  << std::endl;
     int i {0};
     for(auto it: l) {  
-       // it is a type std::vector<int>
+       // it is of type std::vector<int>
+       // and it << does not support vectors
        std::cout << i++ << ": "<< it << std::endl;
     } 
 }
@@ -331,12 +333,14 @@ int main()
 #+RESULTS:
 
 #+BEGIN_EXAMPLE
-/tmp/babel-23722t_X/C-src-23722A_V.cpp: In instantiation of ‘void print_collection(std::__cxx11::string, T&) [with T = int; std::__cxx11::string = std::__cxx11::basic_string<char>]’:
-/tmp/babel-23722t_X/C-src-23722A_V.cpp:23:28:   required from here
-/tmp/babel-23722t_X/C-src-23722A_V.cpp:14:5: error: ‘begin’ was not declared in this scope
-     for(auto it: l) {
-     ^
-/tmp/babel-23722t_X/C-src-23722A_V.cpp:14:5: note: suggested alternative:
+/tmp/babel-9BvIwe/C-src-nUiPrJ.cpp:18:16: error: invalid range expression of type 'int'; no viable 'begin' function available
+    for(auto it: l) {
+               ^ ~
+/tmp/babel-9BvIwe/C-src-nUiPrJ.cpp:27:4: note: in instantiation of function template specialization 'print_collection<int>' requested here
+   print_collection("Int",i);
+   ^
+1 error generated.
+zsh:1: permission denied: /tmp/babel-9BvIwe/C-bin-LTVZOc
 #+END_EXAMPLE
 
 In this case the type int does not support to iterate with a for. See code below 
@@ -398,7 +402,7 @@ templateName<instanceType> variable;
 
 - This is similar to the way standard library data structures (such as std::vector, or std::list).
 
-* Defining method outside the class declaration
+* Defining a method outside the class declaration
 
 - In that case, every method should be preceeded with *template <typename ...>*
 - See below:
@@ -486,7 +490,7 @@ string:5
 10:5
 #+end_example
 
-* And we can make member templates inside class templates
+* And we can use  methods templates  inside class templates
 
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
@@ -617,5 +621,8 @@ void print_collection(std::string msg, T &l)
 }
 #+END_SRC
 
-- In some cases, write the class for a given type, and then "templatize" them
+* Creating templates
+
+- Sometimes, it is easier to write the class/function for a specific type
+- and then make it a template
 

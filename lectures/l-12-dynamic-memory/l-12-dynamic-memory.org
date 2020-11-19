@@ -11,12 +11,12 @@
 #+PROPERTY: header-args:R               :results output  :colnames yes
 
 #+BEGIN_SRC emacs-lisp
-(setq org-image-actual-width 500)
+(setq org-image-actual-width 200)
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-500
+200
 #+end_example
 
 * Dynamic memory management
@@ -730,6 +730,8 @@ int main()
 }
 
 #+END_SRC
+
+#+RESULTS:
 
 #+begin_example
 p1 has been allocated. Pointing to address 0x7f954a4057b0
