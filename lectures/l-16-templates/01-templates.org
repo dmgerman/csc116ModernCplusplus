@@ -509,17 +509,6 @@ public:
        std::cout << first << ":" << data << std::endl;
     }
 
-/*
-    void print(std::string first) {
-       std::cout << first << ":" << data << std::endl;
-    };
-    void print(int first) {
-       std::cout << first << ":" << data << std::endl;
-    }
-    void print(double first) {
-       std::cout << first << ":" << data << std::endl;
-    }
-*/
 };
 
 int main()
@@ -538,6 +527,8 @@ int main()
 #+END_SRC
 
 
+Which is kind equivalent to:
+
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
 #include <string>
@@ -553,17 +544,6 @@ public:
        std::cout << first << ":" << data << std::endl;
     }
    
-/*
-    void print(std::string first) {
-       std::cout << first << ":" << data << std::endl;
-    };
-    void print(int first) {
-       std::cout << first << ":" << data << std::endl;
-    }
-    void print(double first) {
-       std::cout << first << ":" << data << std::endl;
-    }
-*/
 };
 
 int main()
