@@ -527,7 +527,7 @@ int main()
 #+END_SRC
 
 
-Which is kind equivalent to:
+Which is similar to:
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
