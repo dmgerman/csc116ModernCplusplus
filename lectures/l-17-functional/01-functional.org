@@ -76,10 +76,22 @@ int main()
    f("abc");
    g("abc");
 
+   auto f2 = f;
+   auto g2 = g;
+   f2("def");
+   g2("def");
    return 0;
 }
 
 #+END_SRC
+
+#+RESULTS:
+#+begin_example
+abc
+abc
+def
+def
+#+end_example
 
 * Syntax:
 
@@ -504,9 +516,11 @@ int main()
 {
    std::vector<int> v{1,-2,-3,-4,5};
     
-   int count = std::count_if(v.begin(), v.end(),  [](int &n)->bool { 
-      return n > 0;
-   });
+   int count = std::count_if(v.begin(), v.end(),  
+      [](int &n)->bool { 
+        return n > 0;
+      }
+   );
 
    std::cout << "Positive elements: " << count << std::endl;
    
@@ -643,10 +657,10 @@ Sort by length of the string
 
 int main() { 
 
-   std::vector<std::string> v{"Jenaway", "Data", "Picard", "Spock"};
+   std::vector<std::string> v{"Janeway", "Data", "Picard", "Spock"};
     
    sort(v.begin(), v.end(), 
-        [](std::string &st1, std::string &st2) { 
+        [](auto &st1, auto &st2) { 
            return st1.length() < st2.length(); 
         }
      );
@@ -665,7 +679,7 @@ int main() {
 4:Data
 5:Spock
 6:Picard
-7:Jenaway
+7:Janeway
 #+end_example
 
 ** Another example
@@ -688,7 +702,7 @@ public:
 int main() 
 { 
 
-   std::vector<A> v{A{"Jenaway"}, A{"Data"}, A{"Picard"}, A{"Spock"}};
+   std::vector<A> v{A{"Janeway"}, A{"Data"}, A{"Picard"}, A{"Spock"}};
     
    sort(v.begin(), v.end(), 
         [](A &first, A &second) { 
@@ -709,7 +723,7 @@ int main()
 #+RESULTS:
 #+begin_example
 Data
-Jenaway
+Janeway
 Picard
 Spock
 #+end_example
@@ -731,17 +745,16 @@ Spock
 #include <algorithm> 
 #include <string>
 #include <list>
+#include <vector>
 
 int f(std::string st) {
    return std::stoi(st);
 }
 
-
 int main() {
   
    std::vector<std::string> v{"0123", "123", "13", "1"};
    std::list<int> out;
-   
    std::back_insert_iterator< std::list<int> > b_insert (out);
    
    // use a back inserter to insert into the new list
@@ -769,33 +782,36 @@ int main() {
 - Reduces the values of a collection to a single value
 - Also known as reduce, fold
 - Parameters:
-  1. begin iterator
-  2. end iterator
+  1. begin iterator  2. end iterator
   3. initial value (must be same type as elements in collection)
   4. a function to combine the elements to generate the next element
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream> 
+#include <functional> 
+#include <numeric> 
 #include <algorithm> 
 #include <string>
 #include <list>
-
-std::string concatenate(std::string prev, std::string st) {
-   return prev + st;
-}
+#include <vector>
 
 int main() 
 {
-  
-   std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
-   
-   std::string result = std::accumulate (
-                   v.begin(),  
-                   v.end(), 
-                   std::string{},  
-                   concatenate
-      ); 
+   {
+      std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+ 
+      int sum = std::accumulate(v.begin(), v.end(), 0);
 
+      std::cout << "Sum : " <<  sum << std::endl;
+
+   }
+
+   std::vector<std::string> v{"alpha", "beta", "gamma", "delta"};
+
+   std::string result = std::accumulate (
+       v.rbegin(), v.rend(), 
+       std::string{"Starting:"},   // initia
+          [](auto &cur, auto&el) { return cur + "->" + el;}); 
    std::cout << result << std::endl;
 
    return 0; 
@@ -804,7 +820,8 @@ int main()
 
 #+RESULTS:
 #+begin_example
-alphabetagammadelta
+Sum : 55
+Starting:->delta->gamma->beta->alpha
 #+end_example
 
 
@@ -875,6 +892,8 @@ int main() {
 alpha -> beta -> gamma -> delta
 #+end_example
 
+
+
 * Advantages of Lambdas
 
 - They can be defined local to a block (functions have global scope)
@@ -883,6 +902,38 @@ alpha -> beta -> gamma -> delta
 #+BEGIN_SRC C++
 auto functionName = [capture list] (parameterList) -> returnType { body; };
 #+END_SRC
+
+* Functions can return lambdas
+
+
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <functional>
+
+std::function<int(int)> create_function()
+{
+    auto incBy1 = [] (int i) -> int { return i+1; };
+
+    return incBy1;
+}
+
+int main()
+{
+   auto f = create_function();
+
+   std::cout << f(10) << std::endl;
+   std::cout << f(15) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+11
+16
+#+end_example
 
 
 * Capture lists
@@ -897,35 +948,6 @@ auto functionName = [capture list] (parameterList) -> returnType { body; };
   - [&] captures used variables by reference 
   - [a,&b] captures specific variable by value (a) or reference (b)
 
-#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
-#include <iostream>
-#include <functional>
-
-std::function<int(int)> create_function_incr_by_value(int value)
-{
-    auto inc = [value] (int i) -> int { return i+value; };
-
-    return inc;
-}
-
-int main()
-{
-   auto incr_by_2 = create_function_incr_by_value(2);
-   auto incr_by_5 = create_function_incr_by_value(5);
-
-   std::cout << incr_by_2(10) << std::endl;
-   std::cout << incr_by_5(10) << std::endl;
-
-   return 0;
-}
-
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-12
-15
-#+end_example
 
 
 ** When is this useful?
@@ -940,7 +962,8 @@ int main()
 {
    std::vector<int> v{1,-2,-3,-4,5};
    int x = 2;
-   int count = std::count_if(v.begin(), v.end(),  [x](int &n)->bool { 
+
+   int count = std::count_if(v.begin(), v.end(), [x](int &n)->bool { 
       return n > x;
    });
 
@@ -988,6 +1011,39 @@ lambda was called: 7 times
 The sum of all elements is 0
 #+end_example
 
+* Creating lambdas that depend on a captured value
+
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
+#include <iostream>
+#include <functional>
+
+std::function<int(int)> create_function_incr_by_value(int value)
+{
+    auto inc = [value] (int i) -> int { return i+value; };
+
+    return inc;
+}
+
+int main()
+{
+   auto incr_by_2 = create_function_incr_by_value(2);
+   auto incr_by_5 = create_function_incr_by_value(5);
+
+   std::cout << incr_by_2(10) << std::endl;
+   std::cout << incr_by_5(10) << std::endl;
+
+   return 0;
+}
+
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+12
+15
+#+end_example
+
+
 * This is just a silly example
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
@@ -997,25 +1053,24 @@ The sum of all elements is 0
 #include <functional>
 
 
+auto f= [](int i)->int {return i*i*i;};
 
-auto f2 = [](int i)->std::pair<int,int>{return std::pair<int,int>(i,i*i*i);};
 
 std::map<
    std::string,
    std::function<int(int)>
    > extra = {
-         {"fun", f}
+         {std::string{"fun"}, f}
     };
 
 int main()
 {
 
-   auto f= [](int i)->int {return i*i*i;};
-
+   auto f= [](int i)->int {return i;};
 
    int i {2};
-   std::cout << extra["fun"](i++) << std::endl;
-//   std::cout << f2(i++).second << std::endl;
+   std::cout << extra["fun"](i) << std::endl;
+   std::cout << f(i) << std::endl;
    return 0;
 }
 #+END_SRC
@@ -1023,14 +1078,17 @@ int main()
 #+RESULTS:
 #+begin_example
 8
+2
 #+end_example
 
 * Yes, we can do everything without loops
 
+However, C++ is not best language for this type of programming:
+
 - Count number of repeated lines in input file, 
 - output them in lexicographical order 
 
-#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
+#+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both :dir "." 
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -1044,7 +1102,7 @@ int main()
    std::string line;
    std::map<std::string,int> names;
 
-   std::cout << "Lines read: " << std::endl;
+   std::cout << "Lines read: ------------------" << std::endl;
 
    std::function<void()> read = [&]() {
        if (std::getline (myfile,line)) {
@@ -1055,6 +1113,15 @@ int main()
    };
    read();
 
+   // returns an iterator
+   auto mostFreq = std::max_element (names.begin(), names.end(), 
+                                    [] (auto &l, auto &r) {
+                                         return (l.second < r.second);
+                                    });
+
+   std::cout << "Most Frequent " << mostFreq->first << ":" <<
+                                    mostFreq->second << std::endl;
+                                
    std::cout << "Aggregated: " << std::endl;
 
    std::for_each(names.begin(), names.end(),  [&](auto p) { 
@@ -1069,15 +1136,20 @@ int main()
 #+RESULTS:
 #+begin_example
 Lines read: 
-Cat
-Dog
-Horse
-Dog
-Dog
-Cat
+Bob
+Alice
+Alice
+Alice
+David
+Bob
+Alice
+Cathy
+Most Frequent Alice:4
 Aggregated: 
-Cat:2
-Dog:3
-Horse:1
+Alice:4
+Bob:2
+Cathy:1
+David:1
 #+end_example
+
 
