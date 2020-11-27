@@ -687,7 +687,8 @@ void print(T &v)
 int main()
 {
    std::vector<int> col {1,2};
-   std::fill_n(back_inserter(col), 5, 0);
+   // fill assumes destination exists
+   std::fill_n(back_inserter(col), 5, 0); 
    print(col);
    return 0;
 }
