@@ -17,14 +17,14 @@
 - [[#what-is-an-environment][What is an environment?]]
 - [[#at-run-time][At run time]]
 - [[#how-does-the-compiler-find-a-variable][How does the compiler find a variable?]]
-     - [[#the-for-loop--creates-its-own-environment][The for loop  creates its own environment]]
-     - [[#a-function-invocation-creates-its-own-environment][A function invocation creates its own environment]]
+  - [[#the-for-loop--creates-its-own-environment][The for loop  creates its own environment]]
+  - [[#a-function-invocation-creates-its-own-environment][A function invocation creates its own environment]]
 - [[#functional-calls-environments-and-recursion][Functional calls, environments and recursion]]
 - [[#conclusion][Conclusion]]
 
 * Declaring variables is just like in C
 
-But it can be done anywhere in the code
+- it can be done anywhere in the code
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both :xournal /tmp/rip.cpp
 #include <iostream>
@@ -51,7 +51,7 @@ int main()
 
 * Scope
 
-The scope of a variable is the area of the program where that variable exists.
+The scope of a variable is the *area of the program where that variable exists*.
 
 - at compilation time, and
 - at run time
@@ -60,7 +60,7 @@ The scope of a variable is the area of the program where that variable exists.
 * Scope can be a pain
 
 - But it is based on relatively simple rules
-- C++ uses lexical scope
+- C++ uses *lexical scope*
   - A variable can only be referenced in the environment where  it is defined
 
 * What is an environment?
@@ -138,7 +138,8 @@ int main()
       i = 0;
    }
 
-   double i {0.1}; // this declaration is an error, already an i in this environment
+   double i {0.1}; // this declaration is an error,
+                   // already an i in this environment
 
    return 0;
 }
@@ -160,7 +161,7 @@ int main()
 
 ** The for loop  creates its own environment 
 
-- for variables declared in between ()
+- for variables declared in between *(* and first *;*
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
@@ -194,9 +195,11 @@ int main()
 
 ** A function invocation creates its own environment
 
-- Invocation! 
+- *Invocation!*
 - I repeat: each invocation of a function creates an environment
-  - this environment includes the parameters and their corresponding values
+  - this environment includes
+    - its *parameters* and their corresponding values
+    - its *local variables*
 
 #+BEGIN_SRC C++ :main no :flags -std=c++17 -Wall --pedantic -Werror :results output :exports both
 #include <iostream>
